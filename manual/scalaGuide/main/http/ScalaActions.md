@@ -1,88 +1,88 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Actions, Controllers ve Results
+# Action'lar, Controller'lar ve Result'lar
 
 ## Action nedir?
 
-Most of the requests received by a Play application are handled by an `Action`.
+Bir Play uygulaması tarafından alınan isteklerin çoğu bir `Action` tarafından karşılanır.
 
-A `play.api.mvc.Action` is basically a `(play.api.mvc.Request => play.api.mvc.Result)` function that handles a request and generates a result to be sent to the client.
+`play.api.mvc.Action` basitçe bir isteği karşılayarak istemciye gönderilmek üzere bir yanıt oluşturan `(play.api.mvc.Request => play.api.mvc.Result)` şeklinde bir fonksiyondur.
 
 @[echo-action](code/ScalaActions.scala)
 
-An action returns a `play.api.mvc.Result` value, representing the HTTP response to send to the web client. In this example `Ok` constructs a **200 OK** response containing a **text/plain** response body.
+Action, web istemciye gönderilecek HTTP yanıtını ifade eden `play.api.mvc.Result` türünden bir değer döndürür. Bu örnekte `Ok` yanıt gövdesi **text/plain** olan bir **200 OK** yanıtı oluşturur.
 
 ## Action oluşturma
 
-The `play.api.mvc.Action` companion object offers several helper methods to construct an Action value.
+`play.api.mvc.Action` eş nesnesi bir Action değeri oluşturmak için çeşitli yardımcı metotlar sunar.
 
-The first simplest one just takes as argument an expression block returning a `Result`:
+Bunlardan en basit olanı yalnızca `Result` döndüren bir ifade bloğunu argüman olarak alır:
 
 @[zero-arg-action](code/ScalaActions.scala)
 
-This is the simplest way to create an Action, but we don't get a reference to the incoming request. It is often useful to access the HTTP request calling this Action.
+Bir Action oluşturmanın en kolay yolu bu olsa da gelen isteğe bir referans alamayız. Çoğu zaman bu Action'ı çağıran HTTP isteğine erişmeye ihtiyaç olur.
 
-So there is another Action builder that takes as an argument a function `Request => Result`:
+Bu sebeple `Request => Result` fonksiyonunu argüman olarak alan başka bir Action yapıcı bulunmaktadır.
 
 @[request-action](code/ScalaActions.scala)
 
-It is often useful to mark the `request` parameter as `implicit` so it can be implicitly used by other APIs that need it:
+İhtiyaç duyan diğer API'lerin de örtük biçimde erişebilmesi için `request` parametresini `implicit` olarak işaretlemek kullanışlı olur.
 
 @[implicit-request-action](code/ScalaActions.scala)
 
-The last way of creating an Action value is to specify an additional `BodyParser` argument:
+Bir Action değeri oluşturmanın son yolu ek bir `BodyParser`(Gövde ayrıştırıcı) argümanı belirtmektir:
 
 @[json-parser-action](code/ScalaActions.scala)
 
-Body parsers will be covered later in this manual.  For now you just need to know that the other methods of creating Action values use a default **Any content body parser**.
+Gövde ayrıştırıcılar bu kılavuzda daha sonra ayrıntılı şekilde ele alınacak. Şimdilik bilmeniz gereken Action değeri oluşturmanın diğer yollarının varsayılan olarak **Herhangi içerik gövde ayrıştırıcı** kullanıyor olmalarıdır.
 
-## Controllers are action generators
+## Controller'lar action üreticidir
 
-A `Controller` is nothing more than a singleton object that generates `Action` values.
+`Controller`, `Action` değerler üreten bir singleton nesneden başka bir şey değildir.
 
-The simplest use case for defining an action generator is a method with no parameters that returns an `Action` value	:
+Bir action üretici tanımlamanın en basit yolu `Action` değeri döndüren parametresiz bir metottur.
 
 @[full-controller](code/ScalaActions.scala)
 
-Of course, the action generator method can have parameters, and these parameters can be captured by the `Action` closure:
+Elbette üretici metot parametreler alabilir ve bu parametreler `Action` closure tarafından hapsedilebilir.
 
 @[parameter-action](code/ScalaActions.scala)
 
-## Simple results
+## Basit yanıtlar
 
-For now we are just interested in simple results: An HTTP result with a status code, a set of HTTP headers and a body to be sent to the web client.
+Şimdilik yalnızca basit yanıtlarla ilgileniyoruz: web istemciye gönderilecek durum kodu, HTTP başlıkları ve gövdeden ibaret olan HTTP yanıtı.
 
-These results are defined by `play.api.mvc.Result`:
+Bu yanıtlar `play.api.mvc.Result` tarafından tanımlanır:
 
 @[simple-result-action](code/ScalaActions.scala)
 
-Of course there are several helpers available to create common results such as the `Ok` result in the sample above:
+Elbette yukarıdaki örnekteki `Ok` yanıtı gibi sık kullanılan yanıtları oluşturmak için çeşitli yardımcılar bulunmaktadır.
 
 @[ok-result-action](code/ScalaActions.scala)
 
-This produces exactly the same result as before.
+Bu, önceki ile birebir aynı sonucu üretir.
 
-Here are several examples to create various results:
+Aşağıda çeşitli yanıtlar üretmek için örnekler verilmiştir.
 
 @[other-results](code/ScalaActions.scala)
 
-All of these helpers can be found in the `play.api.mvc.Results` trait and companion object.
+Tüm bu yardımcılar `play.api.mvc.Results` trait ve eş nesnesinde bulunmaktadırlar.
 
-## Redirects are simple results too
+## Yönlendirmeler de birer basit yanıttır
 
-Redirecting the browser to a new URL is just another kind of simple result. However, these result types don't take a response body.
+Tarayıcıyı yeni bir URL'e yönlendirmek de başka bir tür basit yanıttır. Fakat bu yanıt türleri yanıt gövdesi içermezler.
 
-There are several helpers available to create redirect results:
+Yönlendirme yanıtları yaratmak için çok sayıda yardımcı bulunmaktadır.
 
 @[redirect-action](code/ScalaActions.scala)
 
-The default is to use a `303 SEE_OTHER` response type, but you can also set a more specific status code if you need one:
+Varsayılan `303 SEE_OTHER` yanıt türüdür; fakat ihtiyaç duyarsanız farklı bir durum kodu belirtebilirsiniz:
 
 @[moved-permanently-action](code/ScalaActions.scala)
 
-## "TODO" dummy page
+## "TODO" taslak sayfası
 
-You can use an empty `Action` implementation defined as `TODO`: the result is a standard ‘Not implemented yet’ result page:
+`TODO` olarak tanımlanan boş bir `Action` kullanabilirsiniz. Bu durumda sonuç standart bir ‘Henüz gerçeklenmedi’ sayfası olur.
 
 @[todo-action](code/ScalaActions.scala)
 
-> **Next:** [[HTTP Routing | ScalaRouting]]
+> **Sonraki:** [[HTTP Routing | ScalaRouting]]
