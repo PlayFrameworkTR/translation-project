@@ -1,7 +1,7 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Introducing Play 2
+# Play 2'ye Genel Bakış
 
-Since 2007, we have been working on making Java web application development easier. Play started as an internal project at [Zenexity](http://www.zenexity.com) and was heavily influenced by our way of doing web projects: focusing on developer productivity, respecting web architecture, and using a fresh approach to packaging conventions from the start - breaking so-called JEE best practices where it made sense.
+2007 yılından beri sizlerin daha kolay Java Web Uygulamaları geliştirmeniz için çalışıyoruz.Play fikri aslında ilk olarak Zenexity(http://www.zenexity.com) içinde ortaya çıkmış ve bizim web uygulama geliştirme yöntemlerimizden etkilenip şekillenmiş bir projeydi.Bizim geliştirme tarzımızı merak ediyorsanız: Yazılım geliştiricilerin üretkenliğini artıran, web mimarisi kurallarına uygun ve işin en başından itibaren  güncel teknolojileri kullanarak iş yapan bir yaklaşımımız var.
 
 In 2009, we decided to share these ideas with the community as an open source project. The immediate feedback was extremely positive and the project gained a lot of traction. Today - after two years of active development - Play has several versions, an active community of 4,000 people, with a growing number of applications running in production all over the globe.
 

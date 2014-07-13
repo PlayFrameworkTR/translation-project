@@ -1,25 +1,28 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-## New York
+## Türkiye Play Kullanıcıları Topluluğu
+https://groups.google.com/forum/#!forum/play-framework-tr
+
+## New York Play Kullanıcıları Topluluğu
 http://www.meetup.com/Play-NYC/
 
-## Berlin
+## Berlin Play Kullanıcıları Topluluğu
 http://www.meetup.com/Play-Berlin-Brandenburg/
 
-## Cologne
-### Scala User Group Köln / Bonn
-*(We also talk and do presentations about Play)*
+## Köln
+### Scala Kullanıcıları Topluluğu Köln / Bonn
+*(Ayrıca bu grupla Play'e dair bir buluşmamız ve sunumlarımızda oldu)*
 
 [Xing](http://xing.to/scala) / [Twitter](https://twitter.com/scalacgn)
 
-## Buenos Aires
+## Buenos Aires Play Kullanıcıları Topluluğu
 http://www.meetup.com/play-argentina/
 
-## Stockholm
+## Stockholm Play Kullanıcıları Topluluğu
 http://www.meetup.com/play-stockholm/
 
-## Belgium
+## Belçika Play Kullanıcıları Topluluğu
 http://www.play-be.org
 
-## Japan
+## Japonya Play Kullanıcıları Topluluğu
 http://www.playframework-ja.org/
 https://groups.google.com/forum/?fromgroups#!forum/play_ja
