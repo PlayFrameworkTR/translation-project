@@ -12,7 +12,7 @@
 ## Başlarken
 
 1. [[Play kurulumu|Installing]]
-1. [[Yeni bir uygulaması oluşturmak|NewApplication]]
+1. [[Yeni bir Play uygulaması oluşturmak|NewApplication]]
 1. [[Bir Play uygulamasının anatomisi|Anatomy]]
 1. [[Play konsolunu kullanmak|PlayConsole]]
 1. [[Tercih ettiğiniz IDE'yi yapılandırmak|IDE]]
