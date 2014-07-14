@@ -1,82 +1,82 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Play %PLAY_VERSION% documentation
+# Play %PLAY_VERSION% dokümantasyonu
 
-> Play is a high-productivity Java and Scala web application framework that integrates the components and APIs you need for modern web application development. 
+> Play modern web uygulamaları geliştirmek için ihtiyaç duyacağınız bileşenler ile API'leri bir araya getiren ve yüksek verimlilik sunan bir Java ve Scala web uygulama çatısıdır.
 >
-> Play is based on a lightweight, stateless, web-friendly architecture and features predictable and minimal resource consumption (CPU, memory, threads) for highly-scalable applications thanks to its reactive model, based on Iteratee IO.
+> Play hafif, durumsuz ve web dostu bir mimari üzerine kurulu olup Iteratee IO tabanlı reaktif modeli sayesinde yüksek-ölçeklenebilir uygulamalar için önceden kestirilebilir ve düşük kaynak tüketimine (CPU, bellek, thread) sahiptir.
 
-- [[What's new in Play 2.3?|Highlights23]] / [[Play 2.3 Migration Guide|Migration23]]
-- [[What's new in Play 2.2?|Highlights22]] / [[Play 2.2 Migration Guide|Migration22]]
-- [[What's new in Play 2.1?|Highlights21]] / [[Play 2.1 Migration Guide|Migration21]]
+- [[Play 2.3 yenilikleri|Highlights23]] / [[Play 2.3 Göç Rehberi|Migration23]]
+- [[Play 2.2 yenilikleri|Highlights22]] / [[Play 2.2 Göç Rehberi|Migration22]]
+- [[Play 2.1 yenilikleri|Highlights21]] / [[Play 2.1 Göç Rehberi|Migration21]]
 
-## Getting started
+## Başlarken
 
-1. [[Installing Play|Installing]]
-1. [[Creating a new application|NewApplication]]
-1. [[Anatomy of a Play application|Anatomy]]
-1. [[Using the Play console|PlayConsole]]
-1. [[Setting up your preferred IDE|IDE]]
-1. [[Play Tutorials|Tutorials]]
-1. [Security policy](http://www.playframework.com/code/security)
+1. [[Play kurulumu|Installing]]
+1. [[Yeni bir uygulaması oluşturmak|NewApplication]]
+1. [[Bir Play uygulamasının anatomisi|Anatomy]]
+1. [[Play konsolunu kullanmak|PlayConsole]]
+1. [[Tercih ettiğiniz IDE'yi yapılandırmak|IDE]]
+1. [[Play örnekleri|Tutorials]]
+1. [Güvenlik politikası](http://www.playframework.com/code/security)
 
-## Working with Play
+## Play ile çalışmak
 
-1. [[Play for Scala developers|ScalaHome]]
-1. [[Play for Java developers|JavaHome]]
+1. [[Scala geliştiriciler için Play|ScalaHome]]
+1. [[Java geliştiriciler için Play|JavaHome]]
 
-## Detailed topics
+## Ayrıntılı konular
 
-1. [[The Build system|Build]]
-    1. [[About sbt settings|SBTSettings]]
-    1. [[Manage application dependencies|SBTDependencies]]
-    1. [[Working with sub-projects|SBTSubProjects]]
-1. [[Working with public assets|Assets]]
-    1. [[Using CoffeeScript|AssetsCoffeeScript]]
-    1. [[Using LESS CSS|AssetsLess]]
-    1. [[Using JSHint|AssetsJSHint]]
-    1. [[Using RequireJS|RequireJS-support]]
-1. [[Working with the in-memory H2 database|Developing-with-the-H2-Database]]
-1. [[Managing database evolutions|Evolutions]]
-1. [[Configuration file syntax and features|Configuration]]
-    1. [[Configuring the application secret|ApplicationSecret]]
-    1. [[Configuring the JDBC connection pool|SettingsJDBC]]
-    1. [[Configuring Play's thread pools|ThreadPools]]
-    1. [[Configuring logging|SettingsLogger]]
-    1. [[Configuring gzip encoding|GzipEncoding]]
-    1. [[Configuring security headers|SecurityHeaders]]
-    1. [[Configuring WS SSL|WsSSL]]
-1. [[Deploying your application|Production]]
-    1. [[Creating a standalone package|ProductionDist]]
-    1. [[Additional configuration|ProductionConfiguration]]
-    1. [[Set up a front end HTTP server|HTTPServer]]
-    1. [[Configuring HTTPS|ConfiguringHttps]]
-    1. [[Deploying to a cloud service|DeployingCloud]]
+1. [[İnşa sistemi|Build]]
+    1. [[SBT ayarları hakkında|SBTSettings]]
+    1. [[Uygulama bağımlılıklarını yönetmek|SBTDependencies]]
+    1. [[Alt projeler ile çalışmak|SBTSubProjects]]
+1. [[Dışarıya açık varlıklarla çalışmak|Assets]]
+    1. [[CoffeeScript kullanımı|AssetsCoffeeScript]]
+    1. [[LESS CSS kullanımı|AssetsLess]]
+    1. [[JSHint kullanımı|AssetsJSHint]]
+    1. [[RequireJS kullanımı|RequireJS-support]]
+1. [[Bellek-içi H2 veritabanı ile çalışmak|Developing-with-the-H2-Database]]
+1. [[Veritabanı evrimini yönetmek|Evolutions]]
+1. [[Ayar dosyası sözdizimi özellikleri|Configuration]]
+    1. [[Uygulama gizli anahtarını ayarlamak|ApplicationSecret]]
+    1. [[JDBC bağlantı havuzunu ayarlamak|SettingsJDBC]]
+    1. [[Play'in thread havuzlarını ayarlamak|ThreadPools]]
+    1. [[Loglamayı ayarlamak|SettingsLogger]]
+    1. [[GZIP sıkıştırmayı ayarlamak|GzipEncoding]]
+    1. [[Güvenlik başlıklarını ayarlamak|SecurityHeaders]]
+    1. [[WS SSL ayarlamak|WsSSL]]
+1. [[Uygulamanızı yayınlamak|Production]]
+    1. [[Bağımsız paket oluşturmak|ProductionDist]]
+    1. [[Ek ayarlar|ProductionConfiguration]]
+    1. [[Ön uç HTTP sunucu yapılandırmak|HTTPServer]]
+    1. [[HTTPS ayarlamak|ConfiguringHttps]]
+    1. [[Bir bulut servisine yerleştirmek|DeployingCloud]]
 
-## Additional documentation
+## Ek dokümantasyon
 
 1. [Scala](http://docs.scala-lang.org/)
 1. [Akka](http://akka.io/docs/)
 1. [sbt](http://www.scala-sbt.org/0.13/tutorial/index.html)
-1. [Configuration](https://github.com/typesafehub/config)
+1. [Ayarlar](https://github.com/typesafehub/config)
 1. [Logback](http://logback.qos.ch/documentation.html)
 
-## Hacking Play
+## Play'i hacklemek
 
-1. [[Building Play from source|BuildingFromSource]]
-1. [[3rd Party Tools|ThirdPartyTools]]
-1. [[Repositories|Repositories]]
-1. [[Issue tracker|Issues]]
-1. [[Contributor guidelines|Guidelines]]
-1. [[Documentation guidelines|Documentation]]
-1. [[Translating Documentation|Translations]]
-1. [[Working with Git|WorkingWithGit]]
+1. [[Play'i kaynak koddan inşa etmek|BuildingFromSource]]
+1. [[3. parti araçlar|ThirdPartyTools]]
+1. [[Depolar|Repositories]]
+1. [[Hata takibi|Issues]]
+1. [[Katkıcı yönergeleri|Guidelines]]
+1. [[Dokümantasyon yönergeleri|Documentation]]
+1. [[Dokümantasyonu çevirmek|Translations]]
+1. [[Git ile çalışmak|WorkingWithGit]]
 
-## About Play
+## Play hakkında
 
-1. [[Play Philosophy|Philosophy]]
-1. [[Play User Groups|PlayUserGroups]]
+1. [[Play Felsefesi|Philosophy]]
+1. [[Play Kullanıcı Grupları|PlayUserGroups]]
 
-## Modules and plugins
+## Modüller ve Pluginler
 
-1. [[Temporary modules directory|Modules]]
+1. [[Geçici modül dizini|Modules]]
 
