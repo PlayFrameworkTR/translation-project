@@ -1,53 +1,53 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-### Getting started
+### Başlarken
 
-- [[Installing Play|Installing]]
-- [[Creating a new application|NewApplication]]
-- [[Anatomy of a Play application|Anatomy]]
-- [[Using the Play console|PlayConsole]]
-- [[Setting-up your preferred IDE|IDE]]
-- [[Play Tutorials|Tutorials]]
-- [Security policy](http://www.playframework.com/code/security)
+- [[Play kurulumu|Installing]]
+- [[Yeni bir uygulaması oluşturmak|NewApplication]]
+- [[Bir Play uygulamasının anatomisi|Anatomy]]
+- [[Play konsolunu kullanmak|PlayConsole]]
+- [[Tercih ettiğiniz IDE'yi yapılandırmak|IDE]]
+- [[Play örnekleri|Tutorials]]
+- [Güvenlik politikası](http://www.playframework.com/code/security)
 
-### Working with Play
+### Play ile çalışmak
 
-- [[Play for Scala developers|ScalaHome]]
-- [[Play for Java developers|JavaHome]]
+- [[Scala geliştiriciler için Play|ScalaHome]]
+- [[Java geliştiriciler için Play|JavaHome]]
 
-### Detailed topics
+### Ayrıntılı konular
 
-- [[The Build system|Build]]
-- [[Working with public assets|Assets]]
-- [[Working with the in-memory H2 database|Developing-with-the-H2-Database]]
-- [[Managing database evolutions|Evolutions]]
-- [[Configuration|Configuration]]
-- [[Deploying your application|Production]]
+- [[İnşa sistemi|Build]]
+- [[Dışarıya açık varlıklarla çalışmak|Assets]]
+- [[Bellek-içi H2 veritabanı ile çalışmak|Developing-with-the-H2-Database]]
+- [[Veritabanı evrimini yönetmek|Evolutions]]
+- [[Ayar dosyası sözdizimi özellikleri|Configuration]]
+- [[Uygulamanızı yayınlamak|Production]]
 
-### Additional documentation
+### Ek dokümantasyon
 
 - [Scala](http://docs.scala-lang.org/)
 - [Akka](http://akka.io/docs/)
 - [sbt](http://www.scala-sbt.org/learn.html)
-- [Configuration](https://github.com/typesafehub/config)
+- [Ayarlar](https://github.com/typesafehub/config)
 - [Logback](http://logback.qos.ch/documentation.html)
 
-### Hacking Play
+### Play'i hacklemek
 
-- [[Building Play from source|BuildingFromSource]]
-- [[3rd Party Tools|ThirdPartyTools]]
-- [[Repositories|Repositories]]
-- [[Issue tracker|Issues]]
-- [[Contributor guidelines|Guidelines]]
-- [[Documentation guidelines|Documentation]]
-- [[Translating Documentation|Translations]]
-- [[Working with Git|WorkingWithGit]]
+- [[Play'i kaynak koddan inşa etmek|BuildingFromSource]]
+- [[3. parti araçlar|ThirdPartyTools]]
+- [[Depolar|Repositories]]
+- [[Hata takibi|Issues]]
+- [[Katkıcı yönergeleri|Guidelines]]
+- [[Dokümantasyon yönergeleri|Documentation]]
+- [[Dokümantasyonu çevirmek|Translations]]
+- [[Git ile çalışmak|WorkingWithGit]]
 
-### About Play
+### Play hakkında
 
-- [[Play Philosophy|Philosophy]]
-- [[Play User Groups|PlayUserGroups]]
+- [[Play Felsefesi|Philosophy]]
+- [[Play Kullanıcı Grupları|PlayUserGroups]]
 
-### Modules and plugins
+### Modüller ve Pluginler
 
-- [[Temporary modules directory|Modules]]
+- [[Geçici modül dizini|Modules]]
 
