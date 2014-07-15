@@ -19,7 +19,7 @@
 
 ### Gelişmiş konular
 
-- [[Veri stream'lerini reaktif olarak işlemek | Iteratees]]
+- [[Veri akımlarını reaktif olarak işlemek | Iteratees]]
 - [[HTTP API | HttpApi]]
 - [[HTTP Filtreleri | ScalaHttpFilters]]
 - [[Dependency Injection | ScalaDependencyInjection]]
