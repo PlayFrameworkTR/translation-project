@@ -1,11 +1,11 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# The Play cache API
+# Play Cache API
 
-The default implementation of the Cache API uses [EHCache](http://ehcache.org/). You can also provide your own implementation via a plug-in.
+Cache API'nin varsayılan gerçeklemesi [EHCache](http://ehcache.org/) kullanır. Bir plugin aracılığıyla siz de kendi gerçeklemenizi sağlayabilirsiniz.
 
-## Importing the Cache API
+## Cache API'yi uygulamaya dahil etmek
 
-Add `cache` into your dependencies list. For example, in `build.sbt`:
+Bağımlılık listenize `cache` ekleyin. Örneğin, `build.sbt` içinde:
 
 ```scala
 libraryDependencies ++= Seq(
@@ -14,56 +14,52 @@ libraryDependencies ++= Seq(
 )
 ```
 
-## Accessing the Cache API
+## Cache API'ye erişmek
 
-The cache API is provided by the `play.api.cache.Cache` object. It requires a registered cache plug-in.
+Cache API `play.api.cache.Cache` nesnesi tarafından sağlanır. Bu nesne kayıtlı bir önbellek pluginine ihtiyaç duyar.
 
-> **Note:** The API is intentionally minimal to allow several implementation to be plugged. If you need a more specific API, use the one provided by your Cache plugin.
+> **Not:** Bu API çeşitli gerçeklemelerin kullanılabilmesi için özellikle küçük tutulmuştur. Daha özel bir API gereksinimi olması durumunda kendi Cache plugininiz tarafından sağlananı kullanabilirsiniz.
 
-Using this simple API you can either store data in cache:
+Bu basit API'yi kullanarak önbellekte veri saklayabilirsiniz:
 
 @[set-value](code/ScalaCache.scala)
 
-
-And then retrieve it later:
+Ve bu veriyi daha sonra okuyabilirsiniz:
 
 @[get-value](code/ScalaCache.scala)
 
-There is also a convenient helper to retrieve from cache or set the value in cache if it was missing:
+Ayrıca veri varsa okumak ya da yoksa değerini önbellekte setlemek için bir de yardımcı vardır:
 
 @[retrieve-missing](code/ScalaCache.scala)
 
-
-To remove an item from the cache use the `remove` method:
+Bir veriyi önbellekten silmek için `remove` metodunu kullanabilirsiniz:
 
 @[remove-value](code/ScalaCache.scala)
 
+## HTTP yanıtlarını önbelleğe almak
 
-## Caching HTTP responses
+Standart Action birleştirmeyi kullanarak akıllı önbellekli action'lar yaratabilirsiniz.
 
-You can easily create smart cached actions using standard Action composition. 
+> **Not:** Play HTTP `Result` nesneleri önbelleğe almak ve daha sonra tekrar kullanmak için uygundurlar.
 
-> **Note:** Play HTTP `Result` instances are safe to cache and reuse later.
-
-Play provides a default built-in helper for standard cases:
+Play standart kullanımlar için dahili bir yardımcı sağlar:
 
 @[cached-action](code/ScalaCache.scala)
 
-
-Or even:
+Ve hatta:
 
 @[composition-cached-action](code/ScalaCache.scala)
 
-### Control caching
+### Önbellek kontrolü
 
-You can easily control what you want to cache or what you want to exclude from the cache.
+Neyi önbelleğe alacağınızı ya da neyi önbellekten hariç tutacağınızı kolayca belirleyebilirsiniz.
 
-You may want to only cache 200 Ok results.
+Yalnızca 200 Ok yanıtlarını önbelleğe almak isteyebilirsiniz.
 
 @[cached-action-control](code/ScalaCache.scala)
 
-Or cache 404 Not Found only for a couple of minutes
+Ya da 404 Not Found yanıtlarını yalnızca birkaç dakika için önbelleğe almak isteyebilirsiniz.
 
 @[cached-action-control-404](code/ScalaCache.scala)
 
-> **Next:** [[Calling web services | ScalaWS]]
+> **Sonraki:** [[Web servisleri çağırmak | ScalaWS]]
