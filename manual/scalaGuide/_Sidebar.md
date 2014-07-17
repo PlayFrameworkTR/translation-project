@@ -7,7 +7,7 @@
 - [[HTTP form gönderimi ve doğrulama | ScalaForms]]
 - [[JSON ile çalışmak | ScalaJson]]
 - [[XML ile çalışmak | ScalaXmlRequests]]
-- [[Dosya yükleme | ScalaFileUpload]]
+- [[Dosya yüklemek | ScalaFileUpload]]
 - [[Bir SQL veritabanına erişmek | ScalaDatabase]]
 - [[Önbelleği kullanmak | ScalaCache]]
 - [[Web servisleri çağırmak | ScalaWS]]
