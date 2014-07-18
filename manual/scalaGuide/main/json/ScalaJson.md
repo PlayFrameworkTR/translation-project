@@ -1,9 +1,9 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# JSON basics
+# JSON temelleri
 
-Modern web applications often need to parse and generate data in the JSON (JavaScript Object Notation) format. Play supports this via its [JSON library](api/scala/index.html#play.api.libs.json.package).
+Modern web uygulamaları sıklıkla JSON (JavaScript Object Notation) formatı içinde veriyi ayrıştırmaya ve oluşturmaya ihtiyaç duyar. Play JSON [JSON kütüphanesi](api/scala/index.html#play.api.libs.json.package) ile bunu destekler.
 
-JSON is a lightweight data-interchange format and looks like this:
+JSON hafif bir veri takas formatıdır ve aşağıdaki gibi görünür:
 
 ```json
 {
@@ -24,15 +24,15 @@ JSON is a lightweight data-interchange format and looks like this:
 }
 ```
 
-> To learn more about JSON, see [json.org](http://json.org/).
+> JSON hakkında daha fazla bilgi almak [json.org](http://json.org/) adresine bakabilirsiniz.
 
-## The Play JSON library
-The [`play.api.libs.json`](api/scala/index.html#play.api.libs.json.package) package contains data structures for representing JSON data
-and utilities for converting between these data structures and other data representations. Types of interest are:
+## Play JSON Kütüphanesi
+[`play.api.libs.json`](api/scala/index.html#play.api.libs.json.package) JSON verisi sunmak için gereken veri yapılarını ve bu veri yapıları ile 
+diğer veri sunuş biçimleri arasında çevrim yapmak için gerekli olaran araçları içerir. İlgili tipler:
 
 ### [`JsValue`](api/scala/index.html#play.api.libs.json.JsValue)
 
-This is a trait representing any JSON value. The JSON library has a case class extending `JsValue` to represent each valid JSON type:
+Herhangi bir JSON değerini sunmak için var olan bir `trait`'dir. JSON kütüphanesi geçerli JSON tiplerini gösterebilmek için `JsValue`'den türetilmiş bir `case class`'a sahiptir:
 
 - [`JsString`](api/scala/index.html#play.api.libs.json.JsString)
 - [`JsNumber`](api/scala/index.html#play.api.libs.json.JsNumber)
@@ -41,79 +41,79 @@ This is a trait representing any JSON value. The JSON library has a case class e
 - [`JsArray`](api/scala/index.html#play.api.libs.json.JsArray)
 - [`JsNull`](api/scala/index.html#play.api.libs.json.JsNull)
 
-Using the various JSValue types, you can construct a representation of any JSON structure.
+gibi çeşitli `JsValue` tipleri kullanılır, sizde herhangi bir JSON yapısı oluşturabilirsiniz.
 
 ### [`Json`](api/scala/index.html#play.api.libs.json.Json$)
-The Json object provides utilities, primarily for conversion to and from JsValue structures.
+Json objesi gerekli yardımcı bileşenleri sağlar, öncelikli olarak JsValue yapıları arasındaki çevirme işlemleri içindir.
 
 ### [`JsPath`](api/scala/index.html#play.api.libs.json.JsPath)
-Represents a path into a JSValue structure, analogous to XPath for XML. This is used for traversing JsValue structures and in patterns for implicit converters.
+JsValue yapısın içine bir yol sunar, XML için olan XPath'e benzerdir. JsValue yapıları içersinde gezinmek için ve örtük dönüştürücüler için desenler içinde kullanılır.
 
-## Converting to a JsValue
+## Bir JsValue'ye çevirmek
 
-### Using string parsing
+### String ayrıştırma kullanarak
 
 @[convert-from-string](code/ScalaJsonSpec.scala)
 
-### Using class construction
+### Sınıf yapısı kullanarak
 
 @[convert-from-classes](code/ScalaJsonSpec.scala)
 
-`Json.obj` and `Json.arr` can simplify construction a bit. Note that most values don't need to be explicitly wrapped by JsValue classes, the factory methods use implicit conversion (more on this below).
+`Json.obj` and `Json.arr` yapıyı bir parça basitleştirebilir. Şunu unutmayın ki çoğu değer JsValue sınıf ile belirtik olarak sarmalanmaya ihtiyacı yoktur, fabrika metodları örtük dönüşüm kullanır (daha fazlası aşağıda).
 
 @[convert-from-factory](code/ScalaJsonSpec.scala)
 
-### Using Writes converters
-Scala to JsValue conversion is performed by the utility method `Json.toJson[T](T)(implicit writes: Writes[T])`. This functionality depends on a converter of type [`Writes[T]`](api/scala/index.html#play.api.libs.json.Writes) which can convert a `T` to a `JsValue`. 
+### Writes çeviricilerini kullanmak
+Scala'dan JsValue'ye çevirme işlemi `Json.toJson[T](T)(implicit writes: Writes[T])` yardımcı metodu ile gerçekleşir. Bu fonksiyonel bağlılık [`Writes[T]`](api/scala/index.html#play.api.libs.json.Writes) tipi üzerindedir, `T` değeri bir `JsValue` değerine dönüştürülür. 
 
-The Play JSON API provides implicit `Writes` for most basic types, such as `Int`, `Double`, `String`, and `Boolean`. It also supports `Writes` for collections of any type `T` that a `Writes[T]` exists. 
+Play JSON API temel tipler için örtülü olarak `Writes` sağlar. `Int`, `Double`, `String` ve `Boolean` bunların içindedir. Aynı zamanda `Writes`, `Writes[T]` herhangi bir `T` tipi ile var olan herhangi bir tip kolleksiyonunuda destekler.
 
 @[convert-from-simple](code/ScalaJsonSpec.scala)
 
-To convert your own models to JsValues, you must define implicit `Writes` converters and provide them in scope.
+Kendi modellerinizi JsValues'e dönüştürebilirisiniz, örtülü olarak `Writes` çeviricileri tanımlamalı ve kapsamın içinde olmasını sağlamalısınız.
 
 @[sample-model](code/ScalaJsonSpec.scala)
 
 @[convert-from-model](code/ScalaJsonSpec.scala)
 
-Alternatively, you can define your `Writes` using the combinator pattern:
+Alternatif olarak birleştiren desenle kendiniz `Writes` tanımlayabilirsiniz.
 
-> Note: The combinator pattern is covered in detail in [[JSON Reads/Writes/Formats Combinators|ScalaJsonCombinators]].
+> Not: Birleştiren desen konusu [[JSON Reads/Writes/Formats Combinators|ScalaJsonCombinators]] detaylı bir şekilde anlatılmıştır.
 
 @[convert-from-model-prefwrites](code/ScalaJsonSpec.scala)
 
-## Traversing a JsValue structure
+## Bir JsValue yapısında gezinme
 
-You can traverse a `JsValue` structure and extract specific values. The syntax and functionality is similar to Scala XML processing.
+Bir `JsValue` yapısında gezinebilir ve belirli değerleri alabilirsiniz. Sintaks ve fonksiyonellik olarak Scala XML işlemeye benzerdir.
 
-> Note: The following examples are applied to the JsValue structure created in previous examples.
+> Not: Aşağıdaki örnekler bir önceki örnekte oluşturulan JsValue yapısına uygulanmıştır.
 
-### Simple path `\`
-Applying the `\` operator to a `JsValue` will return the property corresponding to the field argument, supposing this is a JsObject. 
+### Basit yol `\` 
+Bir `JsValue`'ye `\` operatörünü uygulamak bunun bir JsObject olduğunu farz edersek alan argümanına eş olan özelliği döndürecektir.
 
 @[traverse-simple-path](code/ScalaJsonSpec.scala)
 
-### Recursive path `\\`
-Applying the `\\` operator will do a lookup for the field in the current object and all descendants.
+### Rekürsif yol `\\`
+`\\` operatörünü uygulamak mevcut objede ve aynı soydan olanlarda alan için bir arama yapacaktır.
 
 @[traverse-recursive-path](code/ScalaJsonSpec.scala)
 
-### Index lookup (for JsArrays)
-You can retrieve a value in a `JsArray` using an apply operator with the index number.
+### İndeks bakınma (JsArray'lar için)
+apply operatörü ile indeks numarası kullanarak Bir `JsArray` içindeki değere ulaşabilirisiniz.
 
 @[traverse-array-index](code/ScalaJsonSpec.scala)
 
-## Converting from a JsValue
+## Bir JsValue'den çevirmek
 
-### Using String utilities
-Minified:
+### String yardımcıları kullanarak
+Küçültülmüş:
 
 @[convert-to-string](code/ScalaJsonSpec.scala)
 
 ```
 {"name":"Watership Down","location":{"lat":51.235685,"long":-1.309197},"residents":[{"name":"Fiver","age":4,"role":null},{"name":"Bigwig","age":6,"role":"Owsla"}]}
 ```
-Readable:
+Okunabilir:
 
 @[convert-to-string-pretty](code/ScalaJsonSpec.scala)
 
@@ -136,36 +136,36 @@ Readable:
 }
 ```
 
-### Using JsValue.as/asOpt
+### JsValue.as/asOpt kullanmak
 
-The simplest way to convert a `JsValue` to another type is using `JsValue.as[T](implicit fjs: Reads[T]): T`. This requires an implicit converter of type [`Reads[T]`](api/scala/index.html#play.api.libs.json.Reads) to convert a `JsValue` to `T` (the inverse of `Writes[T]`). As with `Writes`, the JSON API provides `Reads` for basic types.
+Bir `JsValue`'yi başka tipe çevirmenin en kolay yolu `JsValue.as[T](implicit fjs: Reads[T]): T` kullanmaktır. Bir `JsValue`'yi `T` tipine çevirmek için (`Writes[T]`'nin tersi) [`Reads[T]`](api/scala/index.html#play.api.libs.json.Reads) tipinde bir örtülü çevirici olması zorunludur. `Writes` ile JSON API temel tipler için `Reads` sağlar.
 
 @[convert-to-type-as](code/ScalaJsonSpec.scala)
 
-The `as` method will throw a `JsResultException` if the path is not found or the conversion is not possible. A safer method is `JsValue.asOpt[T](implicit fjs: Reads[T]): Option[T]`.
+Eğer yol bulunamazsa yada çevirme imkansızsa, `as` metodu bir `JsResultException` fırlatacaktır. `JsValue.asOpt[T](implicit fjs: Reads[T]): Option[T]` güvenli bir metoddur.
 
 @[convert-to-type-as-opt](code/ScalaJsonSpec.scala)
 
-Although the `asOpt` method is safer, any error information is lost.
+Buna rağman `asOpt` metodu daha güvenlidir, herhangi bir hata bilgisi kaybolmaz.
 
-### Using validation
-The preferred way to convert from a `JsValue` to another type is by using its `validate` method (which takes an argument of type `Reads`). This performs both validation and conversion, returning a type of [`JsResult`](api/scala/index.html#play.api.libs.json.JsResult). `JsResult` is implemented by two classes:
+### Doğrulama Kullanmak
+Bir `JsValue`'den başka bir tipe dönüştürmek için tercih edilen yol `validate` metodunun kullanılmasıdır (`Reads` tipinde bir argüman alır). Bu hem doğrulama hem de çevirme işlemini sağlar, [`JsResult`](api/scala/index.html#play.api.libs.json.JsResult) tipinde bir sonuç döndürür. `JsResult` iki sınıf tarafından uygulanmıştır:
 
-- [`JsSuccess`](api/scala/index.html#play.api.libs.json.JsSuccess) - Represents a successful validation/conversion and wraps the result.
-- [`JsError`](api/scala/index.html#play.api.libs.json.JsError) - Represents unsuccessful validation/conversion and contains a list of validation errors.
+- [`JsSuccess`](api/scala/index.html#play.api.libs.json.JsSuccess) - Başarılı doğrulama/çevirme sunar ve sonucu sarmalar.
+- [`JsError`](api/scala/index.html#play.api.libs.json.JsError) - Başarısız doğrulama/çevirme sunar ve doğrulama hatalarının bir listesini içerir.
 
-You can apply various patterns for handling a validation result:
+Doğrulama sonucunu işlemek için çeşitli desenler uygulayabilirsiniz:
 
 @[convert-to-type-validate](code/ScalaJsonSpec.scala)
 
-### JsValue to a model
+### JsValue'den bir modele
 
-To convert from JsValue to a model, you must define implicit `Reads[T]` where `T` is the type of your model.
+JsValue'den bir modele çevirmek için, örtülü bir `Reads[T]` tanımlamalısınız. `T` sizin modelinizin tipini gösterir.
 
-> Note: The pattern used to implement `Reads` and custom validation are covered in detail in [[JSON Reads/Writes/Formats Combinators|ScalaJsonCombinators]].
+> Not: Desen `Reads`'i uygulaman için kullanılır, özelliştirilmiş doğrulama [[JSON Reads/Writes/Formats Combinators|ScalaJsonCombinators]] konusunda anlatılmıştır.
 
 @[sample-model](code/ScalaJsonSpec.scala)
 
 @[convert-to-model](code/ScalaJsonSpec.scala)
 
-> **Next:** [[JSON with HTTP|ScalaJsonHttp]]
+> **Sonraki:** [[HTTP ile JSON|ScalaJsonHttp]]
