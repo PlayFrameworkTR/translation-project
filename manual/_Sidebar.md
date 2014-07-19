@@ -2,7 +2,7 @@
 ### Başlarken
 
 - [[Play kurulumu|Installing]]
-- [[Yeni bir Play uygulaması oluşturmak|NewApplication]]
+- [[Yeni bir uygulama oluşturmak|NewApplication]]
 - [[Bir Play uygulamasının anatomisi|Anatomy]]
 - [[Play konsolunu kullanmak|PlayConsole]]
 - [[Tercih ettiğiniz IDE'yi yapılandırmak|IDE]]

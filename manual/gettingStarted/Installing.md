@@ -48,4 +48,4 @@ Eğer her şey düzgün şekilde kurulmuş ise basit yardımı görmelisiniz:
 
 Artık bir Play uygulaması oluşturmaya hazırsınız.
 
-> **Sonraki:** [[Yeni bir Play uygulaması oluşturmak | NewApplication]]
+> **Sonraki:** [[Yeni bir uygulama oluşturmak | NewApplication]]

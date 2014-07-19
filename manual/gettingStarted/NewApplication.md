@@ -1,73 +1,74 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Creating a new application
+# Yeni bir uygulama oluşturmak
 
-## Create a new application with the activator command
+## Activator komutu ile yeni bir uygulama oluşturun
 
-The `activator` command can be used to create a new Play application.  Activator allows you to select a template that your new application should be based off.  For vanilla Play projects, the names of these templates are `play-scala` for Scala based Play applications, and `play-java` for Java based Play applications.
 
-> Note that choosing a template for either Scala or Java at this point does not imply that you can’t change language later. For example, you can create a new application using the default Java application template and start adding Scala code whenever you like.
+`activator` komutu yeni bir Play uygulaması oluşturmak için kullanılabilir. Activator, uygulamanızın temel alacağı şablonu seçmenize olanak tanır. Temel Play projeleri için bu şablonların isimleri Scala tabanlı Play uygulamaları için `play-scala` ve Java tabanlı Play uygulamaları için `play-java`'dır.
 
-To create a new vanilla Play Scala application, run:
+> Bu noktada şablon olarak Scala ya da Java seçmenizin daha sonra bunu değiştiremeyeceğiniz anlamına gelmediğini unutmayın. Örneğin Java uygulama şablonunu kullanarak bir uygulama oluşturabilir ve istediğiniz zaman Scala kodu eklemeye başlayabilirsiniz.
+
+Temel bir Play Scala uygulaması oluşturmak için aşağıdaki komutu çalıştırın:
 
 ```bash
 $ activator new my-first-app play-scala
 ```
 
-To create a new vanilla Play Java application, run:
+Temel bir Play Java uygulaması oluşturmak için aşağıdaki komutu çalıştırın:
 
 ```bash
 $ activator new my-first-app play-java
 ```
 
-In either case, you can replace `my-first-app` with whatever name you want your application to use.  Activator will use this as the directory name to create the application in.  You can change this name later if you choose.
+Her iki durumda da `my-first-app`'i uygulama adı olarak kullanmak istediğiniz isim ile değiştirebilirsiniz. Activator bunu uygulamayı yaratacağı dizin adı olarak kullanacaktır. İsterseniz bu adı daha sonra değiştirebilirsiniz.
 
 [[images/activatorNew.png]]
 
-Once the application has been created you can use the `activator` command again to enter the [[Play console|PlayConsole]].
+Uygulama oluşturulduktan sonra `activator` komutunu [[Play konsoluna|PlayConsole]] girmek için kullanabilirsiniz.
 
 ```bash
 $ cd my-first-app
 $ activator
 ```
 
-> If you wish to use other Activator templates, you can do this by running `activator new`.  This will prompt you for an application name, and then give you a chance to browse and select an appropriate template.
+> Diğer Activator şablonlarını kullanmak isterseniz bunu `activator new` komutunu çalıştırarak yapabilirsiniz. Bu komut sizden bir uygulama adı isteyecek ve daha sonra size uygun bir şablon seçme imkanı verecektir.
 
-## Create a new application with the Activator UI
+## Activator UI kullanarak yeni bir uygulama oluşturun
 
-New Play applications can also be created with the Activator UI.  To use the Activator UI, run:
+Yeni Play uygulamaları Activator UI ile de oluşturulabilir. Activator UI kullanmak için aşağıdaki komutu çalıştırın:
 
 ```bash
 $ activator ui
 ```
 
-You can read the documentation for using the Activator UI [here](https://typesafe.com/activator/docs).
+Activator UI dokümantasyonunu [buradan](https://typesafe.com/activator/docs) okuyabilirsiniz.
 
-## Create a new application without Activator
+## Activator kullanmadan yeni bir uygulama oluşturun
 
-It is also possible to create a new Play application without installing Activator, using sbt directly.
+Activator kurmadan, doğrudan sbt kullanarak Play uygulaması oluşturmak da mümkündür.
 
-> First install [sbt](http://www.scala-sbt.org/) if needed.
+> Önce [sbt](http://www.scala-sbt.org/) kurun.
 
-Create a new directory for your new application and configure your sbt build script with two additions.
+Yeni uygulamanız için bir dizin oluşturun ve sbt inşa betiğinize iki ek yapın.
 
-In `project/plugins.sbt`, add:
+`project/plugins.sbt` dosyasına şunları ekleyin:
 
 ```scala
-// The Typesafe repository
+// Typesafe deposu
 resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
 
-// Use the Play sbt plugin for Play projects
+// Play projeleri için Play sbt eklentisini kullan
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "%PLAY_VERSION%")
 ```
 
-Be sure to replace `%PLAY_VERSION%` here by the exact version you want to use. If you want to use a snapshot version, you will have to specify this additional resolver:
+Burada `%PLAY_VERSION%` değerini kullanmak istediğiniz Play sürümü ile değiştirmeyi unutmayın. Bir snapshot sürümü kullanmak isterseniz aşağıdaki depoyu eklemeniz gerekecektir.
 
 ```
 // Typesafe snapshots
 resolvers += "Typesafe Snapshots" at "http://repo.typesafe.com/typesafe/snapshots/"
 ```
 
-In `build.sbt` for Java projects:
+Java projeleri için `build.sbt` dosyasında şunlar olmalıdır:
 
 ```scala
 name := "my-first-app"
@@ -77,7 +78,7 @@ version := "1.0"
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 ```
 
-...or Scala projects:
+ya da Scala projeleri için şunları ekleyin:
 
 ```scala
 name := "my-first-app"
@@ -87,13 +88,13 @@ version := "1.0.0-SNAPSHOT"
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 ```
 
-You can then launch the sbt console in this directory:
+Bu dizin içerisinde artık sbt konsolunu çalıştırabilirsiniz:
 
 ```bash
 $ cd my-first-app
 $ sbt
 ```
 
-sbt will load your project and fetch the dependencies.
+sbt projenizi yükleyecek ve bağımlılıkları indirecektir.
 
-> **Next:** [[Anatomy of a Play application|Anatomy]]
+> **Sonraki:** [[Bir Play uygulamasının anatomisi|Anatomy]]
