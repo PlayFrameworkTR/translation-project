@@ -2,7 +2,7 @@
 ### HTTP programming
 
 - [[Action'lar, Controller'lar and Result'lar | ScalaActions]]
-- [[HTTP yol atama | ScalaRouting]]
+- [[HTTP yönlendirme | ScalaRouting]]
 - [[Yanıtları işlemek | ScalaResults]]
 - [[Session ve Flash kapsamları | ScalaSessionFlash]]
 - [[Gövde ayrıştırıcılar | ScalaBodyParsers]]

@@ -9,7 +9,7 @@ Play uygulama geliştiriciler için Scala API `play.api` paketinde yer almaktad�
 
 1. [[HTTP programlama | ScalaActions]]
     1. [[Action'lar, Controller'lar and Result'lar | ScalaActions]]
-    1. [[HTTP yol atama | ScalaRouting]]
+    1. [[HTTP yönlendirme | ScalaRouting]]
     1. [[Yanıtları işlemek | ScalaResults]]
     1. [[Session ve Flash kapsamları | ScalaSessionFlash]]
     1. [[Gövde ayrıştırıcılar | ScalaBodyParsers]]
@@ -76,7 +76,7 @@ Play uygulama geliştiriciler için Scala API `play.api` paketinde yer almaktad�
 1. [[Dependency Injection | ScalaDependencyInjection]]
     1. [[Controller Injection | ScalaDependencyInjection]]
     1. [[Örnek Projeler | ScalaDependencyInjection]]
-1. [[Tersine yol atama | ScalaJavascriptRouting]]
+1. [[Tersine yönlendirme | ScalaJavascriptRouting]]
     1. [[Javascript yolları | ScalaJavascriptRouting]]
 1. [[Play'i genişletmek | ScalaPlugins]]
     1. [[Plugin Yazmak | ScalaPlugins]]
