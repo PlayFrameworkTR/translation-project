@@ -1,51 +1,51 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Installing Play
+# Play Kurulumu
 
-## Prerequisites
+## Ön koşullar
 
-To run the Play framework, you need [JDK 6 or later](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
+Play framework'ü çalıştırmak için [JDK 6 ya da sonrası](http://www.oracle.com/technetwork/java/javase/downloads/index.html) gereklidir.
 
-> If you are using MacOS, Java is built-in. If you are using Linux, make sure to use either the Sun JDK or OpenJDK (and not gcj, which is the default Java command on many Linux distros). If you are using Windows, just download and install the latest JDK package.
+> Eğer MacOS kullanıyorsanız Java yerleşik olarak gelir. Linux kullanıyorsanız Sun JDK ya da OpenJDK kullandığınızdan (çoğu Linux dağıtımında varsayılan olarak gelen gcj kullanmadığınızdan) emin olun. Windows kullanıyorsanız güncel JDK paketini indirin ve kurun.
 
-Be sure to have the `java` and `javac` commands in the current path (you can check this by typing `java -version` and `javac -version` at the shell prompt).
+`java` ve `javac` komutlarının path'inizde olduğundan emin olun (bunu doğrulamak için `java -version` ve `javac -version` komutlarını kullanabilirsiniz).
 
-## Install Activator
+## Activator kurulumu
 
-Play is distributed through a tool called [Typesafe Activator](http://typesafe.com/activator).  Typesafe Activator provides the build tool (sbt) that Play is built on, and also provides many templates and tutorials to help get you started with writing new applications.
+Play, [Typesafe Activator](http://typesafe.com/activator) adı verilen bir araç ile dağıtılır. Typesafe Activator Play'in üzerine kurulu oldugu inşa aracını (sbt) ve ayrıca yeni uygulamalar yazarken size yardımcı olacak bir çok şablon ve örneği barındırır.
 
-Download the latest [Activator distribution](https://typesafe.com/platform/getstarted) and extract the archive to a location where you have both read **and write** access. (Running `activator` writes some files to directories within the distribution, so don't install to `/opt`, `/usr/local` or anywhere else you’d need special permission to write to.)
+Güncel [Activator dağıtımını](https://typesafe.com/platform/getstarted) indirin ve arşivi hem okuma **hem de yazma** izniniz olan bir yere açın. (`activator` komutu dağıtım içindeki dizinlere bazı dosyalar yazar. Bu nedenle `/opt`, `/usr/local` gibi yazmak için özel izinlere ihtiyacınız olan yerlere kurmayın.)
 
-## Add the activator script to your PATH
+## Activator betiğini PATH'inize ekleyin
 
-For convenience, you should add the Activator installation directory to your system `PATH`. On UNIX systems, this means doing something like:
+Kolaylık olması için Activator kurulum dizinini sistem `PATH`'inize eklemelisiniz. UNIX sistemlerde bunu aşağıdaki şekilde yapabilirsiniz:
 
 ```bash
 export PATH=$PATH:/path/to/activator
 ```
 
-On Windows you’ll need to set it in the global environment variables. This means update the `PATH` in the environment variables and don't use a path with spaces.
+Windows için global çevre değişkenini setlemelisiniz. Çevre değişkenlerinde `PATH` değişkenini güncelleyin ve içinde boşluk olan bir yol kullanmayın.
 
-> If you’re on UNIX, make sure that the `activator` script is executable.
+> UNIX üzerinde iseniz `activator` betiğinin çalıştırılabilir olduğundan emin olun.
 >
-> Otherwise do a:
+> Aksi halde şu komutu çalıştırın:
 > ```bash
 > chmod a+x /path/to/activator
 > ```
 
-> If you're behind a proxy make sure to define it with `set HTTP_PROXY=http://<host>:<port>` on Windows or `export  HTTP_PROXY=http://<host>:<port>` on UNIX.
+> Eğer bir vekil sunucu arkasında iseniz Windows üzerinde `set HTTP_PROXY=http://<host>:<port>` komutu ile ya da UNIX üzerinde `export HTTP_PROXY=http://<host>:<port>` komutu ile tanımlamayı unutmayın.
 
-## Check that the activator command is available
+## Activator komutunun erişilebilir olduğunu doğrulayın
 
-From a shell, launch the `activator -help` command.
+Bir kabuk üzerinden `activator -help` komutunu çalıştırın.
 
 ```bash
 $ activator -help
 ```
 
-If everything is properly installed, you should see the basic help:
+Eğer her şey düzgün şekilde kurulmuş ise basit yardımı görmelisiniz:
 
 [[images/activator.png]]
 
-You are now ready to create a new Play application.
+Artık bir Play uygulaması oluşturmaya hazırsınız.
 
-> **Next:** [[Creating a new application | NewApplication]]
+> **Sonraki:** [[Yeni bir Play uygulaması oluşturmak | NewApplication]]
