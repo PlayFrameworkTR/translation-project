@@ -1,141 +1,141 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# HTTP routing
+# HTTP yönlendirme
 
-## The built-in HTTP router
+## Yerleşik HTTP router
 
-The router is the component in charge of translating each incoming HTTP request to an Action.
+Router gelen her HTTP isteğini bir Action'a dönüştüren bileşendir.
 
-An HTTP request is seen as an event by the MVC framework. This event contains two major pieces of information:
+Bir HTTP isteği MVC çatısı tarafından bir olay olarak görülür. Bu olay iki önemli bilgi parçası içerir:
 
-- the request path (e.g. `/clients/1542`, `/photos/list`), including the query string
-- the HTTP method (e.g. GET, POST, …).
+- query string de dahil olmak üzere istek yolu (örneğin `/clients/1542`, `/photos/list`)
+- HTTP metodu (GET, POST, vb.)
 
-Routes are defined in the `conf/routes` file, which is compiled. This means that you’ll see route errors directly in your browser:
+Yönlendirmeler `conf/routes` dosyasında tanımlanmıştır. Bu dosya da derlenen bir dosyadır. Bu nedenle yönlendirme hatalarını doğrudan tarayıcınızda görürsünüz:
 
 [[images/routesError.png]]
 
-## The routes file syntax
+## routes dosyası sözdizimi
 
-`conf/routes` is the configuration file used by the router. This file lists all of the routes needed by the application. Each route consists of an HTTP method and URI pattern, both associated with a call to an `Action` generator.
+`conf/routes` router tarafından kullanılan ayar dosyasıdır. Bu dosya uygulama tarafından ihtiyaç duyulan bütün yönlendirmeleri listeler. Her yönlendirme bir HTTP metodu ve URI deseninden oluşur ve bir `Action` üretici ile ilişkilidir.
 
-Let’s see what a route definition looks like:
+Bir yönlendirme tanımının neye benzediğine bir bakalım:
 
 @[clients-show](code/scalaguide.http.routing.routes)
 
-Each route starts with the HTTP method, followed by the URI pattern. The last element is the call definition.
+Her yönlendirme bir HTTP metodu ile başlar ve URI deseni ile devam eder. Son eleman ise action çağrısı tanımıdır.
 
-You can also add comments to the route file, with the `#` character.
+routes dosyasına `#` karakteri ile yorum satırları ekleyebilirsiniz.
 
 @[clients-show-comment](code/scalaguide.http.routing.routes)
 
-## The HTTP method
+## HTTP metodu
 
-The HTTP method can be any of the valid methods supported by HTTP (`GET`, `POST`, `PUT`, `DELETE`, `HEAD`).
+HTTP metodu HTTP tarafından desteklenen metodlardan herhangi biri olabilir (`GET`, `POST`, `PUT`, `DELETE`, `HEAD`).
 
-## The URI pattern
+## URI deseni
 
-The URI pattern defines the route’s request path. Parts of the request path can be dynamic.
+URI deseni yönlendirmenin istek yolunu tanımlar. İstek yolunun belli kısımları değişken olabilir.
 
-### Static path
+### Sabit yol
 
-For example, to exactly match incoming `GET /clients/all` requests, you can define this route:
+Örneğin gelen `GET /clients/all` isteğini yakalamak için aşağıdaki yönlendirmeyi tanımlayabilirsiniz:
 
 @[static-path](code/scalaguide.http.routing.routes)
 
-### Dynamic parts
+### Değişken kısımlar
 
-If you want to define a route that retrieves a client by ID, you’ll need to add a dynamic part:
+Eğer bir kaynağı ID ile getiren bir yönlendirme tanımlamak isterseniz değişken bir kısım eklemeniz gerekir:
 
 @[clients-show](code/scalaguide.http.routing.routes)
 
-> Note that a URI pattern may have more than one dynamic part.
+> URI deseninin birden fazla değişken kısmı olabileceğini unutmayın.
 
-The default matching strategy for a dynamic part is defined by the regular expression `[^/]+`, meaning that any dynamic part defined as `:id` will match exactly one URI part.
+Bir değişken kısım için varsayılan kısım eşleme stratejisi şu düzenli ifade ile tanımlanır: `[^/]+`. Bu, `:id` şeklinde tanımlanan bir değişken kısmın yalnız bir URI kısmına eşleneceği anlamına gelir.
 
-### Dynamic parts spanning several /
+### Birden fazla / içeren değişken kısımlar
 
-If you want a dynamic part to capture more than one URI path segment, separated by forward slashes, you can define a dynamic part using the `*id` syntax, which uses the `.+` regular expression:
+Eğer bir değişken kısmın `/` ile ayrılan birden fazla URI yol kısmını yakalamasını isterseniz, `.+` düzenli ifadesini kullanan `*id` sözdizimini kullanarak bir değişken kısım tanımlayabilirsiniz:
 
 @[spanning-path](code/scalaguide.http.routing.routes)
 
-Here for a request like `GET /files/images/logo.png`, the `name` dynamic part will capture the `images/logo.png` value.
+Burada `GET /files/images/logo.png` gibi bir istek için değişken kısım `images/logo.png` değerini yakalayacaktır.
 
-### Dynamic parts with custom regular expressions
+### Özel düzenli ifadeler ile değişken kısımlar
 
-You can also define your own regular expression for the dynamic part, using the `$id<regex>` syntax:
+Değişken kısım için `$id<regex>` sözdizimini kullanarak kendi düzenli ifadenizi de tanımlayabilirsiniz:
 
 @[regex-path](code/scalaguide.http.routing.routes)
 
-## Call to the Action generator method
+## Action üretici metodu çağırma
 
-The last part of a route definition is the call. This part must define a valid call to a method returning a `play.api.mvc.Action` value, which will typically be a controller action method.
+Yönlendirme tanımının son kısmı çağrı kısmıdır. Bu kısım bir `play.api.mvc.Action` değeri döndüren bir metoda geçerli bir çağrı tanımlamalıdır. Bu tanım doğal olarak bir controller action metodu olacaktır.
 
-If the method does not define any parameters, just give the fully-qualified method name:
+Eğer metot hiçbir parametre tanımlamıyorsa yalnızca tam metot adını vermeniz yeterlidir:
 
 @[home-page](code/scalaguide.http.routing.routes)
 
-If the action method defines some parameters, all these parameter values will be searched for in the request URI, either extracted from the URI path itself, or from the query string.
+Eğer action metodu bazı parametreler tanımlıyorsa tüm bu parametreler istek URI içerisinde aranacak ve doğrudan URI yolundan ya da query string'inden elde edilecektir.
 
 @[page](code/scalaguide.http.routing.routes)
 
-Or:
+Ya da:
 
 @[page](code/scalaguide.http.routing.query.routes)
 
-Here is the corresponding, `show` method definition in the `controllers.Application` controller:
+Aşağıda buna karşılık gelen `controllers.Application` controller'ındaki `show` metot tanımı bulunuyor.
 
 @[show-page-action](code/ScalaRouting.scala)
 
-### Parameter types
+### Parametre türleri
 
-For parameters of type `String`, typing the parameter is optional. If you want Play to transform the incoming parameter into a specific Scala type, you can explicitly type the parameter:
+`String` türündeki parametreler için parametre türünü yazmaya gerek yoktur. Eğer Play'in gelen parametreyi belirli bir Scala türüne dönüştürmesini istiyorsanız bir tür belirtebilirsiniz:
 
 @[clients-show](code/scalaguide.http.routing.routes)
 
-And do the same on the corresponding `show` method definition in the `controllers.Clients` controller:
+Ve aynısını karşılık gelen `controllers.Clients` controller'ındaki `show` metodu için de yapmalısınız:
 
 @[show-client-action](code/ScalaRouting.scala)
 
-### Parameters with fixed values
+### Sabit değerli parametreler
 
-Sometimes you’ll want to use a fixed value for a parameter:
+Bazen bir parametre için sabit bir değer belirtmek isteyebilirsiniz:
 
 @[page](code/scalaguide.http.routing.fixed.routes)
 
-### Parameters with default values
+### Varsayılan değerli parametreler
 
-You can also provide a default value that will be used if no value is found in the incoming request:
+Ayrıca gelen istekte bir değer bulunamadığında kullanılacak varsayılan bir değer belirtebilirsiniz:
 
 @[clients](code/scalaguide.http.routing.defaultvalue.routes)
 
-### Optional parameters
+### Seçimli parametreler
 
-You can also specify an optional parameter that does not need to be present in all requests:
+Tüm isteklerde bulunması zorunlu olmayan seçimli bir parametre de tanımlayabilirsiniz:
 
 @[optional](code/scalaguide.http.routing.routes)
 
-## Routing priority
+## Yönlendirme önceliği
 
-Many routes can match the same request. If there is a conflict, the first route (in declaration order) is used.
+Farklı yönledirmeler aynı istekle eşleşebilir. Eğer bir çakışma varsa ilk yönlendirme (tanım sırasına göre) kullanılır.
 
-## Reverse routing
+## Tersine yönlendirme
 
-The router can also be used to generate a URL from within a Scala call. This makes it possible to centralize all your URI patterns in a single configuration file, so you can be more confident when refactoring your application.
+Router ayrıca bir Scala çağrısından bir URL oluşturmak için de kullanılabilir. Bu yöntem tüm URI desenlerinizin ortak bir ayar dosyasında bulunmasını sağlar. Böylece uygulamanızı daha güvenle yeniden düzenleyebilirsiniz.
 
-For each controller used in the routes file, the router will generate a ‘reverse controller’ in the `routes` package, having the same action methods, with the same signature, but returning a `play.api.mvc.Call` instead of a `play.api.mvc.Action`.
+routes dosyasında belirtilen her bir controller için router `routes` paketinde bir ‘reverse controller’ oluşturur. Bu controller da aynı imza ile aynı action metotlarına sahiptir. Fakat bu action metotlar `play.api.mvc.Action` yerine `play.api.mvc.Call` döndürürler.
 
-The `play.api.mvc.Call` defines an HTTP call, and provides both the HTTP method and the URI.
+`play.api.mvc.Call` bir HTTP çağrısı tanımlayarak bir HTTP metodu ile bir URI belirtir.
 
-For example, if you create a controller like:
+Örneğin aşağıdaki gibi bir controller oluşturursanız:
 
 @[reverse-controller](code/ScalaRouting.scala)
 
-And if you map it in the `conf/routes` file:
+Ve `conf/routes` dosyasında şöyle eşlerseniz:
 
 @[route](code/scalaguide.http.routing.reverse.routes)
 
-You can then reverse the URL to the `hello` action method, by using the `controllers.routes.Application` reverse controller:
+`hello` action metoduna giden URL'i `controllers.routes.Application` reverse controller'ı kullanarak elde edebilirsiniz:
 
 @[reverse-router](code/ScalaRouting.scala)
 
-> **Next:** [[Manipulating results | ScalaResults]]
+> **Sonraki:** [[Yanıtları işlemek | ScalaResults]]
