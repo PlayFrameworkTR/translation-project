@@ -1,45 +1,45 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# JSON with HTTP
+# HTTP ile JSON
 
-Play supports HTTP requests and responses with a content type of JSON by using the HTTP API in combination with the JSON library.
+Play, HTTP API'nin JSON kütüphanesi ile birlikte kullanılması ile içerik türü JSON olan HTTP istek ve yanıtlarını destekler.
 
-> See  [[HTTP Programming | ScalaActions]] for details on Controllers, Actions, and routing.
+> Controller'lar, Action'lar ve yönlendirme hakkında ayrıntılı bilgi için [[HTTP Programlama | ScalaActions]] sayfasına bakınız.
 
-We'll demonstrate the necessary concepts by designing a simple RESTful web service to GET a list of entities and accept POSTs to create new entities. The service will use a content type of JSON for all data.
+Gerekli kavramları, varlıkları GET ile almak ve POST ile yaratmak için bir RESTful web servis geliştirerek göstereceğiz. Bu servis tüm veri için içerik türü olarak JSON kullanacak.
 
-Here's the model we'll use for our service:
+Servisimiz için kullanacağımız model aşağıda yer alıyor:
 
 @[model](code/ScalaJsonHttpSpec.scala)
 
-## Serving a list of entities in JSON
+## Bir varlık listesini JSON biçiminde sunmak
 
-We'll start by adding the necessary imports to our controller.
+Controller'ımıza gerekli import'ları ekleyerek başlayalım.
 
 @[controller](code/ScalaJsonHttpSpec.scala)
 
-Before we write our `Action`, we'll need the plumbing for doing conversion from our model to a `JsValue` representation. This is accomplished by defining an implicit `Writes[Place]`.
+`Action`'ı yazmadan evvel modelimizden `JsValue` görünümüne dönüşüm yapacak bir bağlantıya ihtiyacımız var. Bu bağlantıyı örtük bir `Writes[Place]` tanımlayarak sağlıyoruz.
 
 @[serve-json-implicits](code/ScalaJsonHttpSpec.scala)
 
-Next we write our `Action`:
+Sonra `Action`'ı yazıyoruz:
 
 @[serve-json](code/ScalaJsonHttpSpec.scala)
 
-The `Action` retrieves a list of `Place` objects, converts them to a `JsValue` using `Json.toJson` with our implicit `Writes[Place]`, and returns this as the body of the result. Play will recognize the result as JSON and set the appropriate `Content-Type` header and body value for the response.
+`Action` önce bir `Place` listesi elde ediyor, daha sonra bunları örtük `Writes[Place]` aracılığıyla `Json.toJson` kullanarak bir `JsValue`'ya dönüştürüyor ve bu değeri yanıt gövdesi olarak döndürüyor. Play, yanıtı JSON olarak tanıyacak ve yanıt için gerekli `Content-Type` başlığı ile gövde değerini setleyecektir.
 
-The last step is to add a route for our `Action` in `conf/routes`:
+Geriye yalnızca bu `Action` için `conf/routes` dosyasına bir yönlendirme eklemek kalıyor:
 
 ```
 GET   /places               controllers.Application.listPlaces
 ```
 
-We can test the action by making a request with a browser or HTTP tool. This example uses the unix command line tool [cURL](http://curl.haxx.se/).
+Bu action bir tarayıcı ya da HTTP aracı kullanarak test edilebilir. Bizim örneğimiz UNIX komut satırı aracı [cURL](http://curl.haxx.se/) kullanıyor.
 
 ```
 curl --include http://localhost:9000/places
 ```
 
-Response:
+Yanıt:
 
 ```
 HTTP/1.1 200 OK
@@ -49,33 +49,33 @@ Content-Length: 141
 [{"name":"Sandleford","location":{"lat":51.377797,"long":-1.318965}},{"name":"Watership Down","location":{"lat":51.235685,"long":-1.309197}}]
 ```
 
-## Creating a new entity instance in JSON
+## JSON ile yeni bir varlık oluşturmak
 
-For this `Action` we'll need to define an implicit `Reads[Place]` to convert a `JsValue` to our model.
+Bu `Action` için bir `JsValue`'dan bizim modelimize dönüşüm yapacak örtük bir `Reads[Place]` tanımlamamız gerekiyor.
 
 @[handle-json-implicits](code/ScalaJsonHttpSpec.scala)
 
-Next we'll define the `Action`.
+Daha sonra `Action`'ı tanımlıyoruz.
 
 @[handle-json-bodyparser](code/ScalaJsonHttpSpec.scala)
 
-This `Action` is more complicated than our list case. Some things to note:
+Bu `Action` bir öncekinden daha karmaşık. Dikkate alınması gereken bazı noktalar şöyle:
 
-- This `Action` expects a request with a `Content-Type` header of `text/json` or `application/json` and a body containing a JSON representation of the entity to create.
-- It uses a JSON specific `BodyParser` will parse the request and provide `request.body` as a `JsValue`.
-- We used the `validate` method for conversion which will rely on our implicit `Reads[Place]'.
-- To process the validation result, we used a `fold` with error and success flows. This pattern may be familiar as it is also used for form submission.
-- The `Action` also sends JSON responses.
+- Bu `Action`, `Content-Type` başlığı `text/json` ya da `application/json` olan ve gövdesi oluşturulacak varlığın JSON görünümünü içeren bir istek bekliyor.
+- İsteği ayrıştırmak ve `request.body`'yi bir `JsValue` olarak vermek için JSON'a özel bir `BodyParser` kullanıyor.
+- Dönüşüm için örtük `Reads[Place]` kullanan `validate` metodundan faydalanıyoruz.
+- Doğrulama sonucunu işlemek için hata ve başarı durumlarıyla `fold` kullanıyoruz. Bu desen form gönderiminde de kullanıldığından tanıdık gelebilir.
+- `Action` aynı zamanda JSON yanıtları gönderiyor.
 
-Finally we'll add a route binding in `conf/routes`:
+Son olarak `conf/routes` dosyasına bir yönlendirme ekliyoruz:
 
 ```
 POST  /places               controllers.Application.savePlace
 ```
 
-We'll test this action with valid and invalid requests to verify our success and error flows.
+Bu action'ı geçerli ve geçersiz isteklerle test ederek başarı ve hata durumlarımızı doğrulayacağız.
 
-Testing the action with a valid data:
+Geçerli veri ile test:
 
 ```
 curl --include
@@ -85,7 +85,7 @@ curl --include
   http://localhost:9000/places
 ```
 
-Response:
+Yanıt:
 
 ```
 HTTP/1.1 200 OK
@@ -95,7 +95,7 @@ Content-Length: 57
 {"status":"OK","message":"Place 'Nuthanger Farm' saved."}
 ```
 
-Testing the action with a invalid data, missing "name" field:
+"name" alanı olmayan geçersiz veri ile test:
 
 ```
 curl --include
@@ -104,7 +104,7 @@ curl --include
   --data '{"location":{"lat" : 51.244031,"long" : -1.263224}}'
   http://localhost:9000/places
 ```
-Response:
+Yanıt:
 
 ```
 HTTP/1.1 400 Bad Request
@@ -113,7 +113,7 @@ Content-Length: 79
 
 {"status":"KO","message":{"obj.name":[{"msg":"error.path.missing","args":[]}]}}
 ```
-Testing the action with a invalid data, wrong data type for "lat":
+"lat" için hatalı veri türüne sahip geçersiz veri ile test:
 
 ```
 curl --include
@@ -122,7 +122,7 @@ curl --include
   --data '{"name":"Nuthanger Farm","location":{"lat" : "xxx","long" : -1.263224}}'
   http://localhost:9000/places
 ```
-Response:
+Yanıt:
 
 ```
 HTTP/1.1 400 Bad Request
@@ -132,7 +132,7 @@ Content-Length: 92
 {"status":"KO","message":{"obj.location.lat":[{"msg":"error.expected.jsnumber","args":[]}]}}
 ```
 
-## Summary
-Play is designed to support REST with JSON and developing these services should hopefully be straightforward. The bulk of the work is in writing `Reads` and `Writes` for your model, which is covered in detail in the next section.
+## Özet
+Play, JSON ile REST geliştirmeyi desteklemek üzere tasarlanmıştır. Dolayısıyla bu servisleri geliştirmenin basit olduğunu umuyoruz. İşin çoğu bir sonraki bölümde ayrıntılı olarak açıklanan modeliniz için `Reads` ve `Writes` yazmaktan ibaret.
 
-> **Next:** [[JSON Reads/Writes/Formats Combinators | ScalaJsonCombinators]]
+> **Sonraki:** [[JSON Reads/Writes/Formats Combinator'lar | ScalaJsonCombinators]]
