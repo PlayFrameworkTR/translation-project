@@ -20,7 +20,7 @@ Güncel [Activator dağıtımını](https://typesafe.com/platform/getstarted) in
 Kolaylık olması için Activator kurulum dizinini sistem `PATH`'inize eklemelisiniz. UNIX sistemlerde bunu aşağıdaki şekilde yapabilirsiniz:
 
 ```bash
-export PATH=$PATH:/path/to/activator
+export PATH=/path/to/activator:$PATH
 ```
 
 Windows için global çevre değişkenini setlemelisiniz. Çevre değişkenlerinde `PATH` değişkenini güncelleyin ve içinde boşluk olan bir yol kullanmayın.
