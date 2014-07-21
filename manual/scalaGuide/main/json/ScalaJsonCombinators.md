@@ -1,9 +1,9 @@
 <!--- Copyright (C) 2009-2014 Typesafe Inc. <http://www.typesafe.com> -->
-# JSON Reads/Writes/Format Combinators
+# JSON Reads/Writes/Format Combinator'lar
 
-[[JSON basics|ScalaJson]] introduced [`Reads`](api/scala/index.html#play.api.libs.json.Reads) and [`Writes`](api/scala/index.html#play.api.libs.json.Writes) converters which are used to convert between [`JsValue`](api/scala/index.html#play.api.libs.json.JsValue) structures and other data types. This page covers in greater detail how to build these converters and how to use validation during conversion.
+[[JSON temelleri|ScalaJson]] sayfasında [`JsValue`](api/scala/index.html#play.api.libs.json.JsValue) yapıları ile diğer veri türleri arasında dönüşüm yapmak için kulanılan [`Reads`](api/scala/index.html#play.api.libs.json.Reads) ve [`Writes`](api/scala/index.html#play.api.libs.json.Writes) dönüştürücüleri tanıtmıştık. Bu sayfada ise bu dönüştürücülerin nasıl oluşturulacağını ve dönüşüm esnasında nasıl doğrulama yapılacağını çok daha ayrıntılı anlatacağız.
 
-The examples on this page will use this `JsValue` structure and corresponding model:
+Bu sayfadaki örnekler aşağıdaki `JsValue` yapısını ve ona karşılık gelen modeli kullanacak:
 
 @[sample-json](code/ScalaJsonCombinatorsSpec.scala)
 
@@ -11,107 +11,107 @@ The examples on this page will use this `JsValue` structure and corresponding mo
 
 ## JsPath
 
-[`JsPath`](api/scala/index.html#play.api.libs.json.JsPath) is a core building block for creating `Reads`/`Writes`. `JsPath` represents the location of data in a `JsValue` structure. You can use the `JsPath` object (root path) to define a `JsPath` child instance by using syntax similar to traversing `JsValue`:
+[`JsPath`](api/scala/index.html#play.api.libs.json.JsPath), `Reads`/`Writes` oluşturmak için temel yapı taşıdır. `JsPath` verinin bir `JsValue` yapısı içindeki konumunu ifade eder. `JsPath` nesnesini (kök yol) kullanarak `JsValue` içinde gezinme sözdizimine benzer şekilde bir çocuk `JsPath` örneği tanımlayabilirsiniz:
 
 @[jspath-define](code/ScalaJsonCombinatorsSpec.scala)
 
-The [`play.api.libs.json`](api/scala/index.html#play.api.libs.json.package) package defines an alias for `JsPath`: `__` (double underscore). You can use this if you prefer:
+[`play.api.libs.json`](api/scala/index.html#play.api.libs.json.package) paketi `JsPath` için bir öteki ad tanımlar: `__` (çift altçizgi). Eğer isterseniz bunu şu şekilde kullanabilirsiniz:
 
 @[jspath-define-alias](code/ScalaJsonCombinatorsSpec.scala)
 
 ## Reads
-[`Reads`](api/scala/index.html#play.api.libs.json.Reads) converters are used to convert from a `JsValue` to another type. You can combine and nest `Reads` to create more complex `Reads`.
+[`Reads`](api/scala/index.html#play.api.libs.json.Reads) dönüştürücüler bir `JsValue`'dan başka bir türe dönüşüm yapmak için kullanılırlar. Daha karmaşık `Reads` oluşturmak için birden fazla `Reads` bir araya getirebilirsiniz.
 
-You will require these imports to create `Reads`:
+`Reads` oluşturabilmek için aşağıdaki import'lara ihtiyacınız olacak:
 
 @[reads-imports](code/ScalaJsonCombinatorsSpec.scala)
 
-### Path Reads
-`JsPath` has methods to create special `Reads` that apply another `Reads` to a `JsValue` at a specified path:
+### Yol Reads
+`JsPath` bir `JsValue`'ya belirtilen yolda başka bir `Reads` uygulayan özel bir `Reads` oluşturmak için metotlara sahiptir:
 
-- `JsPath.read[T](implicit r: Reads[T]): Reads[T]` - Creates a `Reads[T]` that will apply the implicit argument `r` to the `JsValue` at this path.
-- `JsPath.readNullable[T](implicit r: Reads[T]): Reads[Option[T]]readNullable` - Use for paths that may be missing or can contain a null value.
+- `JsPath.read[T](implicit r: Reads[T]): Reads[T]` - `JsValue`'ya belirtilen(bu) yolda örtük argüman `r`'yi uygulayan bir `Reads[T]` yaratır.
+- `JsPath.readNullable[T](implicit r: Reads[T]): Reads[Option[T]]` - Bulunmayan ya da değeri null olan yollar için kullanın.
 
-> Note: The JSON library provides implicit `Reads` for basic types such as String, Int, Double, etc.
+> Not: JSON kütüphanesi String, Int, Double, vb. temel türler için örtük `Reads` sağlar.
 
-Defining an individual path `Reads` looks like this:
+Tek bir yol `Reads` tanımı şöyledir:
 
 @[reads-simple](code/ScalaJsonCombinatorsSpec.scala)
 
-### Complex Reads
-You can combine individual path `Reads` to form more complex `Reads` which can be used to convert to complex models.
+### Karmaşık Reads
+Bağımsız yol `Reads` tanımlarını bir araya getirerek karmaşık modelleri dönüştürmek için daha karmaşık `Reads` oluşturabilirsiniz.
 
-For easier understanding, we'll break down the combine functionality into two statements. First combine `Reads` objects using the `and` combinator:
+Daha anlaşılır olması için birleştirme özelliğini iki parçaya ayıracağız. Önce `Reads` nesnelerini `and` combinator kullanarak birleştirin:
 
 @[reads-complex-builder](code/ScalaJsonCombinatorsSpec.scala)
 
-This will yield a type of `FunctionalBuilder[Reads]#CanBuild2[Double, Double]`. This is an intermediary object and you don't need to worry too much about it, just know that it's used to create a complex `Reads`.
+Bu `FunctionalBuilder[Reads]#CanBuild2[Double, Double]` şeklinde bir tür oluşturacaktır. Bu ara nesne hakkında çok fazla düşünmenize gerek yoktur. Karmaşık `Reads` oluşturmak için kullanıldığını bilmeniz yeterli.
 
-Second call the `apply` method of `CanBuildX` with a function to translate individual values to your model, this will return your complex `Reads`. If you have a case class with a matching constructor signature, you can just use its `apply` method:
+Daha sonra `CanBuildX`'in `apply` metodunu değerleri modelinize dönüştürecek bir fonksiyon ile çağırın. Bu bir karmaşık `Reads` döndürecektir. Eğer bir case class'ınız varsa doğrudan onun `apply` metodunu kullanabilirsiniz.
 
 @[reads-complex-buildertoreads](code/ScalaJsonCombinatorsSpec.scala)
 
-Here's the same code in a single statement:
+Aynı kod aşağıda tek bir ifade olarak verilmiştir:
 
 @[reads-complex-statement](code/ScalaJsonCombinatorsSpec.scala)
 
-### Validation with Reads
+### Reads ile doğrulama
 
-The `JsValue.validate` method was introduced in [[JSON basics|ScalaJson]] as the preferred way to perform validation and conversion from a `JsValue` to another type. Here's the basic pattern:
+[[JSON temelleri|ScalaJson]] sayfasında `JsValue.validate` metodunun bir `JsValue`'dan başka bir türe dönüşüm ve doğrulama için tercih edilen yol olduğundan bahsetmiştik. Temel desen aşağıda yer alıyor:
 
 @[reads-validation-simple](code/ScalaJsonCombinatorsSpec.scala)
 
-Default validation for `Reads` is minimal, such as checking for type conversion errors. You can define custom validation rules by using `Reads` validation helpers. Here are some that are commonly used:
+`Reads` için varsayılan doğrulama tür dönüşüm hataları gibi çok basit doğrulamalardan ibarettir. Fakat `Reads` doğrulama yardımcılarını kullanarak özel doğrulama kuralları tanımlayabilirsiniz. Çok kullanılanlardan bazıları şöyle:
 
-- `Reads.email` - Validates a String has email format.
-- `Reads.minLength(nb)` - Validates the minimum length of a String.
-- `Reads.min` - Validates a minimum numeric value.
-- `Reads.max` - Validates a maximum numeric value.
-- `Reads[A] keepAnd Reads[B] => Reads[A]` - Operator that tries `Reads[A]` and `Reads[B]` but only keeps the result of `Reads[A]` (For those who know Scala parser combinators `keepAnd == <~` ).
-- `Reads[A] andKeep Reads[B] => Reads[B]` - Operator that tries `Reads[A]` and `Reads[B]` but only keeps the result of `Reads[B]` (For those who know Scala parser combinators `andKeep == ~>` ).
-- `Reads[A] or Reads[B] => Reads` - Operator that performs a logical OR and keeps the result of the last Reads checked.
+- `Reads.email` - Bir String'in email biçiminde olduğunu doğrular.
+- `Reads.minLength(nb)` - Bir String'in en az uzunluğunu doğrular.
+- `Reads.min` - Bir sayının en az değerini doğrular.
+- `Reads.max` - Bir sayının en çok değerini doğrular.
+- `Reads[A] keepAnd Reads[B] => Reads[A]` - `Reads[A]` ve `Reads[B]`'yi deneyen fakat yalnızca `Reads[A]`'nın sonucunu saklayan operatör (Scala parser combinator'ları bilenler için `keepAnd == <~` ).
+- `Reads[A] andKeep Reads[B] => Reads[B]` - `Reads[A]` ve `Reads[B]`'yi deneyen fakat yalnızca `Reads[B]`'nın sonucunu saklayan operatör (Scala parser combinator'ları bilenler için `andKeep == ~>` ).
+- `Reads[A] or Reads[B] => Reads` - Mantıksal OR işlemi gerçekleştiren ve başarılı olan son Reads sonucunu saklayan operatör.
 
-To add validation, apply helpers as arguments to the `JsPath.read` method:
+Doğrulama eklemek için yardımcı metotları `JsPath.read` metoduna argümanlar olarak uygulayın:
 
 @[reads-validation-custom](code/ScalaJsonCombinatorsSpec.scala)
 
-### Putting it all together
+### Hepsini bir araya getirelim
 
-By using complex `Reads` and custom validation we can define a set of effective `Reads` for our example model and apply them:
+Karmaşık `Reads` ve özel doğrulama kullanarak örnek modelimiz için etkin bir `Reads` seti tanımlayabilir ve uygulayabiliriz:
 
 @[reads-model](code/ScalaJsonCombinatorsSpec.scala)
 
-Note that complex `Reads` can be nested. In this case, `placeReads` uses the previously defined implicit `locationReads` and `residentReads` at specific paths in the structure.
+Karmaşık `Reads` nesneleri iç içe geçebilir. Bu örnekte `placeReads` belirli yollarda daha önceden tanımlanmış örtük `locationReads` ve `residentReads` tanımlarını kullanır.
 
 ## Writes
-[`Writes`](api/scala/index.html#play.api.libs.json.Writes) converters are used to convert from some type to a `JsValue`.
+[`Writes`](api/scala/index.html#play.api.libs.json.Writes) dönüştürücüler bir türden `JsValue`'ya dönüşüm yapmak için kullanılırlar.
 
-You can build complex `Writes` using `JsPath` and combinators very similar to `Reads`. Here's the `Writes` for our example model:
+`Reads`'e benzer şekilde `JsPath` ve combinator'lar kullanarak karmaşık `Writes` oluşturabilirsiniz. Örneğimiz için `Writes` aşağıdaki gibidir:
 
 @[writes-model](code/ScalaJsonCombinatorsSpec.scala)
 
-There are a few differences between complex `Writes` and `Reads`:
+`Writes` ve `Reads` arasında bazı farklılıklar vardır:
 
-- The individual path `Writes` are created using the `JsPath.write` method.
-- There is no validation on conversion to `JsValue` which makes the structure simpler and you won't need any validation helpers.
-- The intermediary `FunctionalBuilder#CanBuildX` (created by `and` combinators) takes a function that translates a complex type `T` to a tuple matching the individual path `Writes`. Although this is symmetrical to the `Reads` case, the `unapply` method of a case class returns an `Option` of a tuple of properties and must be used with `unlift` to extract the tuple.
+- Bağımsız yol `Writes`'lar `JsPath.write` metodunu kullanarak oluşturulurlar.
+- `JsValue`'ya dönüşüm esnasında bir doğrulama yoktur. Bu yapınızı daha basit tutar ve doğrulama yardımcılarına ihtiyacınız yoktur.
+- Ara tür (`and` combinator'ları tarafından yaratılan) `FunctionalBuilder#CanBuildX` karmaşık `T` tipini alarak her bir `Writes` yoluna karşılık gelen tuple'a dönüştüren bir fonksiyon alır. Bu `Reads` durumuna benzer olsa da bir case class'ın `unapply` metodu `Option` döndüğünden `unlift` ile birlikte kullanılmalıdır.
 
-## Recursive Types
-One special case that our example model doesn't demonstrate is how to handle `Reads` and `Writes` for recursive types. `JsPath` provides `lazyRead` and `lazyWrite` methods that take call-by-name parameters to handle this:
+## Özyinelemeli Türler
+Örneğimizin ele almadığı özel bir durum özyinelemeli türler için `Reads` ve `Writes` kullanımının nasıl olacağıdır. `JsPath` call-by-name parametreler alan `lazyRead` ve `lazyWrite` metodları sunar:
 
 @[reads-writes-recursive](code/ScalaJsonCombinatorsSpec.scala)
 
 ## Format
-[`Format[T]`](api/scala/index.html#play.api.libs.json.Format) is just a mix of the `Reads` and `Writes` traits and can be used for implicit conversion in place of its components.
+[`Format[T]`](api/scala/index.html#play.api.libs.json.Format) yalnızca `Reads` ve `Writes` trait'lerinin karışımıdır ve bileşenlerinin yerine örtük dönüştürme için kullanılabilir.
 
-### Creating Format from Reads and Writes
-You can define a `Format` by constructing it from `Reads` and `Writes` of the same type:
+### Reads ve Writes ile Format yaratmak
+Aynı türün `Reads` ve `Writes`'larını kullanarak bir `Format` tanımlayabilirsiniz:
 
 @[format-components](code/ScalaJsonCombinatorsSpec.scala)
 
-### Creating Format using combinators
-In the case where your `Reads` and `Writes` are symmetrical (which may not be the case in real applications), you can define a `Format` directly from combinators:
+### Combinator'lar kullanarak Format yaratmak
+Eğer `Reads` ve `Writes`'ınız simetrik ise (gerçek uygulamalarda sık rastlanmayabilir) combinator'lar aracılığıyla doğrudan bir `Format` tanımlayabilirsiniz:
 
 @[format-combinators](code/ScalaJsonCombinatorsSpec.scala)
 
-> **Next:** [[JSON Transformers | ScalaJsonTransformers]]
+> **Sonraki:** [[JSON Transformer'lar | ScalaJsonTransformers]]
