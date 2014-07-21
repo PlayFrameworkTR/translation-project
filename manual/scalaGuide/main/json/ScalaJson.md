@@ -84,7 +84,7 @@ Alternatif olarak birleştiren desenle kendiniz `Writes` tanımlayabilirsiniz.
 
 ## Bir JsValue yapısında gezinme
 
-Bir `JsValue` yapısında gezinebilir ve belirli değerleri alabilirsiniz. Sintaks ve fonksiyonellik olarak Scala XML işlemeye benzerdir.
+Bir `JsValue` yapısında gezinebilir ve belirli değerleri alabilirsiniz. Sözdizim ve fonksiyonellik olarak Scala XML işlemeye benzerdir.
 
 > Not: Aşağıdaki örnekler bir önceki örnekte oluşturulan JsValue yapısına uygulanmıştır.
 
