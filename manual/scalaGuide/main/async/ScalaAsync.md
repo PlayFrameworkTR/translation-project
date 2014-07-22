@@ -1,15 +1,15 @@
 <!--- Copyright (C) 2009-2014 Typesafe Inc. <http://www.typesafe.com> -->
-# Handling asynchronous results
+# Asenkron yanıtları işlemek
 
-## Make controllers asynchronous
+## Controller'ları asenkron yapmak
 
-Internally, Play Framework is asynchronous from the bottom up. Play handles every request in an asynchronous, non-blocking way.
+Play Framework aşağıdan yukarıya asenkron olarak geliştirilmiştir. Play her isteği asenkron ve tıkanmasız olarak ele alır.
 
-The default configuration is tuned for asynchronous controllers. In other words, the application code should avoid blocking in controllers, i.e., having the controller code wait for an operation. Common examples of such blocking operations are JDBC calls, streaming API, HTTP requests and long computations.
+Varsayılan yapılandırma asenkron controller'lar için ayarlanmıştır. Başka bir deyişle uygulama kodu controller içinde bir işlemin sonucunu beklemek gibi tıkanmalı işlerden sakınmalıdır. Bu gibi tıkanmalı işlemlere örnek olarak JDBC çağrıları, streaming API, HTTP istekleri ve uzun süren hesaplamalar verilebilir.
 
-Although it's possible to increase the number of threads in the default execution context to allow more concurrent requests to be processed by blocking controllers, following the recommended approach of keeping the controllers asynchronous makes it easier to scale and to keep the system responsive under load.
+Varsayılan execution context içindeki thread sayısını artırarak daha fazla eş zamanlı isteğin tıkanmalı controller'lar tarafından işlenmesini sağlamak mümkün olsa da controller'ları tavsiye edildiği gibi asenkron olarak bırakmak ölçeklemeyi kolaylaştırır ve ağır yük altında sistemin hızlı tepki verebilmesini sağlar.
 
-## Creating non-blocking actions
+## Tıkanmasız action'lar yaratmak
 
 Because of the way Play works, action code must be as fast as possible, i.e., non-blocking. So what should we return as result if we are not yet able to generate it? The response is a *future* result!
 
