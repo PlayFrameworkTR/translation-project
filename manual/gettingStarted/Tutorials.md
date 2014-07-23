@@ -1,15 +1,15 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Play Tutorials
+# Play Örnekleri
 
-Many Activator templates come with comprehensive tutorials that guide you to creating an application using the technologies featured by that template.
+Birçok Activator şablonu, o şablonla öne çıkan teknolojileri kullanarak bir uygulama oluşturmanız için size yol gösterici geniş kapsamlı örnekler ile birlikte gelmektedir.
 
-A full list of templates can be discovered in the Activator UI.
+Şablonların tam listesi Activator arayüzünde bulunabilir.
 
-Additionally, templates are also published on the Typesafe website, a full list of both official and community contributed templates for Play can be found [here](https://typesafe.com/activator/templates#filter:play).
+Ek olarak, şablonlar Typesafe sitesinde de yayınlanmakta olup, hem resmi olarak hem de topluluk katkısıyla oluşturulmuş Play şablonlarının tam listesine [buradan](https://typesafe.com/activator/templates#filter:play) erişilebilir.
 
-The template directory allows you to browse templates, preview the tutorials that come with the templates, and even download self contained template bundles that allow you to get quickly started with a template.
+Şablon dizini size şablonları tarayıp göz atma, şablon ile gelen örnekleri ön izleme yapma ve hatta bir şablon ile birlikte hızlıca başlangıç yapabilmenizi sağlayabilmek için gereken her şeyi içinde bulunduran şablon demetlerini indirebilmenize olanak sağlar.
 
-Some tutorials we recommend:
+Önerdiğimiz bazı örnekler:
 
 * [Reactive Maps (Scala)](https://typesafe.com/activator/template/reactive-maps)
 * [Reactive Maps (Java 8)](https://typesafe.com/activator/template/reactive-maps-java)
@@ -18,7 +18,7 @@ Some tutorials we recommend:
 * [AngularJS Play Mongo (Scala)](https://typesafe.com/activator/template/modern-web-template)
 * [Play Mongo Knockout (Scala)](https://typesafe.com/activator/template/play-mongo-knockout)
 
-> **Next:** 
+> **Sonraki:** 
 >
-> – [[Play for Scala developers | ScalaHome]]
-> – [[Play for Java developers | JavaHome]]
+> – [[Scala geliştiriciler için Play | ScalaHome]]
+> – [[Java geliştiriciler için Play | JavaHome]]
