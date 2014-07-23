@@ -11,48 +11,48 @@ Varsayılan execution context içindeki thread sayısını artırarak daha fazla
 
 ## Tıkanmasız action'lar yaratmak
 
-Because of the way Play works, action code must be as fast as possible, i.e., non-blocking. So what should we return as result if we are not yet able to generate it? The response is a *future* result!
+Play'in çalışma şekli dolayısıyla action kodu mümkün olduğunca hızlı, örnek olarak tıkanmasız olmalıdır. O halde henüz oluşturamıyorsak yanıt olarak ne döneceğiz? Bir *future* yanıt!
 
-A `Future[Result]` will eventually be redeemed with a value of type `Result`. By giving a `Future[Result]` instead of a normal `Result`, we are able to quickly generate the result without blocking. Play will then serve the result as soon as the promise is redeemed.
+Bir `Future[Result]` gelecekte bir zamanda `Result` türünden bir değere sahip olacaktır. Normal bir `Result` yerine bir `Future[Result]` dönerek yanıtı tıkanmasız olarak hızlıca oluşturabiliyoruz. Söz verilen sonuç oluşur oluşmaz Play yanıtı sunacaktır.
 
-The web client will be blocked while waiting for the response, but nothing will be blocked on the server, and server resources can be used to serve other clients.
+Web istemci yanıtı beklerken bloklanacaktır fakat sunucuda hiçbir şey bloklanmayacağından sunucu kaynakları diğer istemcilere hizmet vermek için kullanılabilir.
 
-## How to create a `Future[Result]`
+## `Future[Result]` oluşturmak
 
-To create a `Future[Result]` we need another future first: the future that will give us the actual value we need to compute the result:
+Bir `Future[Result]` oluşturmak için önce yanıtın hesaplanacağı asıl değeri verecek bir başka future'a ihtiyacımız olacak:
 
 @[future-result](code/ScalaAsync.scala)
 
-All of Play’s asynchronous API calls give you a `Future`. This is the case whether you are calling an external web service using the `play.api.libs.WS` API, or using Akka to schedule asynchronous tasks or to communicate with actors using `play.api.libs.Akka`.
+Play'in tüm asenkron API çağrıları geriye bir `Future` döner. Harici bir web servisi `play.api.libs.WS` kullanarak çağırdığınızda, Akka ile asenkron işler zamanladığınızda ya da `play.api.libs.Akka` kullanarak actor'lerle haberleştiğinizde de durum böyledir.
 
-Here is a simple way to execute a block of code asynchronously and to get a `Future`:
+Aşağıda bir kod bloğunu asenkron olarak çalıştırarak bir `Future` elde etmek için basit bir yol alıyor:
 
 @[intensive-computation](code/ScalaAsync.scala)
 
-> **Note:** It's important to understand which thread code runs on with futures. In the two code blocks above, there is an import on Plays default execution context. This is an implicit parameter that gets passed to all methods on the future API that accept callbacks. The execution context will often be equivalent to a thread pool, though not necessarily.
+> **Not:** Future'ların hangi thread kodu üzerinde çalıştığını anlamak önemlidir. İki kod bloğu yukarıda Play'in varsayılan execution context'i import ediliyor. Bu execution context, Future API'de callback kabul eden tüm metotlara örtük parametre olarak gönderilir. Execution context zorunlu olmasa da genel olarak bir thread havuzuna karşılık gelir.
 >
-> You can't magically turn synchronous IO into asynchronous by wrapping it in a `Future`. If you can't change the application's architecture to avoid blocking operations, at some point that operation will have to be executed, and that thread is going to block. So in addition to enclosing the operation in a `Future`, it's necessary to configure it to run in a separate execution context that has been configured with enough threads to deal with the expected concurrency. See [[Understanding Play thread pools|ThreadPools]] for more information.
+> Senkron IO'yu yalnızca bir `Future` ile sarmalayarak sihirli bir şekilde asenkron hale getiremezsiniz. Eğer tıkanmalı işlemlerden sakınmak için uygulamanızın mimarisini değiştiremiyorsanız bu işlemler bir noktada çalışacak ve üzerinde çalıştıkları thread tıkanacaktır. O halde işlemi bir `Future`  ile sarmalamanın yanı sıra beklenen eşzamanlılık ile başa çıkabilecek sayıda thread ile yapılandırılmış ayrı bir execution context içinde çalışacak şekilde ayarlamalısınız. Daha fazla bilgi için [[Play thread havuzlarını anlamak|ThreadPools]] sayfasına bakabilirsiniz.
 >
-> It can also be helpful to use Actors for blocking operations. Actors provide a clean model for handling timeouts and failures, setting up blocking execution contexts, and managing any state that may be associated with the service. Also Actors provide patterns like `ScatterGatherFirstCompletedRouter` to address simultaneous cache and database requests and allow remote execution on a cluster of backend servers. But an Actor may be overkill depending on what you need.
+> Tıkanmalı işlemler için Actor'leri kullanmak faydalı olabilir. Actor'ler zaman aşımını ve hata durumlarını ele almak, tıkanmalı execution context'ler oluşturmak ve servisle ilişkili olabilecek herhangi bir durumu yönetmek için temiz bir model sunar. Ayrıca Actor'ler eş zamanlı önbellek ve veritabanı erişimi sağlamak için `ScatterGatherFirstCompletedRouter` gibi desenler sunmanın yanında bir sunucu kümesinde uzak çalıştırmaya da izin verir. Fakat bir Actor sizin durumunuz için aşırıya kaçabilir.
 
-## Returning futures
+## Future dönmek
 
-While we were using the `Action.apply` builder method to build actions until now, to send an asynchronous result we need to use the `Action.async` builder method:
+Şimdiye dek action oluşturmak için `Action.apply` yapıcı metodunu kullanmamıza benzer şekilde asenkron bir yanıt dönmek için `Action.async` yapıcı metodunu kullanmamız gerekiyor:
 
 @[async-result](code/ScalaAsync.scala)
 
-## Actions are asynchronous by default
+## Action'lar varsayılan olarak asenkrondur
 
-Play [[actions|ScalaActions]] are asynchronous by default. For instance, in the controller code below, the `{ Ok(...) }` part of the code is not the method body of the controller. It is an anonymous function that is being passed to the `Action` object's `apply` method, which creates an object of type `Action`. Internally, the anonymous function that you wrote will be called and its result will be enclosed in a `Future`.
+Play [[action|ScalaActions]]'ları varsayılan olarak asenkrondur. Örneğin aşağıdaki controller kodu içinde `{ Ok(...) }` bölümü controller'ın gövde bölümü değil `Action` nesnesinin `apply` metoduna geçirilen anonim bir fonksiyondur. Bu anonim fonksiyon, türü `Action` olan bir nesne yaratır. İçeride ise, yazmış olduğunuz anonim fonksiyon çağrılarak sonucu bir `Future` içinde saklanacaktır.
 
 @[echo-action](/manual/scalaGuide/main/http/code/ScalaActions.scala)
 
-> **Note:** Both `Action.apply` and `Action.async` create `Action` objects that are handled internally in the same way. There is a single kind of `Action`, which is asynchronous, and not two kinds (a synchronous one and an asynchronous one). The `.async` builder is just a facility to simplify creating actions based on APIs that return a `Future`, which makes it easier to write non-blocking code.
+> **Not:** Hem `Action.apply` hem de `Action.async` içeride aynı şekilde ele alınan `Action` nesneleri oluşturur. Yalnızca tek bir çeşit `Action` vardır ve asenkrondur. Başka bir deyişle biri senkron, diğeri asenkron olan iki farklı `Action` yoktur. `.async` yapıcısı `Future` döndüren API'ler üzerine kurulu action'ların kolayca oluşturulmasını sağlayarak tıkanmasız kod yazmayı kolaylaştırır.
 
-## Handling time-outs
+## Zaman aşımıyla başa çıkmak
 
-It is often useful to handle time-outs properly, to avoid having the web browser block and wait if something goes wrong. You can easily compose a promise with a promise timeout to handle these cases:
+Çoğunlukla zaman aşımlarını düzgünce ele alarak bir şeylerin yanlış gitmesi durumunda web tarayıcının tıkanarak beklemesinin önüne geçmek iyi olur. Bir promise ile promise zaman aşımını birleştirerek bu gibi durumlarla kolayca başa çıkabilirsiniz.
 
 @[timeout](code/ScalaAsync.scala)
 
-> **Next:** [[Streaming HTTP responses | ScalaStream]]
+> **Sonraki:** [[HTTP yanıtlarını stream etmek | ScalaStream]]
