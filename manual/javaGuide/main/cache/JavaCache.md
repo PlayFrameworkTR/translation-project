@@ -1,15 +1,15 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# The Play cache API
+# Play Cache API
 
-Caching data is a typical optimization in modern applications, and so Play provides a global cache. An important point about the cache is that it behaves just like a cache should: the data you just stored may just go missing.
+Modern uygulamalarda veri önbelleme tipik bir optimizasyondur ve bu yüzden Play, evrensel bir önbellekleme sunmaktadır. Önbellekleme hakkında önemli bir nokta, önbelleğin gerektiği gibi davranmasıdır, yani sakladığınız veri kaybolabilir.
 
-For any data stored in the cache, a regeneration strategy needs to be put in place in case the data goes missing. This philosophy is one of the fundamentals behind Play, and is different from Java EE, where the session is expected to retain values throughout its lifetime.
+Önbellekte depolanan tüm veriler için, veri kaybı olması durumunda yenilenme stratejisi eklenmelidir. Bu felsefe Play arkasındaki temel ögelerden biridir, çalışma ömrü boyunca oturum bilgilerini tutması beklenen Java EE'den farklıdır.
 
-The default implementation of the cache API uses [EHCache](http://www.ehcache.org/) and it's can be enabled by adding `cache` in  `libraryDependencies` of your `build.sbt` file . You can also provide your own implementation via a plugin.
+The cache Api'nin varsayılan uygulaması [EHCache](http://www.ehcache.org/) kullanır ve `build.sbt` dosyasında bulunan `libraryDependencies`'e `cache` eklenerek aktif edilebilir. Ayrıca eklenti ile kendi gerçeklemenizi sağlayabilirsiniz.
 
-## Importing the Cache API
+## Cache API'yi Uygulamaya Dahil Etmek
 
-Add `cache` into your dependencies list. For example, in `build.sbt`:
+Bağımlılık listenize `cache` ekleyin. Örneğin, `build.sbt` içinde:
 
 ```scala
 libraryDependencies ++= Seq(
@@ -18,36 +18,36 @@ libraryDependencies ++= Seq(
 )
 ```
 
-## Accessing the Cache API
+## Cache API'ye Erişim
 
-The cache API is provided by the `play.cache.Cache` object. This requires a cache plugin to be registered.
+Cache API `play.api.cache.Cache` nesnesi tarafından sağlanır. Bu nesne kayıtlı bir önbellek pluginine ihtiyaç duyar.
 
-> **Note:** The API is intentionally minimal to allow various implementations to be plugged in. If you need a more specific API, use the one provided by your Cache plugin.
+> **Not:** Bu API çeşitli gerçeklemelerin eklenebilmesi için kasten asgari tutulmuştur. Eğer daha detaylı bir API'ye ihtiyacınız varsa, kendi Cache eklentiniz tarafından sağlananı kullanınız.
 
-Using this simple API you can store data in the cache:
+Bu basit API'yi kullanarak, önbellekte veri saklayabilirsiniz.
 
 @[simple-set](code/javaguide/cache/JavaCache.java)
 
-Optionally you can specify an expiration (in seconds) for the cache:
+İsteğe bağlı olarak sona erme süresi (saniye) tanımlayabilirsiniz:
 
 @[time-set](code/javaguide/cache/JavaCache.java)
 
-You can retrieve the data later:
+Sonradan bu datayı tekrar alabilirniz:
 
 @[get](code/javaguide/cache/JavaCache.java)
 
-To remove an item from the cache use the `remove` method:
+Önbellekten veri silmek için `remove` metodunu kullanının:
 
 @[remove](code/javaguide/cache/JavaCache.java)
 
-## Caching HTTP responses
+## HTTP Yanıtlarını Önbellekleme
 
-You can easily create a smart cached action using standard `Action` composition.
+Kolaylıkla standart `Action` bileşimini kullanarak, akıllı önbelleklenmiş eylemleri oluşturabilirsiniz.
 
-> **Note:** Play HTTP `Result` instances are safe to cache and reuse later.
+> **Not:** Play HTTP `Result` olayları önbelleklemek ve tekrar kullanmak için uygundur.
 
-Play provides a default built-in helper for the standard case:
+Play standart kullanımlar için dahili bir yardımcı sağlar:
 
 @[http](code/javaguide/cache/JavaCache.java)
 
-> **Next:** [[Calling web services | JavaWS]]
+> **Sonraki:** [[Web Servisleri Çağırmak | JavaWS]]
