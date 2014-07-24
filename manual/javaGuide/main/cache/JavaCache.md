@@ -5,7 +5,7 @@ Modern uygulamalarda veri önbelleme tipik bir optimizasyondur ve bu yüzden Pla
 
 Önbellekte depolanan tüm veriler için, veri kaybı olması durumunda yenilenme stratejisi eklenmelidir. Bu felsefe Play arkasındaki temel ögelerden biridir, çalışma ömrü boyunca oturum bilgilerini tutması beklenen Java EE'den farklıdır.
 
-The cache Api'nin varsayılan uygulaması [EHCache](http://www.ehcache.org/) kullanır ve `build.sbt` dosyasında bulunan `libraryDependencies`'e `cache` eklenerek aktif edilebilir. Ayrıca eklenti ile kendi gerçeklemenizi sağlayabilirsiniz.
+Cache Api'nin varsayılan uygulaması [EHCache](http://www.ehcache.org/) kullanır ve `build.sbt` dosyasında bulunan `libraryDependencies`'e `cache` eklenerek aktif edilebilir. Ayrıca eklenti ile kendi gerçeklemenizi sağlayabilirsiniz.
 
 ## Cache API'yi Uygulamaya Dahil Etmek
 
