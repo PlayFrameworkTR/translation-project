@@ -1,12 +1,12 @@
 # OAuth
 
-[OAuth](http://oauth.net/) is a simple way to publish and interact with protected data. It's also a safer and more secure way for people to give you access. For example, it can be used to access your users' data on [Twitter](https://dev.twitter.com/docs/auth/using-oauth).
+[OAuth](http://oauth.net/) korunan bir veri yayınlamak ve bununla etkileşimde bulunmak için en basit yoldur. Ayrıca insanların size izin vermesi için en güvenli yoldur. Örnek olarak, [Twitter](https://dev.twitter.com/docs/auth/using-oauth)'daki kullanıcılarınız verilerine erişmek için kullanılabilir.
 
-There are 2 very different versions of OAuth: [OAuth 1.0](http://tools.ietf.org/html/rfc5849) and [OAuth 2.0](http://oauth.net/2/). Version 2 is simple enough to be implemented easily without library or helpers, so Play only provides support for OAuth 1.0.
+OAuth'un birbirinden çok farklı 2 versiyonu vardır: [OAuth 1.0](http://tools.ietf.org/html/rfc5849) ve [OAuth 2.0](http://oauth.net/2/). Versiyon 2, kütüphane veya yardımcı desteği olmadan entegre edebilirsiniz, bu yüzden Play sadece OAuth 1.0 desteği sağlamaktadır.
 
-## Usage
+## Kullanım
 
-To use OAuth, first add `javaWs`  to your `build.sbt` file:
+OAuth'u kullanmak için öncelikle `build.sbt` dosyanıza `javaWs`'yı eklemelisiniz:
 
 ```scala
 libraryDependencies ++= Seq(
@@ -14,30 +14,30 @@ libraryDependencies ++= Seq(
 )
 ```
 
-## Required Information
+## Gerekli Bilgi
 
-OAuth requires you to register your application to the service provider. Make sure to check the callback URL that you provide, because the service provider may reject your calls if they don't match. When working locally, you can use `/etc/hosts` to fake a domain on your local machine.
+OAuth uygulamanızı servis sağlayıcıya kayıt ettirmeniz gerekmektedir. Sağladığınız geri çağırım bağlantınızı kontrol ettiğinizden emin olunuz, çünkü eşleşme olmaması durumunda servis sağlayıcı çağrılarınızı reddebilir. Yerel olarak çalışırken, `/etc/hosts` dosyasını, yerel makinanızda sahte alan adı açmak için kullanabilirsiniz.
 
-The service provider will give you:
+Servis sağlayıcı size bunları verecektir:
 
-* Application ID
-* Secret key
-* Request Token URL
-* Access Token URL
-* Authorize URL
+* Application ID (Uygulama Kimliği)
+* Secret key (Gizli Anahtar)
+* Request Token URL (İstek Jetonu Bağlantısı)
+* Access Token URL (Erişim Jetonu Bağlantısı)
+* Authorize URL (Yetkilendirme Bağlantısı)
 
-## Authentication Flow
+## Kimlik Doğrulama Akışı
 
-Most of the flow will be done by the Play library.
+Akışın çoğu Play kütüphanesi tarafından yapılacaktır.
 
-1. Get a request token from the server (in a server-to-server call)
-2. Redirect the user to the service provider, where he will grant your application rights to use his data
-3. The service provider will redirect the user back, giving you a /verifier/
-4. With that verifier, exchange the /request token/ for an /access token/ (server-to-server call)
+1. Sunucudan istek jetonu alınız (sunucu-sunucu çağrılarında)
+2. Kullanıcıyı servis sağlayıcıya yönlendiriniz, burada kullanıcı kendi bilgilerini kullanmanız için izin verecektir.
+3. Servis sağlayıcı kullanıcıyı geri yönlendirip, size doğrulayıcı verecektir.
+4. Bu doğrulayıcı ile istek jetonunu erişim jetonu ile takas ediniz. (sunucu-sunucu çağrısı)
 
-Now the /access token/ can be passed to any call to access protected data.
+Şimdi erişim jetonu herhangi bir çağrıda, korunan veriye erişim için kullanılabilir.
 
-## Example
+## Örnek
 
 `conf/routes`:
 
@@ -47,4 +47,4 @@ controller:
 
 @[ws-oauth-controller](code/javaguide/ws/controllers/Twitter.java)
 
-> **Next:** [[Integrating with Akka| JavaAkka]]
+> **Sonraki:** [[Akka ile Entegrasyon| JavaAkka]]
