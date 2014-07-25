@@ -1,37 +1,37 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Handling and serving JSON
+# JSON işlemek ve sunmak
 
-In Java, Play uses the [Jackson](http://jackson.codehaus.org/) JSON library to convert objects to and from JSON. Play's actions work with the `JsonNode` type and the framework provides utility methods for conversion in the `play.libs.Json` API.
+Java'da, Play nesneleri JSON'ye ve JSON'yi nesnelere çevirmek için [Jackson](http://jackson.codehaus.org/) JSON kütüphanesini kullanır. Play'in action'ları `JsonNode` türüyle çalışır ve framework `play.libs.Json` API'sinde dönüştürmeler için yardımcı metodlar sağlar.
 
-## Mapping Java objects to JSON
+## Java nesnelerini JSON'a dönüştürmek
 
-Jackson allows you to easily convert Java objects to JSON by looking at field names, getters and setters. As an example we'll use the following simple Java object:
+Jackson, alan isimlerine, getter ve setter'lara bakarak Java nesnelerini kolayca JSON'ye dönüştürmenizi sağlar. Örneğin aşağıdaki basit Java nesnesini kullanacağız:
 
 @[person-class](code/JavaJsonActions.java)
 
-We can parse the JSON representation of the object and create a new `Person`:
-
-@[to-json](code/JavaJsonActions.java)
-
-Similarly, we can write the `Person` object to a `JsonNode`:
+Nesnenin JSON temsilini ayrıştırabilir ve yeni bir `Person` sınıfı yaratabiliriz:
 
 @[from-json](code/JavaJsonActions.java)
 
-## Handling a JSON request
+Benzer bir şekilde, `Person`nesnesini `JsonNode` şeklinde yazabiliriz:
 
-A JSON request is an HTTP request using a valid JSON payload as request body. Its `Content-Type` header must specify the `text/json` or `application/json` MIME type.
+@[to-json](code/JavaJsonActions.java)
 
-By default an action uses an **any content** body parser, which you can use to retrieve the body as JSON (actually as a Jackson `JsonNode`):
+## Bir JSON isteği işlemek
+
+Bir JSON isteği, istek gövdesi olarak geçerli bir JSON yükü taşıyan bir HTTP isteğidir. Onun `Content-Type` header'ı `text/json`veya `application/json` MIME türünü belirtmek zorundadır.
+
+Varsayılan olarak bir action, gövde JSON'sini (aslında bir Jackson `JsonNode'u olarak`) almak için kullanabileceğiniz **any content** body parser'ını kullanır:
 
 @[json-request-as-anycontent](code/JavaJsonActions.java)
 
-Of course it’s way better (and simpler) to specify our own `BodyParser` to ask Play to parse the content body directly as JSON:
+Tabii ki kendi `BodyParser`ımızı belirterek Play'den içerik gövdesini doğrudan JSON olarak ayrıştırmasını istemek daha iyi ve basittir: 
 
 @[json-request-as-json](code/JavaJsonActions.java)
 
-> **Note:** This way, a 400 HTTP response will be automatically returned for non JSON requests with Content-type set to application/json.
+> **Not:** Bu şekilde, Content-type'ı application/json olup aslında JSON olmayan istekler için otomatik olarak bir 400 HTTP yanıt döndürülecektir.
 
-You can test it with **cURL** from a command line:
+Bunu **cURL** ile komut satırında test edebilirsiniz:
 
 ```bash
 curl
@@ -41,7 +41,7 @@ curl
   http://localhost:9000/sayHello
 ```
 
-It replies with:
+Bununla yanıt verir:
 
 ```http
 HTTP/1.1 200 OK
@@ -51,13 +51,13 @@ Content-Length: 15
 Hello Guillaume
 ```
 
-## Serving a JSON response
+## Bir JSON yanıtı sunmak
 
-In our previous example we handled a JSON request, but replied with a `text/plain` response. Let’s change that to send back a valid JSON HTTP response:
+Bir önceki örneğimizde bir JSON isteği işledik ama bir `text/plain` yanıtıyla cevap verdik. Haydi bunu yanıtı da geçerli bir JSON HTTP yanıtı olacak şekilde değiştirelim:
 
 @[json-response](code/JavaJsonActions.java)
 
-Now it replies with:
+Şimdi bu şekilde yanıt verir:
 
 ```http
 HTTP/1.1 200 OK
@@ -66,16 +66,16 @@ Content-Type: application/json; charset=utf-8
 {"exampleField1":"foobar","exampleField2":"Hello world!"}
 ```
 
-You can also return a Java object and have it automatically serialized to JSON by the Jackson library:
+Ayrıca bir Java nesnesi döndürebilir ve onu Jackson kütüphanesiyle otomatik olarak JSON'ye dönüştürebilirsiniz:
 
 @[json-response-dao](code/JavaJsonActions.java)
 
-## Advanced usage
+## İleri düzey kullanım
 
-Because Play uses Jackson, you can use your own `ObjectMapper` to create `JsonNode`s. The [documentation for jackson-databind](https://github.com/FasterXML/jackson-databind/blob/master/README.md) explains how you can further customize JSON conversion process.
+Play Jackson kullandığı için siz de kendi `ObjectMapper`ınızı kullanarak `JsonNode`ları yaratabilirsiniz. JSON dönüştürme işlemini daha fazla özelleştirmek için [jackson-databind için dokümantasyon](https://github.com/FasterXML/jackson-databind/blob/master/README.md) sayfasına bakabilirsiniz.
 
-If you would like to use Play's `Json` APIs (`toJson`/`fromJson`) with a customized `ObjectMapper`, you can add something like this in your `GlobalSettings#onStart`:
+Play'in `Json`API'lerini (`toJson`/`fromJson`) özelleştirilmiş bir `ObjectMapper` ile kullanmak isterseniz, bunun gibi bir şeyi `GlobalSettings#onStart` metodunuza ekleyebilirsiniz:
 
 @[custom-object-mapper](code/JavaJsonActions.java)
 
-> **Next:** [[Working with XML | JavaXmlRequests]]
+> **Next:** [[XML ile çalışmak | JavaXmlRequests]]
