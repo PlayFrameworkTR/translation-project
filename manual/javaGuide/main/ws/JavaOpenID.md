@@ -1,20 +1,21 @@
 <!--- Copyright (C) 2009-2014 Typesafe Inc. <http://www.typesafe.com> -->
-# OpenID Support in Play
 
-OpenID is a protocol for users to access several services with a single account. As a web developer, you can use OpenID to offer users a way to log in using an account they already have, such as their [Google account](https://developers.google.com/accounts/docs/OpenID). In the enterprise, you may be able to use OpenID to connect to a company’s SSO server.
+# Play'de OpenID Desteği
 
-## The OpenID flow in a nutshell
+OpenId kullanıcıların tek bir hesap ile birkaç servise erişmesini sağlayan bir protokolüdür. Web geliştiricisi olarak, OpenID'yi kullanıcılarınız önceden varolan hesaplarını kullanarak, örneğin [Google account](https://developers.google.com/accounts/docs/OpenID), giriş yapmalarını sağlayabilirsiniz. Kurumsal kurumlarda, OpenID'yi şirketinizin SSO sunucusuna bağlanmak için kullanabilirsiniz.
 
-1. The user gives you his OpenID (a URL).
-2. Your server inspects the content behind the URL to produce a URL where you need to redirect the user.
-3. The user confirms the authorization on his OpenID provider, and gets redirected back to your server.
-4. Your server receives information from that redirect, and checks with the provider that the information is correct.
+## Özetle OpenID Akışı
 
-Step 1 may be omitted if all your users are using the same OpenID provider (for example if you decide to rely completely on Google accounts).
+1. Kullanıcı size OpenID'sini verir. (Bağlantı).
+2. Sunucunuz bağlantının arkasındaki içeriği inceler ve size, kullanıcıyı yönlendirmek için gerekli olan bağlantıyı üretir.
+3. Kullanıcı OpenID sağlayıcısındaki izinleri onaylar ve sunucunuza geri yönlendirilir.
+4. Sunucunuz yönlendirmeden gelen bilgiyi alır ve OpenID sağlayıcısından bilginin doğruluğunu kontrol eder.
 
-## Usage
+Eğer tüm kullanıcılar aynı OpenID sağlayıcısını kullanıyorsa 1. adım atlanabilir (örnek olarak tamamen Google hesaplarına güvenmeye karar verirseniz).
 
-To use OpenId, first add `javaWs`  to your `build.sbt` file:
+## Kullanım
+
+OpenID'u kullanmak için öncelikle `build.sbt` dosyanıza `javaWs`'yı eklemelisiniz:
 
 ```scala
 libraryDependencies ++= Seq(
@@ -22,16 +23,16 @@ libraryDependencies ++= Seq(
 )
 ```
 
-## OpenID in Play
+## Play'de OpenID
 
-The OpenID API has two important functions:
+OpenID API'si iki önemli fonksiyona sahiptir:
 
-* `OpenID.redirectURL` calculates the URL where you should redirect the user. It involves fetching the user's OpenID page asynchronously, this is why it returns a `Promise<String>`. If the OpenID is invalid, the returned `Promise` will be a `Thrown`.
-* `OpenID.verifiedId` inspects the current request to establish the user information, including his verified OpenID. It will do a call to the OpenID server asynchronously to check the authenticity of the information, this is why it returns a `Promise<UserInfo>`. If the information is not correct or if the server check is false (for example if the redirect URL has been forged), the returned `Promise` will be a `Thrown`.
+* `OpenID.redirectURL` kullanıcıyı yönlendirmeniz gereken bağlantıyı belirler. Kullanıcının OpenID sayfasını asenkron olarak çekmeyi içerir, bu sebeple `Promise<String>` döndürür. Eğer OpenID geçersizse, dönen `Promise` `Thrown` olacaktır.
+* `OpenID.verifiedId` kullanıcının onaylanmış OpenID'si de olmak üzere, bilgilerini almak için güncel isteği inceler. Bilginin doğruluğunu kontrol etmek için asenkron olarak OpenID sunusunu çağırır, bu sebeple `Promise<UserInfo>` döndürür. Eğer bilgi doğru değilse veya sunucu kontrolü hatalıysa (örnek olarak yönlendirme bağlantısı sahte ise), dönen `Promise` `Thrown` olacaktır.
 
-If the `Promise` fails, you can define a fallback, which redirects back the user to the login page or return a `BadRequest`.
+Eğer `Promise` başarısız olursa, kullanıcıyı giriş sayfasına geri yönlendiren veya `BadRequest` döndüren bir geri çağırım tanımlayabilirsiniz.
 
-### Example
+### Örnek
 
 `conf/routes`:
 
@@ -46,16 +47,16 @@ Java 8
 : @[ws-openid-controller](java8code/java8guide/ws/controllers/OpenIDController.java)
 
 
-## Extended Attributes
+## Genişletilmiş Özellikler
 
-The OpenID of a user gives you his identity. The protocol also supports getting [extended attributes](http://openid.net/specs/openid-attribute-exchange-1_0.html) such as the e-mail address, the first name, or the last name.
+Kullanıcının OpenID'si size onun kimliğini verir. Bu protokol ayrıca [genişletilmiş özellikleri](http://openid.net/specs/openid-attribute-exchange-1_0.html) destekler. Örneğin e-mail adresi, adı veya soyadı gibi.
 
-You may request *optional* attributes and/or *required* attributes from the OpenID server. Asking for required attributes means the user cannot login to your service if he doesn’t provides them.
+*İsteğe bağlı* ve/veya *gerekli* özellikleri, OpenID sunucusundan isteyebilirsiniz. Gerekli özellikleri istemek demek, kullanıcı bu bilgileri sağlamadan sizin servisinize giriş yapamaz anlamına gelir.
 
-Extended attributes are requested in the redirect URL:
+Genişletilmiş özellikler yönlendirme bağlantısında talep edilir.
 
 @[ws-openid-extended-attributes](code/javaguide/ws/controllers/OpenIDController.java)
 
-Attributes will then be available in the `UserInfo` provided by the OpenID server.
+Özellikler OpenID sunucusu `UserInfo` sağladıktan sonra uygun olacaktır.
 
-> **Next:** [[Accessing resources protected by OAuth|JavaOAuth]]
+> **Sonraki:** [[OAuth tarafından korunan kaynaklara erişim|JavaOAuth]]
