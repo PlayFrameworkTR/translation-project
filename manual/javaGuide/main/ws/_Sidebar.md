@@ -1,24 +1,24 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-### Calling WebServices
+### Webservisleri Çağırma
 
-- [[The Play WS API  | JavaWS]]
-- [[Connecting to OpenID services | JavaOpenID]]
-- [[Accessing resources protected by OAuth | JavaOAuth]]
+- [[Play WS API  | JavaWS]]
+- [[OpenID servislerine bağlanma | JavaOpenID]]
+- [[OAuth tarafından korunan kaynaklara erişim  | JavaOAuth]]
 
-### Main concepts
+### Ana Kavramlar
 
-- [[HTTP programming | JavaActions]]
-- [[Asynchronous HTTP programming | JavaAsync]]
-- [[The template engine | JavaTemplates]]
-- [[HTTP form submission and validation | JavaForms]]
-- [[Working with JSON | JavaJsonActions]]
-- [[Working with XML | JavaXmlRequests]]
-- [[Handling file upload | JavaFileUpload]]
-- [[Accessing an SQL database | JavaDatabase]]
-- [[Using the Cache | JavaCache]]
-- [[Calling WebServices | JavaWS]]
-- [[Integrating with Akka | JavaAkka]]
-- [[Internationalization | JavaI18N]]
-- [[The application Global object | JavaGlobal]]
-- [[Testing your application | JavaTest]]
-- [[Logging|JavaLogging]]
+- [[HTTP programlama | JavaActions]]
+- [[Asenkron HTTP programlama | JavaAsync]]
+- [[Şablon motoru | JavaTemplates]]
+- [[HTTP form gönderimi ve onaylama | JavaForms]]
+- [[JSON ile çalışmak | JavaJsonActions]]
+- [[XML ile çalışmak | JavaXmlRequests]]
+- [[Dosya yüklemeyi kullanmak | JavaFileUpload]]
+- [[SQL veritabanına erişim | JavaDatabase]]
+- [[Önbellek kullanımı | JavaCache]]
+- [[Webservisleri çağırmak | JavaWS]]
+- [[Akka ile bütünleştirme | JavaAkka]]
+- [[Uluslararasılaştırma | JavaI18N]]
+- [[Uygulama Evrensel nesnesi | JavaGlobal]]
+- [[Uygulamanızı test etmek | JavaTest]]
+- [[Kayıt ekleme|JavaLogging]]
