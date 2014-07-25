@@ -1,7 +1,7 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
 # JSON işlemek ve sunmak
 
-Java'da, Play nesneleri JSON'ye ve JSON'yi nesnelere çevirmek için [Jackson](http://jackson.codehaus.org/) JSON kütüphanesini kullanır. Play'in action'ları `JsonNode` türüyle çalışır ve framework `play.libs.Json` API'sinde dönüştürmeler için yardımcı metodlar sağlar.
+Java'da, Play nesneleri JSON'ye ve JSON'yi nesnelere çevirmek için [Jackson](http://jackson.codehaus.org/) JSON kütüphanesini kullanır. Play'in action'ları `JsonNode` türüyle çalışır ve framework `play.libs.Json` API'sinde dönüştürmeler için yardımcı metotlar sağlar.
 
 ## Java nesnelerini JSON'a dönüştürmek
 
@@ -19,9 +19,9 @@ Benzer bir şekilde, `Person`nesnesini `JsonNode` şeklinde yazabiliriz:
 
 ## Bir JSON isteği işlemek
 
-Bir JSON isteği, istek gövdesi olarak geçerli bir JSON yükü taşıyan bir HTTP isteğidir. Onun `Content-Type` header'ı `text/json`veya `application/json` MIME türünü belirtmek zorundadır.
+Bir JSON isteği, istek gövdesi olarak geçerli bir JSON yükü taşıyan bir HTTP isteğidir. Onun `Content-Type` başlığı `text/json`veya `application/json` MIME türünü belirtmek zorundadır.
 
-Varsayılan olarak bir action, gövde JSON'sini (aslında bir Jackson `JsonNode'u olarak`) almak için kullanabileceğiniz **any content** body parser'ını kullanır:
+Varsayılan olarak bir action, gövde JSON'sini (aslında bir Jackson `JsonNode'u olarak`) almak için kullanabileceğiniz **herhangi içerik** gövde ayrıştırıcısını kullanır:
 
 @[json-request-as-anycontent](code/JavaJsonActions.java)
 
