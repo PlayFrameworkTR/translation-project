@@ -1,72 +1,72 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Externalising messages and internationalization
+# Mesajları haricileştirme ve uluslarlarasılaştırma
 
-## Specifying languages supported by your application
+## Uygulamanızın desteklediği dilleri belirtmek
 
-To specify your application’s languages, you need a valid language code, specified by a valid **ISO Language Code**, optionally followed by a valid **ISO Country Code**. For example, `fr` or `en-US`.
+Uygulamanızın dillerini belirtmek için, geçerli bir **ISO Dil Kodu** tarafından belirtilen ve tercihen geçerli bir **ISO Ülke Kodu** ile devam eden geçerli bir dil koduna ihtiyacınız vardır. Örneğin, `fr` veya `en-US`.
 
-To start, you need to specify the languages that your application supports in its `conf/application.conf` file:
+Başlangıç olarak, uygulamanızın desteklediği dilleri `conf/application.conf` dosyasında belirtmelisiniz:
 
 ```
 application.langs="en,en-US,fr"
 ```
 
-## Externalizing messages
+## Mesajları haricileştirme
 
-You can externalize messages in the `conf/messages.xxx` files. 
+Mesajları, `conf/messages.xxx` dosyalarında haricileştirebilirsiniz.
 
-The default `conf/messages` file matches all languages. You can specify additional language messages files, such as `conf/messages.fr` or `conf/messages.en-US`.
+Varsayılan `conf/messages`dosyası tüm dillerle eşleşir. Dilerseniz, örneğin `conf/messages.fr` veya `conf/messages.en-US` şeklinde ilave dil mesaj dosyaları belirtebilirsiniz.
 
-You can retrieve messages for the current language using the `play.i18n.Messages` object:
+`play.i18n.Messages` nesnesini kullanarak mevcut dil için mesajları çağırabilirsiniz:
 
 ```
 String title = Messages.get("home.title")
 ```
 
-You can also specify the language explicitly:
+Aynı zamanda, dili belirtebilirsiniz:
 
 ```
 String title = Messages.get(new Lang(Lang.forCode("fr")), "home.title")
 ```
 
-> **Note:** If you have a `Request` in the scope, it will provide a default `Lang` value corresponding to the preferred language extracted from the `Accept-Language` header and matching one of the application’s supported languages. You should also add a `Lang` implicit parameter to your template like this: `@()(implicit lang: Lang)`.
+> **Not:** Eğer kapsamda bir `Request`iniz varsa o, `Accept-Language` başlığından çıkarılan ve uygulamanın desteklenen dillerinden biriyle eşleşen tercih edilen dil için varsayılan bir `Lang`değeri sağlayacaktır. Aynı zamanda, `Lang`ı şablonunuza şu şekilde kapalı bir parametre olarak da eklemelisiniz: `@()(implicit lang: Lang)`.
 
-## Use in templates
+## Şablonlarda kullanım
 ```
 @import play.i18n._
 @Messages.get("key")
 ```
-## Formatting messages
+## Mesajları biçimlendirme
 
-Messages are formatted using the `java.text.MessageFormat` library. For example, if you have defined a message like this:
+Mesajlar, `java.text.MessageFormat` kütüphanesi kullanılarak biçimlendirilirler. Örneğin, bu şekilde bir mesaj tanımladıysanız:
 
 ```
 files.summary=The disk {1} contains {0} file(s).
 ```
 
-You can then specify parameters as:
+Parametreleri şöyle belirtebilirsiniz:
 
 ```
 Messages.get("files.summary", d.files.length, d.name)
 ```
 
-## Notes on apostrophes
+## Kesme işaretleri üzerine notlar
 
-Since Messages uses `java.text.MessageFormat`, please be aware that single quotes are used as a meta-character for escaping parameter substitutions.
+Mesajlar `java.text.MessageFormat` kullandığından, lütfen kesme işaretlerinin (tek tırnakların) parametre yer değişimlerini kurtama işlemi için birer meta karakter olarak kullanıldığının farkında olun.
 
-For example, if you have the following messages defined:
+Örneğin, aşağıdaki mesajları tanımladıysanız:
 
 @[single-apostrophe](code/javaguide/i18n/messages)
 @[parameter-escaping](code/javaguide/i18n/messages)
 
-you should expect the following results:
+aşağıdaki sonucu elde etmeyi beklemelisiniz:
 
 @[single-apostrophe](code/javaguide/i18n/JavaI18N.java)
 @[parameter-escaping](code/javaguide/i18n/JavaI18N.java)
 
-## Retrieving supported languages from an HTTP request
+## Bir HTTP isteğinden desteklenen dilleri almak
 
-You can retrieve a specific HTTP request’s supported languages:
+Belirli bir HTTP isteğinin desteklenen dillerini şu şekilde alabilirsiniz:
 
 ```
 public static Result index() {
@@ -74,4 +74,4 @@ public static Result index() {
 }
 ```
 
-> **Next:** [[The application Global object | JavaGlobal]]
+> **Next:** [[Uygulama Global nesnesi | JavaGlobal]]
