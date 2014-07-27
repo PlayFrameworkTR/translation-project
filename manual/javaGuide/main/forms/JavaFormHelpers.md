@@ -1,21 +1,21 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Form template helpers
+# Form şablon yardımcıları
 
-Play provides several helpers to help you render form fields in HTML templates.
+Play form alanlarını HTML şablonlarında sunmanıza yardımcı olmak için birçok yardımcı sağlar.
 
-## Creating a `<form>` tag
-    
-The first helper creates the `<form>` tag. It is a pretty simple helper that automatically sets the `action` and `method` tag parameters according to the reverse route you pass in:
+## Bir `<form>` etiketi yaratmak
+
+İlk yardımcı `<form>` etiketini yaratır. Bu, otomatik olarak `action` ve `method` etiket parametrelelerini, ilettiğiniz ters rotaya göre ayarlayan basit bir yardımcıdır:
 
 @[form](code/javaguide/forms/helpers.scala.html)
 
-You can also pass an extra set of parameters that will be added to the generated HTML:
+Ayrıca üretilecek HTML'ye eklenecek bir ilave parametre dizisi de geçirebilirsiniz:
 
 @[form-with-id](code/javaguide/forms/helpers.scala.html)
 
-## Rendering an `<input>` element
+## Bir `<input>` elementi sunmak
 
-There are several input helpers in the `views.html.helper` package. You feed them with a form field, and they display the corresponding HTML form control, with a populated value, constraints and errors:
+`views.html.helper` paketinde birçok girdi yardımcısı vardır. Onları bir form alanı ile beslersiniz ve onlar uyan HTML form kontrolünü, doldurulmuş değer, kısıtlama ve hatalarla gösterirler:
 
 @[full-form](code/javaguide/forms/fullform.scala.html)
 
@@ -23,19 +23,19 @@ As for the `form` helper, you can specify an extra set of parameters that will b
 
 @[extra-params](code/javaguide/forms/helpers.scala.html)
 
-> **Note:** All extra parameters will be added to the generated HTML, except for ones whose name starts with the `_` character. Arguments starting with an underscore are reserved for field constructor argument (which we will see later).
+> **Not:** İsimleri `_` ile başlayanlar hariç, bütün ilave parametreler üretilen HTML'ye eklenecektir. Alt çizgi ile başlayan argümanlar (ileride göreceğimiz) alan constructor argümanları için ayrılmıştır.
 
-## Handling HTML input creation yourself
+## HTML girdi üretimini kendi kendinize halletmek
 
-There is also a more generic `input` helper that let you code the desired HTML result:
+Aynı zamanda istenen HTML sonucunu kodlamanıza izin veren daha genel bir `input` yardımcısı da vardır:
 
 @[generic-input](code/javaguide/forms/helpers.scala.html)
 
-## Field constructors
+## Alan constructor'ları
 
-A rendered field does not only consist of an `<input>` tag, but may also need a `<label>` and a bunch of other tags used by your CSS framework to decorate the field.
-    
-All input helpers take an implicit `FieldConstructor` that handles this part. The default one (used if there are no other field constructors available in the scope), generates HTML like:
+Sunulan bir alan sadece bir `<input>` etiketi içermekle kalmayıp, aynı zamanda `<label>` ve CSS çatınızda field'ı süslemek için kullanılan başka birtakım etiketleri  de içerebilir.
+
+Bütün girdi yardımcıları bu kısmı üstlenen bir `FieldConstructor` alırlar. Varsayılanı (yani kapsamda başka bir field constructor'ı yoksa kullanılan) bunun gibi bir HTML üretir:
 
 ```
 <dl class="error" id="email_field">
@@ -48,7 +48,7 @@ All input helpers take an implicit `FieldConstructor` that handles this part. Th
 </dl>
 ```
 
-This default field constructor supports additional options you can pass in the input helper arguments:
+Bu varsayılan alan constructor'ı input yardımcı argümanlarında geçirebileceğiniz ilave seçenekleri destekler:
 
 ```
 '_label -> "Custom label"
@@ -59,33 +59,33 @@ This default field constructor supports additional options you can pass in the i
 '_showErrors -> false
 ```
 
-### Writing your own field constructor
+### Kendi field constructor'ınızı yazmak
 
-Often you will need to write your own field constructor. Start by writing a template like:
+Sıklıkla, kendi alan constructor'ınızı yazmak isteyeceksiniz. Şöyle bir şablon yazarak başlayın:
 
 @[template](code/javaguide/forms/myFieldConstructorTemplate.scala.html)
 
-Save it in `views/` and name `myFieldConstructorTemplate.scala.html`
+Bunu `views/` içine kaydedin ve `myFieldConstructorTemplate.scala.html` ismini verin.
 
-> **Note:** This is just a sample. You can make it as complicated as you need. You have also access to the original field using `@elements.field`.
+> **Not:** Bu sadece basit bir örnektir. Bunu istediğiniz kadar karmaşıklaştırabilirsiniz. Aynı zamanda `@elements.field`ı kullanarak orijinal alana erişebilirsiniz.
 
-Now create a `FieldConstructor` somewhere, using:
+Şimdi bunu kullanarak bir yerlerde bir `FieldConstructor` yaratın:
 
 @[field](code/javaguide/forms/withFieldConstructor.scala.html)
 
-## Handling repeated values
+## Tekrar eden değerleri işlemek
 
-The last helper makes it easier to generate inputs for repeated values. Suppose you have this kind of form definition:
+Son yardımcı tekrar eden değerler için girdi yaratmayı kolaylaştırır. Bu şekilde bir form tanımınız olduğunu varsayın:
 
 @[code](code/javaguide/forms/html/UserForm.java)
 
-Now you have to generate as many inputs for the `emails` field as the form contains. Just use the `repeat` helper for that:
+Şimdi `emails` alanı için formun içerdiği kadar çok girdiyi üretmek zorundasınız. Bunun için basitçe `repeat` yardımcısını kullanın:
 
 @[repeat](code/javaguide/forms/helpers.scala.html)
 
-Use the `min` parameter to display a minimum number of fields, even if the corresponding form data are empty.
+Karşılık gelen form verisi boş olsa bile gösterilecek en az sayıda alanı belirtmek için `min` parametresni kullanın.
 
-> **Next:** [[Protecting against CSRF|JavaCsrf]]
+> **Sonraki:** [[CSRF karşısında korunmak|JavaCsrf]]
 
 
 
