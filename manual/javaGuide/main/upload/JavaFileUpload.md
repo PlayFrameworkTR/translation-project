@@ -1,11 +1,11 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Handling file upload
+# Dosya Yükleme
 
-## Uploading files in a form using `multipart/form-data`
+## Dosya yüklemeyi form içinde `multipart/form-data` kullanarak yapmak
 
-The standard way to upload files in a web application is to use a form with a special `multipart/form-data` encoding, which allows mixing of standard form data with file attachments. Please note: the HTTP method for the form has to be POST (not GET).
+Web uygulamalarında dosya yüklemek için standart yol, standart form verisi ile dosya eklerini karıştırmaya izin veren özel `multipart/form-data` şifrelenmiş form kullanmaktır. Not: form için HTTP yöntemi POST olmalıdır (GET değil).
 
-Start by writing an HTML form:
+HTML form yazarak başlayın:
 
 ```
 @form(action = routes.Application.upload, 'enctype -> "multipart/form-data") {
@@ -18,8 +18,7 @@ Start by writing an HTML form:
 
 }
 ```
-
-Now let’s define the `upload` action:
+`upload` aksiyonunu tanımlayalım:
 
 ```
 public static Result upload() {
@@ -37,9 +36,9 @@ public static Result upload() {
 }
 ```
 
-## Direct file upload
+## Doğrudan dosya yükleme
 
-Another way to send files to the server is to use Ajax to upload files asynchronously from a form. In this case, the request body will not be encoded as `multipart/form-data`, but will just contain the plain file contents.
+Dosyaları sunucuya göndermenin diğer yolu, formdan Ajax kullanarak dosyaları asenkron yüklemektir. Bu durumda, istek gövdesi `multipart/form-data` olarak şifrelenmeyecektir fakat yalın dosya içeriğini içerecektir.
 
 ```
 public static Result upload() {
@@ -48,4 +47,4 @@ public static Result upload() {
 }
 ```
 
-> **Next:** [[Accessing an SQL database | JavaDatabase]]
+> **Sonraki:** [[SQL veritabanına erişim | JavaDatabase]]
