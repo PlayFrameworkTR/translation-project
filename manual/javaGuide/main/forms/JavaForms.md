@@ -1,88 +1,87 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Handling form submission
+# Gönderilen formları karşılamak
 
-## Defining a form
+## Bir form tanımlamak
 
-The `play.data` package contains several helpers to handle HTTP form data submission and validation. The easiest way to handle a form submission is to define a `play.data.Form` that wraps an existing class:
+`play.data` paketi HTTP form verisi göndermek ve doğrulamak için birçok yardımcı içerir. Form gönderimini karşılamak için en kolay yol mevcut bir sınıfı sarmalayan bir `play.data.Form` tanımlamaktır:
 
 @[user](code/javaguide/forms/u1/User.java)
 
 @[create](code/javaguide/forms/JavaForms.java)
 
-> **Note:** The underlying binding is done using [Spring data binder](http://static.springsource.org/spring/docs/3.0.x/reference/validation.html).
+> **Not:** Altında yatan bağlamalar [Spring data binder](http://static.springsource.org/spring/docs/3.0.x/reference/validation.html) kullanılarak yapılmıştır.
 
-This form can generate a `User` result value from `HashMap<String,String>` data:
+Bu form `HashMap<String,String>` verisinden bir `User` sonuç değeri üretebilir:
 
 @[bind](code/javaguide/forms/JavaForms.java)
 
-If you have a request available in the scope, you can bind directly from the request content:
+Kapsam içinde mevcut bir isteğiniz varsa, istek içeriğini doğrudan bir nesneye bağlayabilirsiniz:
 
 @[bind-from-request](code/javaguide/forms/JavaForms.java)
 
-## Defining constraints
+## Kısıtlamalar tanımlamak
 
-You can define additional constraints that will be checked during the binding phase using JSR-303 (Bean Validation) annotations:
+JSR-303 (Bean Validation) annotation'ları kullanarak bağlama sürecinde kontrol edilecek ilave kısıtlamalar tanımlayabilirsiniz:
 
 @[user](code/javaguide/forms/u2/User.java)
 
-> **Tip:** The `play.data.validation.Constraints` class contains several built-in validation annotations.
+> **İpucu:** `play.data.validation.Constraints` sınıfı halihazırda birçok doğrulama annotation'ları içerir.
 
-You can also define an ad-hoc validation by adding a `validate` method to your top object:
+Ayrıca üst nesnenize bir `validate` metodu ekleyerek özel doğrulama da tanımlayabilirsiniz:
 
 @[user](code/javaguide/forms/u3/User.java)
 
-The message returned in the above example will become a global error.
+Yukarıdaki örneğte döndürülen mesaj global bir hata olacak.
 
-The `validate`-method can return the following types: `String`, `List<ValidationError>` or `Map<String,List<ValidationError>>`
+`validate`-metodu şu türleri döndürebilir: `String`, `List<ValidationError>` veya `Map<String,List<ValidationError>>`.
 
-`validate` method is called after checking annotation-based constraints and only if they pass.  If validation passes you must return `null` . Returning any not-`null` value (empty string or empty list) is treated as failed validation.
+`validate`metodu annotation tabanlı kısıtlamalar denetlendikten sonra, ancak ve ancak onlar geçerse çağrılır. Eğer doğrulama geçerse `null` döndürmek zorundasınız. Herhangi bir `null`olmayan değer döndürmeye (boş string veya boş list) başarısız bir doğrulama olarak davranılır.
 
-`List<ValidationError>` may be useful when you have additional validations for fields. For example:
+`List<ValidationError>` alanlar için ilave doğrulamalara sahipseniz yararlı olabilir. Örneğin:
 
 @[list-validate](code/javaguide/forms/JavaForms.java)
 
-Using `Map<String,List<ValidationError>>` is similar to `List<ValidationError>` where map's keys are error codes similar to `email` in the example above.
+`Map<String,List<ValidationError>>` kullanmak, map'in anahtarlarını hata kodları olacak şekilde, yukarıdaki örnekte `email`da olduğu gibi `List<ValidationError>`a benzerdir.
 
-## Handling binding failure
+## Bağlama hatalarını idare etmek
 
-Of course if you can define constraints, then you need to be able to handle the binding errors.
+Tabii ki eğer kısıtlamalar tanımlarsanız, bağlama hatalarını idare edebilmeniz gerekir.
 
 @[handle-errors](code/javaguide/forms/JavaForms.java)
 
-Typically, as shown above, the form simply gets passed to a template.  Global errors can be rendered in the following way:
+Genellikle, yukarda gösterildiği gibi, form basitçe bir şablona geçirilir. Global hatalar aşağıdaki şekilde sunulabilir:
 
 @[global-errors](code/javaguide/forms/view.scala.html)
 
-Errors for a particular field can be rendered in the following manner:
+Belirli bir alan için hatalar aşağıdaki biçimde sunulabilir:
 
 @[field-errors](code/javaguide/forms/view.scala.html)
 
 
-## Filling a form with initial default values
+## Varsayılan değerler ile bir formu doldurmak
 
-Sometimes you’ll want to fill a form with existing values, typically for editing:
+Bazen, çoğunlukla düzenleme için, bir formu mevcut değerler ile doldurmak isteyeceksiniz:
 
 @[fill](code/javaguide/forms/JavaForms.java)
 
-> **Tip:** `Form` objects are immutable - calls to methods like `bind()` and `fill()` will return a new object filled with the new data.
+>**İpucu:** `Form`nesneleri immutable'dır. `bind()` ya da `fill()` gibi metodlara çağrılar yeni veriyle doldurulmuş yeni bir form döndürür.
 
-## Handling a form that is not related to a Model
+## Bir modelle ilişkisi olmayan bir form doldurmak
 
-You can use a `DynamicForm` if you need to retrieve data from an html form that is not related to a `Model` :
+Bir `Model` ile ilişkisi olmayan bir HTML formundan veri almak için `DynamicForm` kullanabilirsiniz:
 
 @[dynamic](code/javaguide/forms/JavaForms.java)
 
-## Register a custom DataBinder
+## Özel bir DataBinder kaydetmek
 
-In case you want to define a mapping from a custom object to a form field string and vice versa you need to register a new Formatter for this object.
-For an object like JodaTime's `LocalTime` it could look like this:
+Özel bir nesneden bir form alan string'ine ve tam tersine bir eşleşme tanımlamak isterseniz bu nesne için yeni bir `Formatter` tanımlamalısınız. JodaTime'ın `LocalTime'ı gibi bir nesne için bu işlem aşağıdaki gibi görünebilir:
 
 @[register-formatter](code/javaguide/forms/JavaForms.java)
 
-When the binding fail an array of errors keys is created, the first one defined in the messages file will be used. This array will generally contain :
+Bağlama başarısız olduğunda bir hata anahtarları dizisi yaratılır ve messages dosyalarında ilk tanımlanan kullanılır. Bu dizi genellikle şunları içerir:
 
     ["error.invalid.<fieldName>", "error.invalid.<type>", "error.invalid"]
 
-The errors keys are created by [Spring DefaultMessageCodesResolver](http://static.springsource.org/spring/docs/3.0.7.RELEASE/javadoc-api/org/springframework/validation/DefaultMessageCodesResolver.html), the root "typeMismatch" is replaced by "error.invalid".
+Hata anahtarları [Spring DefaultMessageCodesResolver](http://static.springsource.org/spring/docs/3.0.7.RELEASE/javadoc-api/org/springframework/validation/DefaultMessageCodesResolver.html) tarafından yaratılır. Kök "typeMismatch" "error.invalid" ile değiştirilir.
 
-> **Next:** [[Using the form template helpers | JavaFormHelpers]]
+> **Sonraki:** [[Form şablonu başlıklarını kullanmak | JavaFormHelpers]]
