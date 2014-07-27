@@ -1,12 +1,12 @@
-# The Play WS API
+# Play WS API
 
-Sometimes we would like to call other HTTP services from within a Play application. Play supports this via its [WS library](api/java/play/libs/ws/package-summary.html), which provides a way to make asynchronous HTTP calls.
+Bazen Play uygulaması içinde diğer HTTP servisleri çağırmak isteriz. Play asenkron HTTP istekler yapmayı sağlayan, [WS library](api/java/play/libs/ws/package-summary.html) ile bunu destekler.
 
-There are two important parts to using the WS API: making a request, and processing the response.  We'll discuss how to make both GET and POST HTTP requests first, and then show how to process the response from WS.  Finally, we'll discuss some common use cases.
+WS API'yi kullanırken iki önemli parça vardır: istek yapmak ve cevabı işlemek. Öncelikle nasıl GET ve POST HTTP istekleri yapılır onu tartışacağız, ardından WS'den gelen cevabı işlemeyi göstereceğiz. Sonunda, bazı ortak kullanım durumlarını tartışacağız.
 
-## Making a Request
+## İstek Yapmak
 
-To use WS, first add `javaWs` to your `build.sbt` file:
+WS kullanmak için, öncelikle `build.sbt` dosyasına `javaWs` eklenmelidir:
 
 ```scala
 libraryDependencies ++= Seq(
@@ -14,77 +14,77 @@ libraryDependencies ++= Seq(
 )
 ```
 
-Then, import the following:
+Ardından, devamı belirtilmelidir:
 
 @[ws-imports](code/javaguide/ws/JavaWS.java)
 
-To build an HTTP request, you start with `WS.url()` to specify the URL.
+HTTP isteği oluşturmak için, `WS.url()` ile bağlantıyı belirterek başlayın.
 
 @[ws-holder](code/javaguide/ws/JavaWS.java)
 
-This returns a [`WSRequestHolder`](api/java/play/libs/ws/WSRequestHolder.html) that you can use to specify various HTTP options, such as setting headers. You can chain calls together to construct complex requests.
+Bu başlık ayarları gibi çeşitli HTTP özelliklerini belirmek için kullanabileceğiniz [`WSRequestHolder`](api/java/play/libs/ws/WSRequestHolder.html) döndürecektir. Karışık istekler oluşturmak için birlikte zincir çağrılar yapabilirsiniz.
 
 @[ws-complex-holder](code/javaguide/ws/JavaWS.java)
 
-You end by calling a method corresponding to the HTTP method you want to use.  This ends the chain, and uses all the options defined on the built request in the `WSRequestHolder`.
+Kullanmak istediğiniz HTTP methoduna karşılık gelen bir methodu çağırarak sona erdirebilirsiniz. Bu zinciri sonlandıracaktır ve `WSRequestHolder`'da oluşturulan tüm seçenekleri kullanacaktır.
 
 @[ws-get](code/javaguide/ws/JavaWS.java)
 
-This returns a [`Promise<WSResponse>`](api/java/play/libs/F.Promise.html) where the [`WSResponse`](api/java/play/libs/ws/WSResponse.html) contains the data returned from the server.
+[`WSResponse`](api/java/play/libs/ws/WSResponse.html)'un sunucudan dönen veriyi içerdiği [`Promise<WSResponse>`](api/java/play/libs/F.Promise.html) döndürür.
 
-### Request with authentication
+### Doğrulamalı istekler
 
-If you need to use HTTP authentication, you can specify it in the builder, using a username, password, and an [`WSAuthScheme`](api/java/play/libs/ws/WSAuthScheme.html).  Options for the `WSAuthScheme` are `BASIC`, `DIGEST`, `KERBEROS`, `NONE`, `NTLM`, and `SPNEGO`.
+Eğer HTTP doğrulamasına ihticacınız varsa, kullanıcı adı, şifre ve [`WSAuthScheme`](api/java/play/libs/ws/WSAuthScheme.html) kullanarak kurucunun içinde belirtebilirsiniz. `WSAuthScheme` için seçenekler `BASIC`, `DIGEST`, `KERBEROS`, `NONE`, `NTLM`, ve `SPNEGO`'dur.
 
 @[ws-auth](code/javaguide/ws/JavaWS.java)
 
-### Request with follow redirects
+### Takip yönlendirmeli istekler
 
-If an HTTP call results in a 302 or a 301 redirect, you can automatically follow the redirect without having to make another call.
+HTTP çağrısının sonucu 302 veya 301 yönlendirmesi ise, tekrar cağrı yapmadan bu yönlendirmeyi takip edebilirsiniz.
 
 @[ws-follow-redirects](code/javaguide/ws/JavaWS.java)
 
-### Request with query parameters
+### Sorgu parametreli istekler
 
-You can specify query parameters for a request.
+İstek için sorgu parametreleri belirleyebilirsiniz.
 
 @[ws-query-parameter](code/javaguide/ws/JavaWS.java)
 
-### Request with additional headers
+### Ek başlıklı istekler
 
 @[ws-header](code/javaguide/ws/JavaWS.java)
 
-For example, if you are sending plain text in a particular format, you may want to define the content type explicitly.
+Örnek olarak, belirli formatta yalın metin gönderiyorsanız, içerik tipini açıkca belirmek isteyebilirsiniz.
 
 @[ws-header-content-type](code/javaguide/ws/JavaWS.java)
 
-### Request with time out
+### Zaman aşımlı istek
 
-If you wish to specify a request timeout, you can use `setTimeout` to set a value in milliseconds.
+İstek için zaman aşımı belirmek isterseniz, `setTimeout` kullanarak milisaniye olarak zaman aşımını belirtebilirsiniz.
 
 @[ws-timeout](code/javaguide/ws/JavaWS.java)
 
-### Submitting form data
+### Form verisi göndermek
 
-To post url-form-encoded data you can set the proper header and formatted data.
+url-form-encoded veri göndermek için uygun bir başlık ve biçimlendirilmiş veri ayarlayabilirsiniz.
 
 @[ws-post-form-data](code/javaguide/ws/JavaWS.java)
 
-### Submitting JSON data
+### JSON veri göndermek
 
-The easiest way to post JSON data is to use the [[JSON library|JavaJsonActions]].
+JSON verisi göndermek için en kolay yol [[JSON library|JavaJsonActions]] kullanmaktır.
 
 @[json-imports](code/javaguide/ws/JavaWS.java)
 
 @[ws-post-json](code/javaguide/ws/JavaWS.java)
 
-## Processing the Response
+## Cevabı işlemek
 
-Working with the [`WSResponse`](api/java/play/libs/ws/WSResponse.html) is done by mapping inside the `Promise`.
+[`WSResponse`](api/java/play/libs/ws/WSResponse.html) ile çalışmak `Promise` içinde planlanarak halledilir.
 
-### Processing a response as JSON
+### Cevabı JSON olarak işlemek
 
-You can process the response as a `JsonNode` by calling `response.asJson()`.
+`response.asJson()` çağırarak, cevabı `JsonNode` olarak işleyebilirsiniz.
 
 Java
 : @[ws-response-json](code/javaguide/ws/JavaWS.java)
@@ -92,9 +92,9 @@ Java
 Java 8
 : @[ws-response-json](java8code/java8guide/ws/JavaWS.java)
 
-### Processing a response as XML
+### Cevabı XML olarak işlemek
 
-Similarly, you can process the response as XML by calling `response.asXml()`.
+Benzer bir şekilde, `response.asXml()` çağırarak cevabı XML olarak işleyebilirsiniz.
 
 Java
 : @[ws-response-xml](code/javaguide/ws/JavaWS.java)
@@ -102,9 +102,9 @@ Java
 Java 8
 : @[ws-response-xml](java8code/java8guide/ws/JavaWS.java)
 
-### Processing large responses
+### Büyük cevapları işlemek
 
-When you are downloading a large file or document, `WS` allows you to get the response body as an `InputStream` so you can process the data without loading the entire content into memory at once.
+Büyük dosya veya döküman indirirken, `WS` cevap gövdesini `InputStream` olarak almanıza izin verir, böylece veriyi bütün içeriği bir kerede belleğe yüklemeden işleyebilirsiniz.
 
 Java
 : @[ws-response-input-stream](code/javaguide/ws/JavaWS.java)
@@ -112,13 +112,13 @@ Java
 Java 8
 : @[ws-response-input-stream](java8code/java8guide/ws/JavaWS.java)
 
-This example will read the response body and write it to a file in buffered increments.
+Bu örnek cevap gövdesini okuyup, arabelleklenen arttırımlarla dosyaya yazacaktır.
 
-## Common Patterns and Use Cases
+## Ortak Motifler ve Kullanım Durumları
 
-### Chaining WS calls
+### WS Çağrıları Zincirlemek
 
-You can chain WS calls by using `flatMap`.
+`flatMap` kullanarak zincir WS çağrıları yapabilirsiniz.
 
 Java
 : @[ws-composition](code/javaguide/ws/JavaWS.java)
@@ -126,8 +126,8 @@ Java
 Java 8
 : @[ws-composition](java8code/java8guide/ws/JavaWS.java)
 
-### Exception recovery
-If you want to recover from an exception in the call, you can use `recover` or `recoverWith` to substitute a response.
+### İstisnaları Kurtarmak
+Eğer istek içinde istisna durumları kurtarmak istiyorsanız, temcilci cevap için `recover` veya `recoverWith` kullanınız.
 
 Java
 : @[ws-recover](code/javaguide/ws/JavaWS.java)
@@ -135,9 +135,9 @@ Java
 Java 8
 : @[ws-recover](java8code/java8guide/ws/JavaWS.java)
 
-### Using in a controller
+### Controller Kullanımı
 
-You can map a `Promise<WSResponse>` to a `Promise<Result>` that can be handled directly by the Play server, using the asynchronous action pattern defined in [[Handling Asynchronous Results|JavaAsync]].
+`Promise<WSResponse>`'u `Promise<Result>`'a dönüştürerek [[Handling Asynchronous Results|JavaAsync]]'da tanımlanmış asenkron action motifi kullanarak Play sunucusu tarafından direkt idare edilmesini sağlayabilirsiniz.
 
 Java
 : @[ws-action](code/javaguide/ws/JavaWS.java)
@@ -145,50 +145,50 @@ Java
 Java 8
 : @[ws-action](java8code/java8guide/ws/JavaWS.java)
 
-## Using WSClient
+## WSClient kullanarak
 
-WSClient is a wrapper around the underlying [AsyncHttpClient](https://github.com/AsyncHttpClient/async-http-client). It is useful for defining multiple clients with different profiles, or using a mock.
+WSClient [AsyncHttpClient](https://github.com/AsyncHttpClient/async-http-client) temilinin kapsayıcısıdır. Çeşitli profillere sahip çoklu istemci tanımlamak veya taklit istek kullanımı için kullanışlıdır
 
-The default client can be called from the WS class:
+Varsayılan istemci WS sınıfından çağırılabilir:
 
 @[ws-client](code/javaguide/ws/JavaWS.java)
 
-You can define a WS client directly from code and use this for making requests.
+WS istemcisini doğrudan koddan tanımlayabilir ve bunu istek yapmak için kullanabilirsiniz.
 
 @[ws-custom-client](code/javaguide/ws/JavaWS.java)
 
-> NOTE: if you instantiate a NingWSClient object, it does not use the WS plugin system, and so will not be automatically closed in `Application.onStop`. Instead, the client must be manually shutdown using `client.close()` when processing has completed.  This will release the underlying ThreadPoolExecutor used by AsyncHttpClient.  Failure to close the client may result in out of memory exceptions (especially if you are reloading an application frequently in development mode).
+> NOTE: NingWSClient nesnesini temsil ediyorsanız, WS eklenti sistemini kullanmaz, ve bu yüzden `Application.onStop`'da otomatik olarak kapatılmayacaktır. Bunun yerine, işlemler tamamlanınca `client.close()` kullanarak elle kapatılmalıdır. Bu AsyncHttpClient tarafından kullanılan ThreadPoolExecutor'ın temelini serbest bırakacaktır. İstemci kapatırken oluşan bozukluk yetersiz bellek hatasına sebep olabilir. (özellikle uygulamanıcı geliştirici modunda sıklıkla kapatıp açıyorsanız).
 
-You can also get access to the underlying `AsyncHttpClient`.
+`AsyncHttpClient`'in temelinede erişebilirsiniz.
 
 @[ws-underlying-client](code/javaguide/ws/JavaWS.java)
 
-This is important in a couple of cases.  WS has a couple of limitations that require access to the client:
+Birkaç durumda bu önemlidir. WS'nin istemciye erişmesi gereken birkaç kısıtlaması vardır.
 
-* `WS` does not support multi part form upload directly.  You can use the underlying client with [RequestBuilder.addBodyPart](http://asynchttpclient.github.io/async-http-client/apidocs/com/ning/http/client/RequestBuilder.html).
-* `WS` does not support streaming body upload.  In this case, you should use the `FeedableBodyGenerator` provided by AsyncHttpClient.
+* `WS` direkt olarak çoklu parçalı form yüklemeyi desteklemez.Temel istemciyi ile [RequestBuilder.addBodyPart](http://asynchttpclient.github.io/async-http-client/apidocs/com/ning/http/client/RequestBuilder.html) kullanabilirsiniz.
+* `WS` yayın yapan gövdeyi yüklemeyi desteklemez. Bu durumda, AsyncHttpClient tarafından sağlanan `FeedableBodyGenerator` kullanmalısınız.
 
-## Configuring WS
+## WS Yapılandırma
 
-Use the following properties in `application.conf` to configure the WS client:
+WS istemcisini yapılandırmak için aşağıdaki özellikleri `application.conf` içinde kullanınız
 
-* `ws.followRedirects`: Configures the client to follow 301 and 302 redirects *(default is **true**)*.
-* `ws.useProxyProperties`: To use the system http proxy settings(http.proxyHost, http.proxyPort) *(default is **true**)*.
-* `ws.useragent`: To configure the User-Agent header field.
-* `ws.compressionEnable`: Set it to true to use gzip/deflater encoding *(default is **false**)*.
+* `ws.followRedirects`: İstemciyi 301 ve 302 yönlendirmelerini takip etmek için yapılandırır *(ön tanımlı **true**)*.
+* `ws.useProxyProperties`: Sistemin http vekalet(proxy) ayarlarını kullanmak (http.proxyHost, http.proxyPort) *(ön tanımlı **true**)*.
+* `ws.useragent`: User-Agent başlık alanını yapılandırmak için
+* `ws.compressionEnable`: Gzip/deflater sıkıştırmayı kullanmak için `true` olarak ayarlanmalıdır *(ön tanımlı **false**)*.
 
-### Timeouts
+### Zaman Aşımları
 
-There are 3 different timeouts in WS. Reaching a timeout causes the WS request to interrupt.
+WS'de 3 farklı zaman aşımı vardır. Zaman aşımına uğramak WS isteğinin kesilmesine yol açar.
 
-* `ws.timeout.connection`: The maximum time to wait when connecting to the remote host *(default is **120 seconds**)*.
-* `ws.timeout.idle`: The maximum time the request can stay idle (connection is established but waiting for more data) *(default is **120 seconds**)*.
-* `ws.timeout.request`: The total time you accept a request to take (it will be interrupted even if the remote host is still sending data) *(default is **none**, to allow stream consuming)*.
+* `ws.timeout.connection`: Uzak sunucuya bağlanırken beklenen azami süre *(ön tanımlı **120 saniye**)
+* `ws.timeout.idle`: Beklemede kalınan azami süre (bağlantı kuruldu fakat daha fazla veri için bekleniyor) *(ön tanımlı **120 saniye**)*.
+* `ws.timeout.request`: İstek almayı kabul etmek için toplam süre (uzak sunucu veri göndermeye devam etse bile istek kesilecektir) *(ön tanımlı **none**, akış bağlantılarına izin vermek için)*.
 
-The request timeout can be overridden for a specific connection with `setTimeout()` (see "Making a Request" section).
+İstek zaman aşımı belirli bağlantılarda `setTimeout()` kullanılarak geçersiz kılınabilir. ("İstek Yapmak" bölümüne bakınız)
 
-## Configuring WS with SSL
+## WS'yi SSL ile Yapılandırma
 
-To configure WS for use with HTTP over SSL/TLS (HTTPS), please see [[Configuring WS SSL|WsSSL]].
+WS'yi HTTP isteklerini SSL/TLS (HTTPS) üzerinden yapılandırmak için, lütfen [[WS SSL Yapılandırma|WsSSL]]'e bakınız.
 
-> **Next:** [[Connecting to OpenID services|JavaOpenID]]
+> **Sonraki:** [[OpenID servislerine bağlanma|JavaOpenID]]
