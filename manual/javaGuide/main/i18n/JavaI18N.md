@@ -74,4 +74,4 @@ public static Result index() {
 }
 ```
 
-> **Next:** [[Uygulama Global nesnesi | JavaGlobal]]
+> **Sonraki:** [[Uygulama Global nesnesi | JavaGlobal]]
