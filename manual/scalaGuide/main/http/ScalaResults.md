@@ -1,73 +1,73 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Manipulating Results
+# Yanıtları işlemek
 
-## Changing the default Content-Type
+## Varsayılan Content-Type'ı değiştirmek
 
-The result content type is automatically inferred from the Scala value that you specify as the response body.
+Yanıt içerik türü yanıt gövdesi olarak belirttiğiniz Scala değerinden otomatik olarak çıkarılır.
 
-For example:
+Örneğin:
 
 @[content-type_text](code/ScalaResults.scala)
 
 
-Will automatically set the `Content-Type` header to `text/plain`, while:
+`Content-Type` başlığını otomatik olarak `text/plain` setlerken:
 
 @[content-type_xml](code/ScalaResults.scala)
 
-will set the Content-Type header to `application/xml`.
+Content-Type başlığını `application/xml` olarak setleyecektir.
 
-> **Tip:** this is done via the `play.api.http.ContentTypeOf` type class.
+> **İpucu:** bu işlem `play.api.http.ContentTypeOf` tür sınıfı tarafından gerçekleştirilir.
 
-This is pretty useful, but sometimes you want to change it. Just use the `as(newContentType)` method on a result to create a new similar result with a different `Content-Type` header:
+Bu yöntem genelde kullanışlıdır fakat bazen bu davranışı değiştirmek istersiniz. Benzer bir yanıtı farklı bir `Content-Type` başlığı ile oluşturmak için result üzerinde `as(newContentType)` metodunu çağırmanız yeterlidir.
 
 @[content-type_html](code/ScalaResults.scala)
 
-or even better, using:
+Daha da iyisi aşağıdaki gibidir:
 
 @[content-type_defined_html](code/ScalaResults.scala)
 
-> **Note:** The benefit of using `HTML` instead of the `"text/html"` is that the charset will be automatically handled for you and the actual Content-Type header will be set to `text/html; charset=utf-8`. We will see that in a bit.
+> **Not:** `"text/html"` yerine `HTML` kullandığınızda charset sizin için otomatik olarak ele alınacak ve Content-Type başlığı `text/html; charset=utf-8` olarak setlenecektir. Bunu birazdan göreceğiz.
 
-## Manipulating HTTP headers
+## HTTP başlıklarını işlemek
 
-You can also add (or update) any HTTP header to the result:
+Yanıta istediğiniz HTTP başlığını ekleyebilir ya da mevcut başlığı güncelleyebilirsiniz:
 
 @[set-headers](code/ScalaResults.scala)
 
-Note that setting an HTTP header will automatically discard the previous value if it was existing in the original result.
+Eğer setlenmek istenen HTTP başlığı orijinal yanıtta mevcutsa başlığın önceki değerinin üzerine yazılır.
 
-## Setting and discarding cookies
+## Çerezleri setlemek ya da silmek
 
-Cookies are just a special form of HTTP headers but we provide a set of helpers to make it easier.
+Çerezler yalnızca HTTP başlıklarının özel bir biçimidir fakat onları yönetmek için bazı yardımcılar sunuyoruz.
 
-You can easily add a Cookie to the HTTP response using:
+HTTP yanıtına aşağıdaki gibi kolayca bir çerez ekleyebilirsiniz:
 
 @[set-cookies](code/ScalaResults.scala)
 
-Also, to discard a Cookie previously stored on the Web browser:
+Ya da tarayıcıda daha önce saklanmış olan çerezi silebilirsiniz:
 
 @[discarding-cookies](code/ScalaResults.scala)
 
-You can also set and remove cookies as part of the same response:
+Aynı yanıtta çerezleri hem ekleyebilir hem de silebilirsiniz:
 
 @[setting-discarding-cookies](code/ScalaResults.scala)
 
-## Changing the charset for text based HTTP responses.
+## Metin tabanlı HTTP yanıtlarının charset'ini değiştirmek
 
-For text based HTTP response it is very important to handle the charset correctly. Play handles that for you and uses `utf-8` by default.
+Metin tabanlı HTTP yanıtları için charset'in düzgün ele alınması çok önemlidir. Play bunu sizin için yönetir ve varsayılan olarak `utf-8` kullanır.
 
-The charset is used to both convert the text response to the corresponding bytes to send over the network socket, and to update the `Content-Type` header with the proper `;charset=xxx` extension.
+Charset hem metin yanıtının ağ soketi üzerinden üzerinden gönderilecek bayt dizisine çevrilmesinde hem de `Content-Type` başlığının düzgün `;charset=xxx` eklentisi ile güncellenmesinde kullanılır.
 
-The charset is handled automatically via the `play.api.mvc.Codec` type class. Just import an implicit instance of `play.api.mvc.Codec` in the current scope to change the charset that will be used by all operations:
+Charset `play.api.mvc.Codec` tür sınıfı tarafından otomatik olarak yönetilir. Örtük bir `play.api.mvc.Codec` örneğini şimdiki kapsama import ederek tüm işlemler tarafından kullanılacak charset'i değiştirebilirsiniz:
 
 @[full-application-set-myCustomCharset](code/ScalaResults.scala)
 
-Here, because there is an implicit charset value in the scope, it will be used by both the `Ok(...)` method to convert the XML message into `ISO-8859-1` encoded bytes and to generate the `text/html; charset=iso-8859-1` Content-Type header.
+Yukarıdaki örnekte kapsamda örtük bir charset değeri olduğundan hem `Ok(...)` metodu tarafından XML mesajın `ISO-8859-1` kodlanmış baytlara dönüştürülmesinde hem de `text/html; charset=iso-8859-1` Content-Type başlığının oluşturulmasında kullanılacaktır.
 
-Now if you are wondering how the `HTML` method works, here it is how it is defined:
+Şimdi `HTML` metodunun nasıl çalıştığını merak ediyorsanız tanımı aşağıda yer alıyor:
 
 @[Source-Code-HTML](code/ScalaResults.scala)
 
-You can do the same in your API if you need to handle the charset in a generic way.
+Eğer charset'i genel bir yolla ele almaya ihtiyaç duyarsanız benzer bir yöntemi kendi API'niz içinde kullanabilirsiniz.
 
-> **Next:** [[Session and Flash scopes | ScalaSessionFlash]]
+> **Sonraki:** [[Session ve Flash kapsamları | ScalaSessionFlash]]
