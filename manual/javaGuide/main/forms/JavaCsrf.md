@@ -1,52 +1,54 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Protecting against Cross Site Request Forgery
+# Cross Site Request Forgery'ye Karşı Korunmak
 
-Cross Site Request Forgery (CSRF) is a security exploit where an attacker tricks a victims browser into making a request using the victims session.  Since the session token is sent with every request, if an attacker can coerce the victims browser to make a request on their behalf, the attacker can make requests on the users behalf.
+Cross Site Request Forgery (CSRF), saldırganın kurbanın bilgisayarını, kurbanın oturumu ile bir istek yapacak şekilde kandırdığı bir güvenlik açığıdır. Oturum jetonu her istekle birlikte gönderildiğinden, bir saldırgan kurbanın tarayıcısını bir istek yapmaya zorlarsa, bu istek kullanıcının adına yapılmış gibi olur.
 
-It is recommended that you familiarise yourself with CSRF, what the attack vectors are, and what the attack vectors or not.  We recommend starting with [this information from OWASP](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29).
+CSRF ile, saldırı taşıyıcılarının neler olduğu ve neler olmadığı ile ilgili bilgi edinmeniz tavsiye edilir. Biz buradan başlamayı tavsiye ediyoruz: [this information from OWASP](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29).
 
-Simply put, an attacker can coerce a victims browser to make the following types of requests:
+Kısaca, bir saldırgan bir kurbanın tarayıcısını aşağıdaki türlerde istekler yapmaya zorlayabilir:
 
-* All `GET` requests
-* `POST` requests with bodies of type `application/x-www-form-urlencoded`, `multipart/form-data` and `text/plain`
+* Tüm `GET` istekleri
+* `application/x-www-form-urlencoded`, `multipart/form-data` veya `text/plain` gövde türlerinde `POST` istekleri
 
-An attacker can not:
+Bir saldırgan, tarayıcıyı:
 
-* Coerce the browser to use other request methods such as `PUT` and `DELETE`
-* Coerce the browser to post other content types, such as `application/json`
-* Coerce the browser to send new cookies, other than those that the server has already set
-* Coerce the browser to set arbitrary headers, other than the normal headers the browser adds to requests
+* `PUT` veya `DELETE` gibi diğer istek metotlarını kullanmaya
+* `application/json` ve benzeri farklı içerik türlerini göndermeye
+* sunucunun tanımladığından farklı olarak yeni çerezler tanımlamaya
+* tarayıcının isteklere eklediği normal başlıklara ilave olarak keyfi başlıklar eklemeye
 
-Since `GET` requests are not meant to be mutative, there is no danger to an application that follows this best practice.  So the only requests that need CSRF protection are `POST` requests with the above mentioned content types.
+zorlayamaz.
 
-### Play's CSRF protection
+`GET` istekleri değiştirici bir anlam taşımadığından, bu en iyi yöntemi kullanan bır uygulama için bir tehlike yoktur. Yani, CSRF korumasına ihtiyaç duyan istekler, yukarıda belirtilen içerik türlerinden birine sahip `POST` istekleridir.
 
-Play supports multiple methods for verifying that a request is not a CSRF request.  The primary mechanism is a CSRF token.  This token gets placed either in the query string or body of every form submitted, and also gets placed in the users session.  Play then verifies that both tokens are present and match.
+### Play'in CSRF koruması
 
-To allow simple protection for non browser requests, such as requests made through AJAX, Play also supports the following:
+Play, bir isteğin CSRF isteği olmadığını doğrulamak için birçok metot içerir. Birincil mekanizma bir CSRF jetonudur. Bu jeton hem gönderilen her formun sorgu dizesine konumlandırılır, hem de kullanıcının oturumuna eklenir. Daha sonra Play bu iki jetonun var olduğunu ve eşleştiğini doğrular.
 
-* If an `X-Requested-With` header is present, Play will consider the request safe.  `X-Requested-With` is added to requests by many popular Javascript libraries, such as jQuery.
-* If a `Csrf-Token` header with value `nocheck` is present, or with a valid CSRF token, Play will consider the request safe.
+Tarayıcıdan gelmeyen istekler (örneğin AJAX aracılığıyla yapılan istekler) için basit koruma sağlamak için, Play aynı zamanda şunu destekler:
 
-## Applying a global CSRF filter
+* Eğer bir `X-Requested-With` başlığı mevcut ise, Play bu isteği güvenli olarak kabul eder. `X-Requested-With`, jQuery gibi birçok popüler Javascript kütüphanesi tarafından isteklere eklenir.
+* Bir `nocheck` değerine veya geçerli bir CSRF jetonuna sahip `Csrf-Token` başlığı mevcut ise  Play bu isteği güvenli kabul eder.
 
-Play provides a global CSRF filter that can be applied to all requests.  This is the simplest way to add CSRF protection to an application.  To enable the global filter, add the Play filters helpers dependency to your project in `build.sbt`:
+## Global bir CSRF filtresi uygulamak
+
+Play, bütün isteklere uygulanabilecek bir global CSRF filtresi sunar. Bu bir uygulamaya CSRF koruması uygulamanın en kolay yoludur. Bu global filtreyi etkinleştirmek için, Play filtreleri yardımcısı bağımlılığını projenizin `build.sbt` dosyasına ekleyin:
 
 ```scala
 libraryDependencies += filters
 ```
 
-Now add the filter to your `Global` object:
+Şimdi filtreyi `Global` nesnenize ekleyin:
 
 @[global](code/javaguide/forms/csrf/Global.java)
 
-### Getting the current token
+### Mevcut jetonu almak
 
-To help in adding CSRF tokens to forms, Play provides some template helpers.  The first one adds it to the query string of the action URL:
+Formlara CSRF jetonları eklemeye yardımcı olmak için Play bazı şablon başlıklar sağlar. İlk olanı action URL'sinin sorgu dizesine jetonu ekler:
 
 @[csrf-call](code/javaguide/forms/csrf.scala.html)
 
-This might render a form that looks like this:
+Bu, aşağıdaki gibi görünen bir form sunabilir:
 
 ```html
 <form method="POST" action="/items?csrfToken=1234567890abcdef">
@@ -54,11 +56,11 @@ This might render a form that looks like this:
 </form>
 ```
 
-If it is undesirable to have the token in the query string, Play also provides a helper for adding the CSRF token as hidden field in the form:
+Eğer sorgu dizesinde jetonu bulundurmak sizin için istenmeyen bir şey ise, Play aynı zamanda CSRF jetonunu formda gizli bir alan olarak eklemek için bir yardımcı da sağlar:
 
 @[csrf-input](code/javaguide/forms/csrf.scala.html)
 
-This might render a form that looks like this:
+Bu, aşağıdaki gibi görünen bir form sunabilir:
 
 ```html
 <form method="POST" action="/items">
@@ -67,34 +69,34 @@ This might render a form that looks like this:
 </form>
 ```
 
-### Adding a CSRF token to the session
+### Oturuma bir CSRF jetonu eklemek
 
-To ensure that a CSRF token is available to be rendered in forms, and sent back to the client, the global filter will generate a new token for all GET requests that accept HTML, if a token isn't already available in the incoming request.
+Bir CSRF jetonunun formlarda sunulduğundan ve istemciye geri gönderildiğinden emin olmak için, eğer bir jeton gelen istekte mebcut değilse global filtre HTML kabul eden her GET isteği için yeni bir jeton üretecektir.
 
-## Applying CSRF filtering on a per action basis
+## Eylem bazında CSRF filtrelemesi uygulamak
 
-Sometimes global CSRF filtering may not be appropriate, for example in situations where an application might want to allow some cross origin form posts.  Some non session based standards, such as OpenID 2.0, require the use of cross site form posting, or use form submission in server to server RPC communications.
+Bazen, örneğin bir uygulamanın kökenler arası (cross origin) form gönderimlerine izin vermek istemesi durumunda, global CSRF filtrelemesi uygun olmayabilir. Bazı oturum tabanlı olmayan standartlar, örneğin OpenID 2.0, siteler arası form gönderimini veya sunucudan sunucuya RPC iletişimlerinde form gönderimini şart koşar.
 
-In these cases, Play provides two actions that can be composed with your applications actions.
+Böyle durumlarda, Play uygulamanızın eylemleriyle birleştirilebilecek iki eylem sunar.
 
-The first action is the `play.filters.csrf.RequireCSRFCheck` action, and it performs the check.  It should be added to all actions that accept session authenticated POST form submissions:
+İlk eylem `play.filters.csrf.RequireCSRFCheck` eylemidir ve kontrolü uygular. Bu eylem, tüm kimlik doğrulama gerektiren POST form gönderimi kabul eden eylemlere eklenmelidir:
 
 @[csrf-check](code/javaguide/forms/JavaCsrf.java)
 
-The second action is the `play.filters.csrf.AddCSRFToken` action, it generates a CSRF token if not already present on the incoming request.  It should be added to all actions that render forms:
+İkinci eylem, `play.filters.csrf.AddCSRFToken` eylemidir ve gelen istekte eğer halihazırda bir CSRF jetonu yoksa, yenisini üretir. Bu eylem form sunan tüm eylemlere eklenmelidir:
 
 @[csrf-add-token](code/javaguide/forms/JavaCsrf.java)
 
-## CSRF configuration options
+## CSRF yapılandırma seçenekleri
 
-The following options can be configured in `application.conf`:
+AŞağıdaki seçenekler `application.conf` dosyasında yapılandırılabilir:
 
-* `csrf.token.name` - The name of the token to use both in the session and in the request body/query string. Defaults to `csrfToken`.
-* `csrf.cookie.name` - If configured, Play will store the CSRF token in a cookie with the given name, instead of in the session.
-* `csrf.cookie.secure` - If `csrf.cookie.name` is set, whether the CSRF cookie should have the secure flag set.  Defaults to the same value as `session.secure`.
-* `csrf.body.bufferSize` - In order to read tokens out of the body, Play must first buffer the body and potentially parse it.  This sets the maximum buffer size that will be used to buffer the body.  Defaults to 100k.
-* `csrf.sign.tokens` - Whether Play should use signed CSRF tokens.  Signed CSRF tokens ensure that the token value is randomised per request, thus defeating BREACH style attacks.
-* `csrf.error.handler` - The error handler.  Must implement `play.filters.csrf.CSRFErrorHandler` or `play.filters.csrf.CSRF.ErrorHandler`.
+* `csrf.token.name` - Hem oturumda hem de istek gövdesi/sorgu dizesinde kullanıalcak jetonun adıdır. Varsayılanı `csrfToken`dir.
+* `csrf.cookie.name` - Eğer yapılandırıldıysa, Play CSRF jetonlarını oturumda saklamak yerine verilen isimde bir çerezde saklayacaktır.
+* `csrf.cookie.secure` - Eğer `csrf.cookie.name` ayarlandıysa, CSRF çerezi güvenli işaretine sahip olmalı/olmamalı işaretidir. Varsayılanı `session.secure`ünkiyle aynıdır.
+* `csrf.body.bufferSize` - Jetonları gövdeden okuyabilmek için, Play ilk önce gövdeyi tamponlamalı ve potansiyel olarak ayrıştırmalıdır. Bu seçenek gövdeyi tamponlamak için en yüksek tampon boyutunu ayarlar. Varsayılanı 100k'dir.
+* `csrf.sign.tokens` - Play imzalı CSRF jetonları kullanmalı/kullanmamalı ayarı. İmzalı CSRF jetonları bir jetonun her istek için rastgeleleştirilmiş olduğundan emin olur ve böylece BREACH tarzı saldırıları yok eder.
+* `csrf.error.handler` - Hata işleyici. `play.filters.csrf.CSRFErrorHandler` veya `play.filters.csrf.CSRF.ErrorHandler`ı uygulamalıdır.
 
-> **Next:** [[Working with JSON| JavaJsonActions]]
+> **Sonraki:** [[JSON ile Çalışmak| JavaJsonActions]]
 
