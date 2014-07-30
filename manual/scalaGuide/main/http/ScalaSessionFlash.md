@@ -1,64 +1,64 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Session and Flash scopes
+# Session ve Flash kapsamları
 
-## How it is different in Play
+## Play'de farklı olan
 
-If you have to keep data across multiple HTTP requests, you can save them in the Session or Flash scopes. Data stored in the Session are available during the whole user Session, and data stored in the Flash scope are available to the next request only.
+Eğer birden fazla HTTP isteği arasında veriyi korumak isterseniz Session ya da Flash kapsamlarında saklayabilirsiniz. Session kapsamında saklanan veri tüm kullanıcı oturumu boyunca korunur. Flash kapsamında saklanan veriye ise yalnızca bir sonraki istek tarafından erişilebilir.
 
-It’s important to understand that Session and Flash data are not stored by the server but are added to each subsequent HTTP request, using the cookie mechanism. This means that the data size is very limited (up to 4 KB) and that you can only store string values. The default name for the cookie is `PLAY_SESSION`. This can be changed by configuring the key `session.cookieName` in application.conf.
+Session ve Flash verisinin sunucu tarafında saklanmadığını, aksine çerez mekanizması kullanılarak her bir HTTP isteğine eklendiğini anlamak önemlidir. Bu sebeple veri boyutu sınırlıdır (en fazla 4KB) ve yalnızca string değerler saklayabilirsiniz. Çerezin varsayılan adı `PLAY_SESSION`'dır. application.conf içindeki `session.cookieName` anahtarı ile bu değiştirilebilir.
 
-> If the name of the cookie is changed, the earlier cookie can be discarded using the same methods mentioned in [[Setting and discarding cookies|ScalaResults]].
+> Eğer çerezin adı değiştirilirse önceki çerez [[Çerezleri setlemek ya da silmek|ScalaResults]] kısmında anlatılan yöntemle silinebilir.
 
-Of course, cookie values are signed with a secret key so the client can’t modify the cookie data (or it will be invalidated).
+Elbette çerez değerleri gizli bir anahtar ile imzalanır. Böylece istemci çerez verisini değiştiremez (aksi halde geçersiz olur).
 
-The Play Session is not intended to be used as a cache. If you need to cache some data related to a specific Session, you can use the Play built-in cache mechanism and store a unique ID in the user Session to keep them related to a specific user.
+Play Session bir önbellek gibi kullanılmak üzere tasarlanmamıştır. Belirli bir oturuma ait veriyi önbelleğe alma ihtiyacı duyarsanız Play'in dahili önbellek mekanizmasını kullanabilir ve veriyi kullanıcı ile ilişkilendirmek için kullanıcı Session'ında benzersiz bir ID saklayabilirsiniz.
 
-> There is no technical timeout for the Session. It expires when the user closes the web browser. If you need a functional timeout for a specific application, just store a timestamp into the user Session and use it however your application needs (e.g. for a maximum session duration, maximum inactivity duration, etc.).
+> Teknik olarak Session için bir zaman aşımı yoktur. Kullanıcı web tarayıcıyı kapattığında süresi dolar. Eğer zaman aşımı özelliğine ihtiyaç duyarsanız kullanıcı Session'ında bir zaman damgası saklayın ve bu bilgiyi ihtiyacınıza göre kullanın (ör. en çok oturum süresi, en çok eylemsizlik süresi, vb.)
 
-## Storing data in the Session
+## Session'da veri saklamak
 
-As the Session is just a Cookie, it is also just an HTTP header. You can manipulate the session data the same way you manipulate other results properties:
+Session yalnızca bir çerez olduğundan aslında bir HTTP başlığından ibarettir. Diğer yanıtların özelliklerini değiştirdiğiniz gibi session verisini de aynı yolla değiştirebilirsiniz.
 
 @[store-session](code/ScalaSessionFlash.scala)
 
 
-Note that this will replace the whole session. If you need to add an element to an existing Session, just add an element to the incoming session, and specify that as new session:
+Bunun tüm oturum verisini değiştireceğine dikkat edin. Mevcut oturuma yeni bir eleman eklemek isterseniz gelen oturuma bir eleman ekleyin ve bunu yeni oturum olarak belirtin:
 
 @[add-session](code/ScalaSessionFlash.scala)
 
 
-You can remove any value from the incoming session the same way:
+Aynı şekilde gelen oturumdan herhangi bir değeri çıkartabilirsiniz:
 
 @[remove-session](code/ScalaSessionFlash.scala)
 
-## Reading a Session value
+## Bir Session değerini okumak
 
-You can retrieve the incoming Session from the HTTP request:
+HTTP isteğinden gelen oturumu elde edebilirsiniz:
 
 @[index-retrieve-incoming-session](code/ScalaSessionFlash.scala)
 
-## Discarding the whole session
+## Tüm oturumu verisini silmek
 
-There is special operation that discards the whole session:
+Tüm oturumu silen özel bir işlem bulunmaktadır:
 
 @[discarding-session](code/ScalaSessionFlash.scala)
 
-## Flash scope
+## Flash kapsamı
 
-The Flash scope works exactly like the Session, but with two differences:
+Flash kapsamı tıpkı Session gibi çalışır fakat temel iki fark içerir:
 
-- data are kept for only one request
-- the Flash cookie is not signed, making it possible for the user to modify it.
+- veri yalnız bir istek için saklanır
+- Flash çerezi imzalanmaz. Bu sebeple kullanıcı çerezi değiştirebilir.
 
-> **Important:** The Flash scope should only be used to transport success/error messages on simple non-Ajax applications. As the data are just kept for the next request and because there are no guarantees to ensure the request order in a complex Web application, the Flash scope is subject to race conditions.
+> **Önemli:** Flash kapsamı yalnızca Ajax olmayan basit uygulamalarda başarı/hata durumlarını taşımak için kullanılmalıdır. Veri yalnızca bir sonraki istek için saklandığından ve karmaşık bir Web uygulamasında istek sırası için bir garanti olmadığından Flash kapsamı yarış durumlarına açıktır.
 
-Here are a few examples using the Flash scope:
+Aşağıda Flash kapsamını kullanan birkaç örnek yer alıyor:
 
 @[using-flash](code/ScalaSessionFlash.scala)
 
 
 
-To retrieve the Flash scope value in your view, just add an implicit with Flash:
+Görünüm katmanında Flash kapsamına erişmek için örtük bir Flash değeri ekleyin:
 ```
 @()(implicit flash: Flash)
 ...
@@ -66,8 +66,8 @@ To retrieve the Flash scope value in your view, just add an implicit with Flash:
 ...
 ```
 
-If the error '_could not find implicit value for parameter flash: play.api.mvc.Flash_' is raised then this is because your Action didn't import a request object. Add an "implicit request=>" as show below:
+Eğer '_could not find implicit value for parameter flash: play.api.mvc.Flash_' şeklinde bir hata alırsanız Action bir request import etmemiş demektir. Aşağıdaki gibi bir "implicit request=>" ekleyin:
 
 @[find-noflash](code/ScalaSessionFlash.scala)
 
-> **Next:** [[Body parsers | ScalaBodyParsers]]
+> **Sonraki:** [[Gövde ayrıştırıcılar | ScalaBodyParsers]]
