@@ -1,34 +1,34 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Adding support for a custom format to the template engine
+# Şablon motoruna özel bir biçim için destek kazandırmak
 
-The built-in template engine supports common template formats (HTML, XML, etc.) but you can easily add support for your own formats, if needed. This page summarizes the steps to follow to support a custom format.
+Yerleşik şablon motoru yaygın şablon biçimlerini (HTML, XML vb.) destekler; ama ihtiyaç duyarsanız kendi biçimleriniz için kolayca destek kazandırabilirsiniz. Bu sayfa özel bir biçimi desteklemek için takip edilmesi gereken adımları özetler.
 
-## Overview of the the templating process
+## Şablonlama işlemine genel bakış
 
-The template engine builds its result by appending static and dynamic content parts of a template. Consider for instance the following template:
+Şablon motoru bir şablonun statik ve dinamik içerik kısımlarını birleştirerek sonucunu üretir. Örneğin aşağıdaki şablonu inceleyelim:
 
 ```
 foo @bar baz
 ```
 
-It consists in two static parts (`foo ` and ` baz`) around one dynamic part (`bar`). The template engine concatenates these parts together to build its result. Actually, in order to prevent cross-site scripting attacks, the value of `bar` can be escaped before being concatenated to the rest of the result. This escaping process is specific to each format: e.g. in the case of HTML you want to transform “<” into “&amp;lt;”.
+Bu şablon bir dinamik parça (`bar`) etrafında iki statik parçadan (`foo ` and ` baz`) oluşur. Şablon motoru bu parçaları bir araya getirerek sonucunu üretir. Aslında, cross-site scripting saldırılarını önlemek için, `bar`ın değeri sonucun geri kalanına eklenmeden önce kurtarılabilir. Bu kurtarma işlemi biçime özeldir: Örneğin HTML'de “<” işaretini “&amp;lt;” ile değiştirmek istersiniz.
 
-How does the template engine know which format correspond to a template file? It looks at its extension: e.g. if it ends with `.scala.html` it associates the HTML format to the file.
+Şablon motoru bir şablon dosyasına hangi biçimin karşılık geldiğini nasıl anlar? O dosyanın uzantısına bakarak: Örneğin `.scala.html` ile bitiyorsa bu dosyaya HTML biçimini ilişkilendirir.
 
-In summary, to support your own template format you need to perform the following steps:
+Özetle, kendi şablon biçiminizi oluşturmak için aşağıdaki adımları yerine getirmelisiniz:
 
-* Implement the text integration process for the format ;
-* Associate a file extension to the format.
+* Biçim için metin bütünleştirme sürecini sağlamak ;
+* Biçime bir dosya uzantısı ilişkilendirmek.
 
-## Implement a format
+## Bir biçimi oluşturmak
 
-Implement the `play.twirl.api.Format<A>` interface that has the methods `A raw(String text)` and `A escape(String text)` that will be used to integrate static and dynamic template parts, respectively.
+Sırayla, statik ve dinamik şablon parçalarını bir araya getirmede kullanılacak `A raw(String text)` ve `A escape(String text)` metodlarını içeren `play.twirl.api.Format<A>` arayüzünü uygulayın (implement edin).
 
-The type parameter `A` of the format defines the result type of the template rendering, e.g. `Html` for a HTML template. This type must be a subtype of the `play.twirl.api.Appendable<A>` trait that defines how to concatenates parts together.
+Biçimin tür parametresi `A` şablon sunumunun sonuç türünü tanımlar, örneğin bir HTML şablonu için `Html`. Bu tür parçaların nasıl bir araya getirileceğini tanımlayan `play.twirl.api.Appendable<A>` trait'inin bir alt türü olmak zorundadır.
 
-For convenience, Play provides a `play.twirl.api.BufferedContent<A>` abstract class that implements `play.twirl.api.Appendable<A>` using a `StringBuilder` to build its result and that implements the `play.twirl.api.Content` interface so Play knows how to serialize it as an HTTP response body.
+Kolaylık için, Play, `play.twirl.api.Appendable<A>`'ı uygulayan, `StringBuilder` kullanarak kendi sonucunu üreten ve `play.twirl.api.Content` arayüzünü uygulayarak Play'in onu nasıl bir HTTP yanıt gövdesi olarak serialize edeceğini tanımlayan `play.twirl.api.BufferedContent<A>` soyut sınıfını sağlar.
 
-In short, you need to write two classes: one defining the result (implementing `play.twirl.api.Appendable<A>`) and one defining the text integration process (implementing `play.twirl.api.Format<A>`). For instance, here is how the HTML format could be defined:
+Kısaca, iki sınıf yazmanız gerekir: sonucu tanımlayan (`play.twirl.api.Appendable<A>`ı uygulayan) ve metin bir araya getirme işlemini tanımlayan (`play.twirl.api.Format<A>`ı uygulayan). Örneğin, HTML biçimi şöyle tanımlanmıştır:
 
 ```java
 public class Html extends BufferedContent<Html> {
@@ -43,18 +43,17 @@ public class Html extends BufferedContent<Html> {
 public class HtmlFormat implements Format<Html> {
   Html raw(String text: String) { … }
   Html escape(String text) { … }
-  public static final HtmlFormat instance = new HtmlFormat(); // The build process needs a static reference to the format (see the next section)
+  public static final HtmlFormat instance = new HtmlFormat(); // Yapı işlemi biçime statik bir referansa ihtiyaç duyar (sonraki bölüme bakınız).
 }
 ```
 
-## Associate a file extension to the format
+## Biçime bir dosya uzantısı ilişkilendirmek
 
-The templates are compiled into a `.scala` files by the build process just before compiling the whole application sources. The `TwirlKeys.templateFormats` key is a sbt setting of type `Map[String, String]` defining the mapping between file extensions and template formats. For instance, if you want Play to use your own HTML format implementation you have to write the following in your build file to associate the `.scala.html` files to your custom `my.HtmlFormat` format:
+Şablonlar, yapı işlemi tarafından tüm uygulama kaynağını derlemeden hemen önce `.scala` dosyalarına derlenirler. `TwirlKeys.templateFormats` anahtarı, dosya uzantıları ve şablon biçimleri arasındaki ilişkiyi tanımlayan `Map[String, String]` türünde bir sbt ayarıdır. Örneğin Play'ın kendi HTML biçim uygulamanızı kullanmasını isterseniz, `.scala.html` dosyalarını sizin özel `my.HtmlFormat` biçiminiz ile ilişkilendirebilmek için aşağıdaki kodu yapı dosyanıza yazmanız gerekir:
 
 ```scala
 TwirlKeys.templateFormats += ("html" -> "my.HtmlFormat.instance")
 ```
+Okun sağ tarafının `play.twirl.api.Format<?>` türünde statik bir değerin tam nitelikli adını içermesi gerektiğini unutmayın.
 
-Note that the right side of the arrow contains the fully qualified name of a static value of type `play.twirl.api.Format<?>`.
-
-> **Next:** [[HTTP form submission and validation | JavaForms]]
+> **Sonraki:** [[HTTP form gönderimi ve doğrulaması | JavaForms]]
