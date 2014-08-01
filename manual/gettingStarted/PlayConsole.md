@@ -1,11 +1,11 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Using the Play console
+# Play konsolunu kullanmak
 
-## Launching the console
+## Konsolu başlatmak
 
-The Play console is a development console based on sbt that allows you to manage a Play application’s complete development cycle.
+Play konsolu, bir Play uygulamasının bütün hayat döngüsünü yönetmenizi sağlayan, sbt tabanlı bir geliştirme konsoludur.
 
-To launch the Play console, change to the directory of your project, and run Activator:
+Play konsolunu başlatmak için, projenizin dizinine geçin ve Activator'ı çalıştırın:
 
 ```bash
 $ cd my-first-app
@@ -14,17 +14,17 @@ $ activator
 
 [[images/console.png]]
 
-## Getting help
+## Yardım almak
 
-Use the `help` command to get basic help about the available commands.  You can also use this with a specific command to get information about that command:
+Mevcut komutlar hakkında yardım almak için `help` komutunu kullanın. Aynı zamanda, bu komutu belirli bir komut ile beraber kullanarak bu komut hakkında bilgi edinebilirsiniz:
 
 ```bash
 [my-first-app] $ help run
 ```
 
-## Running the server in development mode
+## Sunucuyu geliştirme modunda çalıştırmak
 
-To run the current application in development mode, use the `run` command:
+Mevcut uygulamayı geliştirme modunda çalıştırmak için `run`komutunu kullanın:
 
 ```bash
 [my-first-app] $ run
@@ -32,17 +32,17 @@ To run the current application in development mode, use the `run` command:
 
 [[images/consoleRun.png]]
 
-In this mode, the server will be launched with the auto-reload feature enabled, meaning that for each request Play will check your project and recompile required sources. If needed the application will restart automatically.
+Bu modda, sunucu otomatik yenileme özelliği etkinleştirilmiş halde başlatılacaktır. Yani her bir istek için Play projenizi gözden geçirecek ve gereken kaynakları yeniden derleyecektir. Gerekli durumlarda uygulama otomatik olarak yeniden başlayacaktır.
 
-If there are any compilation errors you will see the result of the compilation directly in your browser:
+Eğer bir derleme hatası varsa derlemenin sonucunu doğrudan tarayıcınızda göreceksiniz:
 
 [[images/errorPage.png]]
 
-To stop the server, type `Crtl+D` key, and you will be returned to the Play console prompt.
+Sunucuyu durdurmak için, `Crtl+D` tuşlarını kullanın. Böylece Play konsoluna geri döneceksiniz.
 
-## Compiling
+## Derlemek
 
-In Play you can also compile your application without running the server. Just use the `compile` command:
+Aynı zamanda, Play ile sunucuyu çalıştırmadan uygulamanızı derleyebilirsiniz. Yalnızca `compile` komutunu kullanın:
 
 ```bash
 [my-first-app] $ compile
@@ -50,64 +50,65 @@ In Play you can also compile your application without running the server. Just u
 
 [[images/consoleCompile.png]]
 
-## Launch the interactive console
+## İnteraktif konsolu başlatmak
 
-Type `console` to enter the interactive Scala console, which allows you to test your code interactively:
+Kodunuzu etkileşimli olarak test etmenizi sağlanyan Scala konsoluna girmek için `console` yazın:
 
 ```bash
 [my-first-app] $ console
 ```
 
-To start application inside scala console (e.g to access database):
+Uygulamayı Scala konsolu içinde başlatmak için (örneğin veritabanına bağlanmak için):
+
 ```bash
 scala> new play.core.StaticApplication(new java.io.File("."))
 ```
 
 [[images/consoleEval.png]] 
 
-## Debugging
+## Hata ayıklama
 
-You can ask Play to start a **JPDA** debug port when starting the console. You can then connect using Java debugger. Use the `activator -jvm-debug <port>` command to do that:
+Konsolu başlatırken, Play'den bir **JPDA** hata ayıklama portu başlatmasını isteyebilirsiniz. Böylece bir Java hata ayıklayıcısıyla uygulamaya bağlanabilirsiniz. Bunu yapmak için `activator -jvm-debug <port>` komutunu kullanın:
 
 ```
 $ activator -jvm-debug 9999
 ```
 
-When a JPDA port is available, the JVM will log this line during boot:
+Bir JPDA portu uygun olduğu zaman, JVM açılışta bunun kaydını tutar:
 
 ```
 Listening for transport dt_socket at address: 9999
 ```
 
-## Using sbt features
+## sbt özelliklerini kullanmak
 
-The Play console is just a normal sbt console, so you can use sbt features such as **triggered execution**. 
+Play konsolu aslında tipik bit sbt konsoludur. Yani **triggered execution** gibi sbt özelliklerini kullanabilirsiniz.
 
-For example, using `~ compile`
+Örneğin, `~ compile`'ı kullanmak
 
 ```bash
 [my-first-app] $ ~ compile
 ```
 
-The compilation will be triggered each time you change a source file.
+Bir kaynak dosyasını her değiştirişinizde derleme tetiklenecektir.
 
-If you are using `~ run`
+`~ run`'ı kullanıyorsanız
 
 ```bash
 [my-first-app] $ ~ run
 ```
 
-The triggered compilation will be enabled while a development server is running.
+Bir geliştirme sunucusu çalışırken tetiklenen derleme etkinleştirilecektir.
 
-You can also do the same for `~ test`, to continuously test your project each time you modify a source file:
+Bir kaynak dosyasını her değiştirdiğinizde projenizi devamlı olarak test etmek için aynı şeyi `~ test` ile yapabilirsiniz:
 
 ```bash
 [my-first-app] $ ~ test
 ```
 
-## Using the play commands directly
+## Play komutlarını doğrudan kullanmak
 
-You can also run commands directly without entering the Play console. For example, enter `activator run`:
+Play konsoluna girmeden, doğrudan da komutları çalıştrabilirsiniz. Örneğin, `activator run` komutunu girin:
 
 ```bash
 $ activator run
@@ -121,6 +122,6 @@ $ activator run
 (Server started, use Ctrl+D to stop and go back to the console...)
 ```
 
-The application starts directly. When you quit the server using `Ctrl+D`, you will come back to your OS prompt.
+Uygulama hemen başlar. `Ctrl+D` tuşlarını kullanarak çıktığınızda işletim sistemi konsoluna düşersiniz.
 
-> **Next:** [[Setting-up your preferred IDE | IDE]]
+> **Sonraki:** [[Tercih ettiğiniz IDE'yi kurmak | IDE]]
