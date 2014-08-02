@@ -1,17 +1,17 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Starting your application in production mode
+# Uygulamanızı üretim modunda başlatmak
 
-We have seen how to run a Play application in development mode, however the `run` command should not be used to run an application in production mode.  When using `run`, on each request, Play checks with SBT to see if any files have changed, and this may have significant performance impacts on your application.
+Daha öncesinde bir Play uygulamasını geliştirme ortamında nasıl başlatabileceğimizi görmüştük. Ne var ki `run` komutu bir uygulamayı üretim ortamında çalıştırmak için kullanılmamalıdır. `run` kullanılırken, her istekte, Play yeniden SBT ile herhangi bir dosyada değişiklik olup olmadığını kontrol eder ve bu işlemlerin uygulamanızın performansı üzerine önemli etkileri olabilir.
 
-There are several ways to deploy a Play application in production mode. Let's start by using the simplest way, using a local Play installation.
+Bir Play uygulamasını üretim modunda dağıtmanın birçok yolu vardır. Yerel bir Play kurulumuyla, en basit yol ile başlayalım.
 
-## The application secret
+## Uygulama gizli anahtarı
 
-Before you run your application in production mode, you need to generate an application secret.  To read more about how to do this, see [[Configuring the application secret|ApplicationSecret]].  In the examples below, you will see the use of `-Dapplication.secret=abcdefghijk`.  You must generate your own secret to use here.
+Uygulamanızı üretim modunda çalıştırmadan önce, bir gizli anahtar üretmeye ihtiyaç duyacaksınız. Bunun nasıl yapılacağı hakkında ayrıntılı bilgi için [[Uygulama gizli anahtarını yapılandırmak|ApplicationSecret]] sayfasını ziyaret edin. Aşağıdaki örneklerde, `-Dapplication.secret=abcdefghijk` kullanımını göreceksiniz. Burada kendi gizli anahtarınızı üretmeli ve kullanmalısınız.
 
-## Using the start command
+## Start komutunu kullanmak
 
-The easiest way to start an application in production mode is to use the `start` command from the Play console. This requires a Play installation on the server.
+Bir Play uygulamasını üretim modunda başlatmanın en kolay yolu Play konsolunda `start` komutunu kullanmaktır. Bu, sunucuda bir Play kurulumu gerektirir.
 
 ```bash
 [my-first-app] $ start -Dapplication.secret=abcdefghijk
@@ -20,45 +20,45 @@ The easiest way to start an application in production mode is to use the `start`
 
 [[images/start.png]]
 
-When you run the `start` command, Play forks a new JVM and runs the default Netty HTTP server. The standard output stream is redirected to the Play console, so you can monitor its status.
+`start` komutunu çalıştırdığınızda, Play yeni bir JVM ayırır ve varsayılan Netty HTTP sunucusunu çalıştırır. Standart çıktı akımı Play konsoluna yönlendirilir, böylece uygulamanın durumunu buradan izleyebilirsiniz.
 
-The server’s process id is displayed at bootstrap and written to the `RUNNING_PID` file. To kill a running Play server, it is enough to send a `SIGTERM` to the process to properly shutdown the application.
+Sunucunun process id'si başlangıç sırasında görüntülenir ve `RUNNING_PID` dosyasına yazılır. Çalışan bir Play sunucusunu kurdurmak için o işleme `SIGTERM` mesajını göndermek yeterlidir. Böylece uygulama düzgün bir şekilde kapatılır.
 
-If you type `Ctrl+D`, the Play console will quit, but the created server process will continue running in background. The forked JVM’s standard output stream is then closed, and logging can be read from the `logs/application.log` file.
+Eğer `Ctrl+D` tuşlarını kullanırsanız, Play konsolu çıkacaktır ancak daha önce yaratılmış sunucu işlemi arka planda çalışmaya devam edecektir. JVM'in varsayılan çıktı akımı kapanacaktır ve kayıtlar `logs/application.log` dosyasından okunabilir.
 
-If you type `Ctrl+C`, you will kill both JVMs: the Play console and the forked Play server. 
+Eğer `Ctrl+C` tuşlarını kullanırsanız, her iki JVM'i de kapatmış olursunuz: Play konsolu ve de Play ayrılan sunucusu.
 
-You can also use `activator start` at your OS command prompt to start the server without first starting the Play console:
+Aynı zamanda doğrudan işletim sisteminizin konsoluna `activator start` yazarak da sunucuyu doğrudan çalıştırabilirsiniz:
 
 ```bash
 $ activator start -Dapplication.secret="abcdefghijk"
 ```
 
-## Using the stage task
+## Stage görevini kullanmak
 
-The `start` command starts the application interactively, which means that human interaction is needed, and `Ctrl+D` is required to detach the process. This solution is not really convenient for automated deployment.
+`start` komutu uygulamayı etkileşimli olarak başlatır, yani insan etkileşimi gereklidir. Uygulamayı sonlandırmak içinse `Ctrl+D` tuşları gereklidir. Bu çözüm otomatikleştirilmiş dağıtım için çok da elverişli değildir.
 
-You can use the `stage` task to prepare your application to be run in place. The typical command for preparing a project to be run in place is:
+Uygulamanızı yerinde kullanıma hazırlamak için `stage` görevini kullanabilirsiniz. Bunun için tipik kullanım şu şekildedir:
 
 ```bash
 $ activator clean stage
 ```
 [[images/stage.png]]
 
-This cleans and compiles your application, retrieves the required dependencies and copies them to the `target/universal/stage` directory. It also creates a `bin/<start>` script where `<start>` is the project's name. The script runs the Play server on Unix style systems and there is also a corresponding `bat` file for Windows.
+Bu, uygulamanızı temizler ve derler; gerekli bağımlılıkları getirir ve onları `target/universal/stage` dizinine kopyalar. Aynı zamanda `<start>`'ın projenizin adı olduğu bir `bin/<start>` betiği oluşturur. Bu betik Play sunucusunu Unix tipi işletim sistemlerinde; ona karşılık gelen `bat` dosyası da Windows'da çalışır.
 
-For example to start an application of the project `my-first-app` from the project folder you can:
+Örneğin `my-first-app` projesinin dizininden bir uygulama başlatmak için şunu yapabilirsiniz:
 
 ```bash
 $ target/universal/stage/bin/my-first-app -Dapplication.secret=abcdefghijk
 ```
 
-You can also specify a different configuration file for a production environment, from the command line:
+Aynı zamanda komut satırından, bir üretim ortamı için farklı bir yapılandırma dosyası belirtebilirsiniz:
 
 ```bash
 $ target/universal/stage/bin/my-first-app -Dconfig.file=/full/path/to/conf/application-prod.conf
 ```
 
-For a full description of usage invoke the start script with a `-h` option.
+Kullanımın tam açıklaması için başlatma betiğini `-h` seçeneği ile çağırın.
 
-> **Next:** [[Creating a standalone distribution|ProductionDist]]
+> **Sonraki:** [[Bağımsız bir dağıtım yaratmak|ProductionDist]]
