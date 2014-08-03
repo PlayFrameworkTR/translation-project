@@ -1,56 +1,58 @@
-# The Application Secret
+# Uygulama Gizli Anahtarı
 
-Play uses a secret key for a number of things, including:
+Play şunları da içeren bazı şeyler için bir gizli anahtar kullanır:
 
-* Signing session cookies and CSRF tokens
-* Built in encryption utilities
+* Oturum çerezlerini ve CSRF jetonlarını imzalamak
+* Yerleşik şifreleme araçları
 
-It is configured in `application.conf`, with the property name `application.secret`, and defaults to `changeme`.  As the default suggests, it should be changed for production.
+Uygulama gizli anahtarı `application.conf` dosyasında yapılandırılır, `application.secret` özellik adına sahiptir ve varsayılanı `changeme`'dir. Varsayılanın tavsiye ettiği gibi, üretimde bu anahtar değiştirilmelidir.
 
-> When started in prod mode, if Play finds that the secret is not set, or if it is set to `changeme`, Play will throw an error.
 
-## Best practices
+> Üretim modunda başlatıldığında, Play anahtarın ayarlanmadığını ya da `changeme`'ye ayarlandığını fark ederse, bir hata fırlatacaktır.
 
-Anyone that can get access to the secret will be able to generate any session they please, effectively allowing them to log in to your system as any user they please.  Hence it is strongly recommended that you do not check your application secret into source control.  Rather, it should be configured on your production server.  This means that it is considered bad practice to put the production application secret in `application.conf`.
+## En iyi uygulamalar
 
-One way of configuring the application secret on a production server is to pass it as a system property to your start script.  For example:
+Gizli anahtarınıza erişim sağlayan herkes istediği her oturumu yaratabilecektir ve bu onların sisteminize istedikleri her kullanıcı ile giriş yapabilmelerini sağlar. Bundan dolayı, gizli anahtarınızı kaynak kontrolü sistemlerine kayıt etmemeniz şiddetle tavsiye edilir. Aksine, bu anahtar sunucunuzda yapılandırılmalıdır. Bu demektir ki bir üretim uygulamasının gizli anahtarını `application.conf` içine yerleştirmek kötü bir uygulamadır.
+
+Bir üretim sunucusunda uygulama anahtarını yapılandırmanın bir yolu, anahtarı bir sistem özelliği olarak başlangıç betiğinizde geçirmektir. Örneğin:
 
 ```bash
 /path/to/yourapp/bin/yourapp -Dapplication.secret="QCY?tAnfk?aZ?iwrNwnxIlR6CTf:G3gf:90Latabg@5241AB`R5W:1uDFN];Ik@n"
 ```
 
-This approach is very simple, and we will use this approach in the Play documentation on running your app in production mode as a reminder that the application secret needs to be set.  In some environments however, placing secrets in command line arguments is not considered good practice.  There are two ways to address this.
+Bu yaklaşım çok basittir ve bunu Play dokümantasyonunun uygulamanızı üretim modunda çalıştırma kısmında gizli anahtarın ayarlanması gerektiğine bir hatırlatma olarak kullanacağız. Ancak, bazı ortamlarda komut satırında gizli anahtarları geçirmek iyi bir uygulama olarak görülmez. Bunu değiştirmenin iki yolu vardır.
 
-### Environment variables
 
-The first is to place the application secret in an environment variable.  In this case, we recommend you place the following configuration in your `application.conf` file:
+### Ortam değişkenleri
+
+İlki, gizli anahtarı bir ortam değişkenine yerleştirmektir. Bu durumda, aşağıdaki yapılandırmayı `application.conf` dosyanıza yerleştirmenizi tavsiye ediyoruz:
 
     application.secret="changeme"
     application.secret=${?APPLICATION_SECRET}
 
-The second line in that configuration sets the secret to come from an environment variable called `APPLICATION_SECRET` if such an environment variable is set, otherwise, it leaves the secret unchanged from the previous line.
+Bu yapılandırma kümesindeki ikinci satır gizli anahtarı, eğer mevcutsa `APPLICATION_SECRET` adında bir değişkenden gelecek şekilde ayarlar. Aksi taktirde anahtarı önceki satırdaki haliyle, değiştirmeden bırakır.
 
-This approach works particularly well for cloud based deployment scenarios, where the normal practice is to set passwords and other secrets via environment variables that can be configured through the API for that cloud provider.
+Bu yaklaşım özellikle normal uygulamanın, parolaları bulut sağlayıcısının API'larıyla yapılandırılabilen ortam değişkenleriyle ayarlamak olduğu bulut tabanlı dağıtım senaryoları için iyi çalışır.
 
-### Production configuration file
+### Üretim yapılandırma dosyası
 
-Another approach is to create a `production.conf` file that lives on the server, and includes `application.conf`, but also overrides any sensitive configuration, such as the application secret and passwords.
+Başka bir yaklaşım da sunucuda yaşayan ve `application.conf`'u kendisine dahil eden ama aynı zamanda uygulama gizli anahtarı ya da parolalar gibi bütün hassas yapılandırmaların üzerine yazan bir `production.conf` dosyası yaratmaktır. 
 
-For example:
+Örneğin:
 
     include "application"
 
     application.secret="QCY?tAnfk?aZ?iwrNwnxIlR6CTf:G3gf:90Latabg@5241AB`R5W:1uDFN];Ik@n"
 
-Then you can start Play with:
+Böylece Play'i bununla başlatabilirsiniz:
 
 ```bash
 /path/to/yourapp/bin/yourapp -Dconfig.file=/path/to/production.conf
 ```
 
-## Generating an application secret
+## Bir uygulama gizli anahtarı üretmek
 
-Play provides a utility that you can use to generate a new secret.  Run `play-generate-secret` in the Play console.  This will generate a new secret that you can use in your application.  For example:
+Play, yeni bir gizli anahtar üretmek için kullanabileceğiniz bir araç sağlar. Play konsolunda `play-generate-secret` komutunu çalıştırın. Bu, uygulamanızda kullanabileceğiniz yeni bir anahtar üretir. Örneğin:
 
 ```
 [my-first-app] $ play-generate-secret
@@ -58,11 +60,11 @@ Play provides a utility that you can use to generate a new secret.  Run `play-ge
 [success] Total time: 0 s, completed 28/03/2014 2:26:09 PM
 ```
 
-## Updating the application secret in application.conf
+## application.conf dosyasındaki gizli anahtarı güncellemek
 
-Play also provides a convenient utility for updating the secret in `application.conf`, should you want to have a particular secret configured for development or test servers.  This is often useful when you have encrypted data using the application secret, and you want to ensure that the same secret is used every time the application is run in dev mode.
+Play aynı zamanda, eğer bir gizli anahtarın geliştirme ya da test sunucuları için yapılandırılmasını isterseniz, `application.conf`'taki gizli anahtarı güncellemek için de bir araç sağlar. Bu çoğu zaman, uygulama gizli anahtarıyla şifrelenmiş verileriniz varsa ve geliştirme modunda uygulamanın daima aynı anahtar ile çalışacağından emin olmak için yararlıdır.
 
-To update the secret in `application.conf`, run `play-update-secret` in the Play console:
+`application.conf` dosyasındaki gizli anahtarı güncellemek için, Play konsolunda `play-update-secret` komutunu çalıştırın: 
 
 ```
 [my-first-app] $ play-update-secret
@@ -72,4 +74,4 @@ To update the secret in `application.conf`, run `play-update-secret` in the Play
 [success] Total time: 0 s, completed 28/03/2014 2:36:54 PM
 ```
 
-> **Next:** [[Configuring the JDBC connection pool|SettingsJDBC]]
+> **Sonraki:** [[JDBC bağlantı havuzunu yapılandırmak|SettingsJDBC]]
