@@ -1,29 +1,29 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Content negotiation
+# İçerik müzakeresi
 
-Content negotiation is a mechanism that makes it possible to serve different representation of a same resource (URI). It is useful *e.g.* for writing Web Services supporting several output formats (XML, JSON, etc.). Server-driven negotiation is essentially performed using the `Accept*` requests headers. You can find more information on content negotiation in the [HTTP specification](http://www.w3.org/Protocols/rfc2616/rfc2616-sec12.html).
+İçerik müzakeresi aynı kaynağın (URI) farklı görünümlerini sunabilmeyi mümkün kılan bir mekanizmadır. Değişik biçimlerde (XML, JSON, vb.) çıktı veren Web Servisleri yazmak için kullanılabilir. Sunucu-sürülen müzakere temel olarak `Accept*` istek başlıkları kullanılarak gerçekleştirilir. [HTTP specification](http://www.w3.org/Protocols/rfc2616/rfc2616-sec12.html) içerisinde içerik müzakeresi hakkında daha fazla bilgiye ulaşabilirsiniz.
 
-# Language
+# Dil
 
-You can get the list of acceptable languages for a request using the `play.api.mvc.RequestHeader#acceptLanguages` method that retrieves them from the `Accept-Language` header and sorts them according to their quality value. Play uses it in the `play.api.mvc.Controller#lang` method that provides an implicit `play.api.i18n.Lang` value to your actions, so they automatically use the best possible language (if supported by your application, otherwise your application’s default language is used).
+Bir istek için kabul edilen dillerin listesini, bu dilleri `Accept-Language` başlığından çıkaran ve onları kalite değerlerine göre sıralayan `play.api.mvc.RequestHeader#acceptLanguages` metodunu kullanarak elde edebilirsiniz. Play bunu `play.api.mvc.Controller#lang` metodunda kullanır. Bu metod action'larınızın en iyi dili kullanmaları için örtük bir `play.api.i18n.Lang` sağlar (eğer uygulamanız tarafından destekleniyorsa, aksi halde uygulamanın varsayılan dili kullanılır).
 
-# Content
+# İçerik
 
-Similarly, the `play.api.mvc.RequestHeader#acceptedTypes` method gives the list of acceptable result’s MIME types for a request. It retrieves them from the `Accept` request header and sorts them according to their quality factor.
+Benzer şekilde `play.api.mvc.RequestHeader#acceptedTypes` metodu bir istek için kabul edilen yanıt MIME türlerini verir. Bu türleri `Accept` istek başlığından alır ve onları kalite faktörlerine göre sıralar.
 
-Actually, the `Accept` header does not really contain MIME types but media ranges (*e.g.* a request accepting all text results may set the `text/*` range, and the `*/*` range means that all result types are acceptable). Controllers provide a higher-level `render` method to help you to handle media ranges. Consider for example the following action definition:
+Aslında `Accept` başlığı gerçekten MIME türleri barındırmak yerine medya aralıkları içerir (örneğin tüm metin yanıtlarını kabul eden bir istek `text/*` aralığını setleyebilir; `*/*` aralığı tüm yanıt türleri kabul edilir anlamına gelir). Controller'lar medya aralıklarını yönetmeniz için yüksek seviyeli bir `render` metodu sunar. Örnek olarak aşağıdaki action tanımını inceleyin:
 
 @[negotiate_accept_type](code/ScalaContentNegotiation.scala)
 
-`Accepts.Html()` and `Accepts.Json()` are extractors testing if a given media range matches `text/html` and `application/json`, respectively. The `render` method takes a partial function from `play.api.http.MediaRange` to `play.api.mvc.Result` and tries to apply it to each media range found in the request `Accept` header, in order of preference. If none of the acceptable media ranges is supported by your function, the `NotAcceptable` result is returned.
+`Accepts.Html()` ve `Accepts.Json()` verilen medya aralığının sırasıyla `text/html` ve `application/json` ile eşleştiğini test eden çıkarıcılardır. `render` metodu `play.api.http.MediaRange`'ten `play.api.mvc.Result`'a bir kısmi fonksiyon alır ve onu isteğin `Accept` başlığında bulunan her bir medya aralığı için tercih sırasına göre uygulamaya çalışır. Eğer kabul edilen medya aralıklarından hiçbiri fonksiyonunuz tarafından desteklenmiyorsa `NotAcceptable` yanıtı döndürülür.
 
-For example, if a client makes a request with the following value for the `Accept` header: `*/*;q=0.5,application/json`, meaning that it accepts any result type but prefers JSON, the above code will return the JSON representation. If another client makes a request with the following value for the `Accept` header: `application/xml`, meaning that it only accepts XML, the above code will return `NotAcceptable`.
+Örneğin bir istemci `Accept` başlığında `*/*;q=0.5,application/json` değeri ile bir istek yaptığında ki bu tüm yanıt türlerini kabul ettiği fakat JSON tercih ettiği anlamına gelir, yukarıdaki kod JSON görünümünü döndürecektir. Eğer başka bir istemci `Accept` başlığı için yalnızca XML kabul ettiğini belirten `application/xml` değerini kullanırsa yukarıdaki kod `NotAcceptable` döndürür.
 
-# Request extractors
+# İstek çıkarıcılar
 
-See the API documentation of the `play.api.mvc.AcceptExtractors.Accepts` object for the list of the MIME types supported by Play out of the box in the `render` method. You can easily create your own extractor for a given MIME type using the `play.api.mvc.Accepting` case class, for example the following code creates an extractor checking that a media range matches the `audio/mp3` MIME type:
+Play tarafından `render` metodunda dahili olarak desteklenen MIME türlerinin bir listesine erişmek için `play.api.mvc.AcceptExtractors.Accepts` nesnesinin API dokümantasyonuna bakınız. İstediğiniz MIME türü için `play.api.mvc.Accepting` case class'ını kullanarak kolayca kendi çıkarıcınızı yazabilirsiniz. Örneğin aşağıdaki kod `audio/mp3` MIME türü ile eşleşen medya aralıklarını test eden bir çıkarıcı yaratır:
 
 @[extract_custom_accept_type](code/ScalaContentNegotiation.scala)
 
 
-> **Next:** [[Asynchronous HTTP programming | ScalaAsync]]
+> **Sonraki:** [[Asenkron HTTP programlama | ScalaAsync]]
