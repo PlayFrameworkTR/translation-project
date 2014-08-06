@@ -1,26 +1,26 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# The Build System
+# İnşa Sistemi
 
-The Play build system uses [sbt](http://www.scala-sbt.org/), a high-performance integrated build for Scala and Java projects.  Using `sbt` as our build tool brings certain requirements to play which are explained on this page.
+Play inşa sistemi, Scala ve Java projeleri için yüksek performanslı ve birleşik bir inşa sistemi olan [sbt](http://www.scala-sbt.org/)'yi kullanır. `sbt`'yi inşa sistemimiz olarak kullanmak bu sayfada açıklanan bazı gereksinimleri beraberinde getirir.
 
-## Play application directory structure 
+## Play uygulama dizin yapısı
 
-Most people get started with Play using the `activator new foo` command which produces a directory structure like this:
+Çoğu insan Play'e `activator new foo` komutuyla başlar, bu da aşağıdaki gibi bir dizin yapısı üretir:
 
-- `/`: The root folder of your application
-- `/README`: A text file describing your application that will get deployed with it.
-- `/app`: Where your application code will be stored.
-- `/build.sbt`: The [sbt](http://www.scala-sbt.org/) settings that describe building your application.
-- `/conf`: Configuration files for your application
-- `/project`: Further build description information
-- `/public`: Where static, public assets for your application are stored.
-- `/test`: Where your application's test code will be stored.
+- `/`: Uygulamanızın kök dizini
+- `/README`: Uygulamanızı tanıtan bir metin dosyası
+- `/app`: Uygulama kodlarınızın saklanacağı dizin
+- `/build.sbt`: Uygulamanızın inşasını açıklayan [sbt](http://www.scala-sbt.org/) ayarları
+- `/conf`: Uygulamanız için yapılandırma dosyaları
+- `/project`: Daha fazla inşa açıklamaları ve bilgileri
+- `/public`: Projenizdeki sabit ve herkese açık varlıkların saklanacağı dizin
+- `/test`: Uygulamanızın test kodlarının saklanacağı dizin
 
-For now, we are going to concern ourselves with the `/build.sbt` file and the `/project` directory.
+Şimdilik, `/build.sbt` dosyası ve `/project` dizini ile ilgileneceğiz.
 
-## The `/build.sbt` file. 
+## `/build.sbt` dosyası 
 
-When you use the `activator new foo` command, the build description file, `/build.sbt`, will be generated like this:
+`activator new foo` komutunu kullandığınızda, inşa açıklama dosyası, `/build.sbt`, bu şekilde üretilecektir:
 
 ```scala
 name := "foo"
@@ -36,17 +36,17 @@ libraryDependencies ++= Seq(
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 ```
 
-The `name` line defines the name of your application and it will be the same as the name of your application's root directory, `/`, which is derived from the argument that you gave to the `activator new` command. 
+`name` satırı uygulamanızın adını tanımlar ve uygulamanızın kök dizininin adıyla aynı olacaktır. Kök dizin adı, `activator new` komutuyla birlikte verdiğiniz argümandan çıkarılır.
 
-The `version` line provides  the version of your application which is used as part of the name for the artifacts your build will produce.
+`version` satırı uygulamanızın versiyonunu belirler. Bu da inşa sisteminizin ürettiği artifact'lerin isminde kullanılacaktır.
 
-The `libraryDependencies` line specifies the libraries that your application depends on. More on this below.
+`libraryDependencies` satırı uygulamanızın bağımlı olduğu kütüphaneleri belirtir. Aşağıda bununla ilgili daha detaylı bilgiyi bulabilirsiniz.
 
-You should use the `PlayJava` or `PlayScala` plugin to configure sbt for Java or Scala respectively.
+SBT'yi Java veya Scala için yapılandırmak için `PlayJava` veya `PlayScala` eklentilerini kullanmalısınız.
 
-## Using scala for building
+## İnşa için Scala'yı kullanmak
 
-Activator is also able to construct the build requirements from scala files inside your project's `project` folder. The recommended practice is to use `build.sbt` but there are times when using scala directly is required. If you find yourself, perhaps because you're migrating an older project, then here are a few useful imports:
+Activator aynı zamanda projenizin `project` dizinindeki scala dosyalarından da inşa gereksinimlerini kurabilir. Tavsiye edilen uygulama `build.sbt`'yi kullanmaktır ama bazı durumlarda scala'yı doğrudan kullanmak da gerekebilir. Kendinizi bu durumda bulursanız, örneğin eski bir projeyi aktarırken, işte birkaç yararlı import yönergesi:
 
 ```scala
 import sbt._
@@ -55,32 +55,34 @@ import play.Play.autoImport._
 import PlayKeys._
 ```
 
-The line indicating `autoImport` is the correct means of importing an sbt plugin's automatically declared properties. Along the same lines, if you're importing an sbt-web plugin then you might well:
+`autoImport`'u gösteren satır bir sbt eklentisinin otomatik olarak açıklanmış özelliklerini import etme anlamına gelir. Aynı satırlarda, eğer bir sbt-web eklentisini import ediyorsanız şöyle de yapabilirsiniz:
 
 ```scala
 import com.typesafe.sbt.less.autoImport._
 import LessKeys._
 ```
 
-## The `/project` directory
+## `/project` dizini
 
-Everything related to building your project is kept in the `/project` directory underneath your application directory.  This is an [sbt](http://www.scala-sbt.org/) requirement. Inside that directory, there are two files:
+Projenizi inşa etmeye dair her şey uygulama dizininizdeki `/project` dizininde saklanır. Bu bir [sbt](http://www.scala-sbt.org/) gerekliliğidir. Bu dizin içinde, iki dosya vardır:
 
-- `/project/build.properties`: This is a marker file that declares the sbt version used.
-- `/project/plugins.sbt`: SBT plugins used by the project build including Play itself.
+- `/project/build.properties`: Bu kullanılan SBT versiyonunu açıklayan işaretleyici bi dosyadır.
+- `/project/plugins.sbt`: Play de dahil olmak üzere, proje inşa sisteminin kullandığı SBT ekelntileri bu dosyada belirtilir.
 
-## Play plugin for sbt (`/project/plugins.sbt`)
+## SBT için Play eklentisi (`/project/plugins.sbt`)
 
-The Play console and all of its development features like live reloading are implemented via an sbt plugin.  It is registered in the `/project/plugins.sbt` file:
+Play konsolu ve canlı yeniden yükleme gibi onun tüm geliştirme özellikleri bir SBT eklentisi aracılığıyla uygulanır. Bu eklenti `/project/plugins.sbt` dosyasında kayıt edilir:
 
 ```scala
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % playVersion) // where version is the current Play version, i.e.  "2.3.0" 
 ```
-> Note that `build.properties` and `plugins.sbt` must be manually updated when you are changing the play version.
 
-## Adding dependencies and resolvers
+> Unutmayın ki Play versiyonunu değiştirdiğinizde `build.properties` ve `plugins.sbt` dosyaları manuel olarak güncellenmelidir.
 
-Adding dependencies is simple as the build file for the `zentasks` Java sample shows:
+
+## Bağımlılıklar ve çözümleyiciler eklemek
+
+Bağımlılıklar eklemek aşağıdaki `zentasks` Java inşa dosyası örneğinde gösterildiği kadar kolaydır:
 
 ```scala
 name := "zentask"
@@ -92,11 +94,11 @@ libraryDependencies ++= Seq(javaJdbc, javaEbean)
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 ```
 
-...and so are resolvers for adding in additional repositories:
+İlave depolar eklemek için çözücüler eklemek de çok kolaydır:
 
 ```scala
 resolvers += "Repository name" at "http://url.to/repository" 
 ```
 
 
-> **Next:** [[About SBT Settings | SBTSettings]]
+> **Sonraki:** [[SBT Ayarları Hakkında | SBTSettings]]
