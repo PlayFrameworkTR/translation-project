@@ -1,20 +1,20 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Improving Compilation Times
+# Derleme Süresini İyileştirmek
 
-Compilation speed can be improved by following some guidelines that are also good engineering practice:
+Derleme hızı aynı zamanda iyi birer mühendislik uygulaması olan aşağıdaki yönergeleri izleyerek iyileştirilebilir:
 
-## Use subprojects/modularize
+## Alt projeler kullanmak / modülleştirmek
 
-This is something like bulkheads for incremental compilation in addition to the other benefits of modularization. It minimizes the size of cycles, makes inter-dependencies explicit, and allows you to work with a subset of the code when desired. It also allows sbt to compile independent modules in parallel.
+Bu, modülleştirmenin diğer yararlarının yanında artırarak derleme için bölmeler gibidir. Devirlerin boyutunu en aza indirir, iç bağımlılıkları belirtik kılar ve istendiğinde kodun bir alt kümesiyle çalışmanıza olanak sağlar. Bu Aynı zamanda sbt'nin bağımsız modülleri paralel olarak derlemesine de izin verir.
 
-## Annotate return types of public methods
+## Public metodların geri dönüş türünü açıklamak
 
-This makes compilation faster as it reduces the need for type inference and for accuracy helps address corner cases in incremental compilation arising from inference across source file boundaries.
+Bu, tür çıkarımına ihtiyacı azaltarak derlemeyi hızlandırır ve kesinlik için, artırarak derlemede ortaya çıkabilecek kaynak dosya sınırları içinde oluşabilecek köşe durumları tespit etmeye yardım eder. 
 
-## Avoid large cycles between source files
+## Kaynak dosyaları arasında büyük devrelerden kaçının
 
-Cycles tend to result in larger recompilations and/or more steps.  In sbt 0.13.0+ (Play 2.2+), this is less of a problem.
+Devirler daha büyük yeniden derlemeler ve/veya aşamalarla sonuçlanma eğilimindedir. SBT 0.13.0 (Play 2.2) ve sonrasında, bu daha önemsiz bir problemdir.
 
-## Minimize inheritance
+## Kalıtımı en aza indirin
 
-A public API change in a source file typically requires recompiling all descendents.
+Bir kaynak dosyasındaki public bir API değişimi ondan türeyen her şeyin yeniden derlenmesine yol açar.
