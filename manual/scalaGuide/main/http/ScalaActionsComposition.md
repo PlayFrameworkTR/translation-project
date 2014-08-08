@@ -1,119 +1,119 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Action composition
+# Action birleştirme
 
-This chapter introduces several ways of defining generic action functionality.
+Bu bölüm genel action işlevselliği tanımlamanın birçok yolunu göstermektedir.
 
-## Custom action builders
+## Özel action yapıcılar
 
-We saw [[previously|ScalaActions]] that there are multiple ways to declare an action - with a request parameter, without a request parameter, with a body parser etc.  In fact there are more than this, as we'll see in the chapter on [[asynchronous programming|ScalaAsync]].
+[[Daha önce|ScalaActions]] action tanımlamanın istek parametresi ile, istek parametresi olmadan, gövde ayrıştırıcı ile vb. olmak üzere pek çok yolu olduğunu görmüştük. Aslında [[asenkron programlama|ScalaAsync]] bölümünde göreceğimiz üzere bundan çok daha fazlası var.
 
-These methods for building actions are actually all defined by a trait called [`ActionBuilder`](api/scala/index.html#play.api.mvc.ActionBuilder), and the [`Action`](api/scala/index.html#play.api.mvc.Action$) object that we use to declare our actions is just an instance of this trait.  By implementing your own `ActionBuilder`, you can declare reusable action stacks, that can then be used to build actions.
+Action oluşturmak için kullanılan tüm bu metotlar [`ActionBuilder`](api/scala/index.html#play.api.mvc.ActionBuilder) isimli bir trait içinde tanımlanmışlardır. Action'larımızı tanımlamak için kullandığımız [`Action`](api/scala/index.html#play.api.mvc.Action$) nesnesi yalnızca bu trait'in bir örneğidir.
 
-Let’s start with the simple example of a logging decorator, we want to log each call to this action.
+Önce bir loglama örneği ile başlayalım. Bu action'a yapılan her çağrıyı loglamak istiyoruz.
 
-The first way is to implement this functionality in the `invokeBlock` method, which is called for every action built by the `ActionBuilder`:
+Bunun ilk yolu bu özelliği `ActionBuilder` tarafından üretilen her action için çağrılan `invokeBlock` içinde gerçeklemektir:
 
 @[basic-logging](code/ScalaActionsComposition.scala)
 
-Now we can use it the same way we use `Action`:
+Şimdi bunu `Action`'ı kullandığımız şekilde kullanabiliriz:
 
 @[basic-logging-index](code/ScalaActionsComposition.scala)
 
-Since `ActionBuilder` provides all the different methods of building actions, this also works with, for example, declaring a custom body parser:
+`ActionBuilder` action oluşturmanın tüm yollarını sağladığından bu yöntem örnek olarak özel gövde ayrıştırıcı ile de çalışır:
 
 @[basic-logging-parse](code/ScalaActionsComposition.scala)
 
 
-### Composing actions
+### Action'ları birleştirmek
 
-In most applications, we will want to have multiple action builders, some that do different types of authentication, some that provide different types of generic functionality, etc.  In which case, we won't want to rewrite our logging action code for each type of action builder, we will want to define it in a reuseable way.
+Çoğu uygulamada birden fazla action yapıcıya ihtiyaç duyarız. Bunlardan kimi değişik türde yetkilendirme yaparken, diğerleri başka işlevler sağlayabilir. Hangi durum olursa olsun her bir action yapıcı için loglama kodumuzu tekrar tekrar yazmak istemeyiz. Aksine bu özelliği tekrar kullanılabilir şekilde tanımlamak isteriz.
 
-Reusable action code can be implemented by wrapping actions:
+Tekar kullanılabilir action kodu action'ları sarmalayarak gerçeklenebilir:
 
 @[actions-class-wrapping](code/ScalaActionsComposition.scala)
 
-We can also use the `Action` action builder to build actions without defining our own action class:
+Ayrıca `Action` action yapıcısını da kendi action sınıfımızı tanımlamadan action oluşturmak için kullanabiliriz:
 
 @[actions-def-wrapping](code/ScalaActionsComposition.scala)
 
-Actions can be mixed in to action builders using the `composeAction` method:
+Action'lar action yapıcılar içine `composeAction` metodunu kullanarak dahil edilebilirler:
 
 @[actions-wrapping-builder](code/ScalaActionsComposition.scala)
 
-Now the builder can be used in the same way as before:
+Yapıcı artık önceki gibi kullanılabilir:
 
 @[actions-wrapping-index](code/ScalaActionsComposition.scala)
 
-We can also mix in wrapping actions without the action builder:
+Sarmalayan action'ları action yapıcı kullanmadan da dahil edebiliriz:
 
 @[actions-wrapping-direct](code/ScalaActionsComposition.scala)
 
-### More complicated actions
+### Daha karmaşık action'lar
 
-So far we've only shown actions that don't impact the request at all.  Of course, we can also read and modify the incoming request object:
+Şu ana dek gelen isteği pek de etkilemeyen action'ları gösterdik. Elbette gelen istek nesnesini okuyabilir ve değiştirebiliriz:
 
 @[modify-request](code/ScalaActionsComposition.scala)
 
-> **Note:** Play already has built in support for X-Forwarded-For headers.
+> **Not:** Play dahili olarak X-Forwarded-For başlık desteğine sahiptir.
 
-We could block the request:
+İsteği engelleyebiliriz:
 
 @[block-request](code/ScalaActionsComposition.scala)
 
-And finally we can also modify the returned result:
+Son olarak dönen yanıtı değiştirebiliriz:
 
 @[modify-result](code/ScalaActionsComposition.scala)
 
-## Different request types
+## Farklı istek türleri
 
-While action composition allows you to perform additional processing at the HTTP request and response level, often you want to build pipelines of data transformations that add context to or perform validation on the request itself.  `ActionFunction` can be thought of as a function on the request, parameterized over both the input request type and the output type passed on to the next layer.  Each action function may represent modular processing such as authentication, database lookups for objects, permission checks, or other operations that you wish to compose and reuse across actions.
+Action birleştirme HTTP istek ve yanıt seviyesinde ek işlem yapmanıza izin veriyor olsa da çoğu zaman isteğe bağlam ekleyen ya da istek üzerinde doğrulama yapan veri dönüştürme hatları oluşturmak isteyeceksiniz. `ActionFunction` istek üzerinde bir fonksiyon olarak düşünülebilir ve hem istek türü hem de bir sonraki katmana geçirilen yanıt türünde parametriktir. Her action fonksiyonu yetkilendirme, veritabanı araması, izin kontrolleri ve action'lar arasında tekrar kullanmak isteyebileceğiniz diğer işlemler gibi modüler işlemleri betimleyebilir.
 
-There are a few pre-defined traits implementing `ActionFunction` that are useful for different types of processing:
+Farklı türde işlemler için kullanışlı olan ve `ActionFunction`'ı implement eden birkaç öntanımlı trait bulunmaktadır:
 
-* [`ActionTransformer`](api/scala/index.html#play.api.mvc.ActionTransformer) can change the request, for example by adding additional information.
-* [`ActionFilter`](api/scala/index.html#play.api.mvc.ActionFilter) can selectively intercept requests, for example to produce errors, without changing the request value.
-* [`ActionRefiner`](api/scala/index.html#play.api.mvc.ActionRefiner) is the general case of both of the above.
-* [`ActionBuilder`](api/scala/index.html#play.api.mvc.ActionBuilder) is the special case of functions that take `Request` as input, and thus can build actions.
+* [`ActionTransformer`](api/scala/index.html#play.api.mvc.ActionTransformer) isteği, örneğin ek bilgi ekleyerek değiştirebilir.
+* [`ActionFilter`](api/scala/index.html#play.api.mvc.ActionFilter) seçimli olarak isteklerde araya girebilir, isteği değiştirmeden hata oluşturmak için kullanılabilir.
+* [`ActionRefiner`](api/scala/index.html#play.api.mvc.ActionRefiner) yukarıdaki ikisinin genel durumudur.
+* [`ActionBuilder`](api/scala/index.html#play.api.mvc.ActionBuilder) girdi olarak `Request` alan fonksiyonların özel durumudur, böylece action oluşturabilir.
 
-You can also define your own arbitrary `ActionFunction` by implementing the `invokeBlock` method.  Often it is convenient to make the input and output types instances of `Request` (using `WrappedRequest`), but this is not strictly necessary.
+`invokeBlock` metodunu implement ederek kendi `ActionFunction` tanımınızı yapabilirsiniz. Genellikle girdi ve çıktı türlerini `Request` örneği (`WrappedRequest` kullanarak) olarak tanımlamak uygundur ancak zorunlu değildir.
 
-### Authentication
+### Kimlik doğrulama
 
-One of the most common use cases for action functions is authentication.  We can easily implement our own authentication action transformer that determines the user from the original request and adds it to a new `UserRequest`.  Note that this is also an `ActionBuilder` because it takes a simple `Request` as input:
+Action fonksiyonları için en yaygın kullanım durumlarından bir kimlik doğrulamadır. Kullanıcıyı orijinal istekten alıp yeni bir `UserRequest` içine ekleyen bir action dönüştürücüyü kolayca yazabiliriz. Bunun da girdi olarak `Request` aldığı için aslında bir `ActionBuilder` olduğuna dikkat edin.
 
 @[authenticated-action-builder](code/ScalaActionsComposition.scala)
 
-Play also provides a built in authentication action builder.  Information on this and how to use it can be found [here](api/scala/index.html#play.api.mvc.Security$$AuthenticatedBuilder$).
+Play aynı zamanda dahili bir kimlik doğrulama action yapıcı sağlar. Nasıl kullanılacağı hakkında daha fazla bilgi [burada](api/scala/index.html#play.api.mvc.Security$$AuthenticatedBuilder$) bulunabilir.
 
-> **Note:** The built in authentication action builder is just a convenience helper to minimise the code necessary to implement authentication for simple cases, its implementation is very similar to the example above.
+> **Not:** Dahili kimlik doğrulama action yapıcı yalnızca basit kullanım durumları için gereken kod miktarını en aza indirmek için sağlanan bir yardımcıdır ve gerçeklemesi yukarıdaki örneğe çok benzer şekildedir.
 >
-> If you have more complex requirements than can be met by the built in authentication action, then implementing your own is not only simple, it is recommended.
+> Eğer dahili kimlik doğrulama action tarafından sağlanabileceğinden daha karmaşık gereksinimleriniz varsa kendizinkini gerçeklemeniz hem kolaydır hem de tavsiye edilir.
 
-### Adding information to requests
+### İsteklere bilgi eklemek
 
-Now let's consider a REST API that works with objects of type `Item`.  There may be many routes under the `/item/:itemId` path, and each of these need to look up the item.  In this case, it may be useful to put this logic into an action function.
+Şimdi `Item` türünden nesneler üzerinde işlem yapan bir REST API düşünün. `/item/:itemId` yolu altında pek çok yol olabilir ve bunların her biri öğeyi veritabanından sorgulama ihtiyacı duyabilir. Bu durumda sorgulama işini bir action fonksiyonu içine koymak kullanışlı olabilir.
 
-First of all, we'll create a request object that adds an `Item` to our `UserRequest`:
+Önecelikle `UserRequest` içine bir `Item` ekleyen bir istek nesnesi oluşturacağız:
 
 @[request-with-item](code/ScalaActionsComposition.scala)
 
-Now we'll create an action refiner that looks up that item and returns `Either` an error (`Left`) or a new `ItemRequest` (`Right`).  Note that this action refiner is defined inside a method that takes the id of the item:
+Daha sonra öğeyi sorgulayan ve bir hata (`Left`) ya da yeni bir `ItemRequest` (`Right`) içeren bir `Either` döndüren bir action arıtıcı tanımlayacağız:
 
 @[item-action-builder](code/ScalaActionsComposition.scala)
 
-### Validating requests
+### İstekleri doğrulamak
 
-Finally, we may want an action function that validates whether a request should continue.  For example, perhaps we want to check whether the user from `UserAction` has permission to access the item from `ItemAction`, and if not return an error:
+Son olarak bir action fonksiyonunun isteğin devam edip etmemesine karar vermesini isteyebiliriz. Örneğin `UserAction`'dan gelen kullanıcının `ItemAction`'dan gelen öğeye erişim yetkisi olup olmadığını kontrol etmek ve yetkisi yoksa hata dönmek istiyor olabiliriz:
 
 @[permission-check-action](code/ScalaActionsComposition.scala)
 
-### Putting it all together
+### Hepsini bir araya getirmek
 
-Now we can chain these action functions together (starting with an `ActionBuilder`) using `andThen` to create an action:
+Şimdi tüm bu action fonksiyonlarını (bir `ActionBuilder` başlayarak) bir action oluşturmak için `andThen` kullanarak bir araya getirebiliriz:
 
 @[item-action-use](code/ScalaActionsComposition.scala)
 
 
-Play also provides a [[global filter API | ScalaHttpFilters]], which is useful for global cross cutting concerns.
+Play ayrıca global kestirme ihtiyaçları için bir [[global filtre API | ScalaHttpFilters]] sağlar.
 
-> **Next:** [[Content negotiation | ScalaContentNegotiation]]
+> **Sonraki:** [[İçerik müzakeresi| ScalaContentNegotiation]]
