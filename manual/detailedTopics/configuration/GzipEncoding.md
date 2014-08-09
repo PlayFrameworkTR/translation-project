@@ -1,26 +1,26 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Configuring gzip encoding
+# GZIP sıkıştırmayı ayarlamak
 
-Play provides a gzip filter that can be used to gzip responses.  It can be added to the applications filters using the `Global` object. To enable the gzip filter, add the Play filters helpers dependency to your project in `build.sbt`:
+Play yanıtları gzip ile sıkıştırmak için bir gzip filtresi sağlar. Bu filtre uygulamanın filtrelerine `Global` nesnesi kullanılarak eklenebilir. Gzip filtresini etkinleştirmek için `build.sbt` dosyası içerisinde projenize Play filtre yardımcılarını ekleyin:
 
 ```scala
 libraryDependencies += filters
 ```
 
-## Enabling gzip in Scala
+## Scala için gzip etkinleştirmek
 
-The simplest way to enable the gzip filter in a Scala project is to use the `WithFilters` helper:
+Bir Scala projesinde gzip filtresini etkinleştirmenin en kolay yolu `WithFilters` yardımcısını kullanmaktır:
 
 @[global](code/GzipEncoding.scala)
 
-To control which responses are and aren't implemented, use the `shouldGzip` parameter, which accepts a function of a request header and a response header to a boolean.
+Hangi yanıtların gerçeklendiğini kontrol etmek için istek başlığından yanıt başlığına bir fonksiyon alan `shouldGzip` parametresini kullanın.
 
-For example, the code below only gzips HTML responses:
+Örneğin aşağıdaki kod yalnızca HTML yanıtlarını gzip ile sıkıştırır:
 
 @[should-gzip](code/GzipEncoding.scala)
 
-## Enabling GZIP in Java
+## Java için gzip etkinleştirmek
 
-To enable gzip in Java, add it to the list of filters in the `Global` object:
+Java için gzip etkinleştirmek için onu `Global` nesnesindeki filtre listesine ekleyin:
 
 @[global](code/detailedtopics/configuration/gzipencoding/Global.java)
