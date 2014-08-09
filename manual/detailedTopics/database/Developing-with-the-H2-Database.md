@@ -1,21 +1,21 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# H2 database
+# H2 veritabanı
 
-The H2 in memory database is very convenient for development because your evolutions are run from scratch when play is restarted.  If you are using anorm you probably need it to closely mimic your planned production database.  To tell h2 that you want to mimic a particular database you add a parameter to the database url in your application.conf file, for example:
+Bellek-içi H2 veritabanı geliştirme için çok kullanışlıdır çünkü evolution'larınız play yeniden başlatıldığında en baştan çalıştırılır. Eğer anorm kullanıyorsanız muhtemelen onun planladığınız üretim veritabanına yakın benzerlikte olmasına ihtiyaç duyarsınız. Belli bir veritabanına benzetmek istediğinizi H2'ye anlatabilmek için application.conf dosyanızdaki veritabanı url'ine bir parametre eklersiniz, örneğin:
 
 ```
 db.default.url="jdbc:h2:mem:play;MODE=MYSQL"
 ```
 
-## Target databases
+## Hedef veritabanları
 
 <table>
 <tr>
 <tr><td>MySql</td><td>MODE=MYSQL</td>
-<td><ul><li>H2 does not have a uuid() function. You can use random_uuid() instead.  Or insert the following line into your 1.sql file: <pre><code>CREATE ALIAS UUID FOR 
+<td><ul><li>H2 uuid() fonksiyonuna sahip değildir. Yerine random_uuid() kullanabilirsiniz.  Veya aşağıdaki kodu 1.sql dosyanıza ekleyin: <pre><code>CREATE ALIAS UUID FOR 
 "org.h2.value.ValueUuid.getNewRandom";</code></pre></li>  
 
-<li>Text comparison in MySQL is case insensitive by default, while in H2 it is case sensitive (as in most other databases). H2 does support case insensitive text comparison, but it needs to be set separately, using SET IGNORECASE TRUE. This affects comparison using =, LIKE, REGEXP.</li></td></tr>
+<li>MySQL'deki metin karşılaştırması varsayılan olarak büyük küçük harfe duyarsızdır, oysa bu H2'de büyük küçük harfe duyarlıdır (diğer birçok veritabanındaki gibi). H2 büyük küçük harf duyarlılığını destekler, fakat SET IGNORECASE TRUE kullanarak ayrı olarak ayarlanmaya ihtiyaç duyar.  Bu =, LIKE, REGEXP kullanılarak yapılan karşılaştırmaları etkiler.</li></td></tr>
 <tr><td>DB2</td><td>
 MODE=DB2</td><td></td></tr>
 <tr><td>Derby</td><td>
@@ -30,14 +30,14 @@ MODE=Oracle</td><td></td></tr>
 MODE=PostgreSQL</td><td></td></tr>
 </table>
 
-## Prevent in memory DB reset
+## Bellek-içi VT'nın sıfırlanması önlemek
 
-H2 drops your database if there no connections.  You probably don't want this to happen.  To prevent this add `DB_CLOSE_DELAY=-1` to the url (use a semicolon as a separator) eg: `jdbc:h2:mem:play;MODE=MYSQL;DB_CLOSE_DELAY=-1`
+Eğer hiç bağlantı yoksa H2 veritabanınızı sıfırlar. Muhtemelen bunun olmasını istemezsiniz. Bunu önlemek için url'e `DB_CLOSE_DELAY=-1` ekleyin (ayraç olarak noktalı virgül kullanın). Örneğin `jdbc:h2:mem:play;MODE=MYSQL;DB_CLOSE_DELAY=-1`
 
-## H2 Browser
+## H2 Tarayıcı
 
-You can browse the contents of your database by typing `h2-browser` at the play console.  An SQL browser will run in your web browser.
+Veritabanınızın içeriğine play konsolunda `h2-browser` yazarak göz atabilirsiniz. Web tarayıcınızın içinde bir SQL tarayıcısı çalışacak.
 
-## H2 Documentation
+## H2 Dokümantasyon
 
-More H2 documentation is available [from their web site](http://www.h2database.com/html/features.html)
+Daha fazla H2 dokümantasyonu [kendi web sitesinde](http://www.h2database.com/html/features.html) mevcuttur.
