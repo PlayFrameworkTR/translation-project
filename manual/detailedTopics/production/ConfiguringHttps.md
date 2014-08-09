@@ -1,60 +1,60 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Configuring HTTPS
+# HTTPS'yi Yapılandırmak
 
-Play can be configured to serve HTTPS.  To enable this, simply tell Play which port to listen to using the `https.port` system property.  For example:
+Play, HTTPS sunmak üzere yapılandırılabilir. Bunu etkinleştirmek için, `https.port` sistem değişkenini kullanarak Play'e hangi portu dinlemesi gerektiğini söylemeniz yeterlidir. Örneğin:
 
     ./start -Dhttps.port=9443
 
-## SSL Certificates
+## SSL Sertifikaları
 
-### SSL Certificates from a keystore
+### Bir anahtar deposundan SSL sertifikaları
 
-By default, Play will generate itself a self-signed certificate, however typically this will not be suitable for serving a website.  Play uses Java key stores to configure SSL certificates and keys.
+Varsayılan olarak, Play kendi kendine imzaladığı bir sertifika üretecektir. Ancak genellikle bu bir web sitesini yayınlamak için uygun değildir. Play, SSL sertifikaları ve anahtarlarını yapılandırmka için Java anahtar depolarını kullanır.
 
-Signing authorities often provide instructions on how to create a Java keystore (typically with reference to Tomcat configuration).  The official Oracle documentation on how to generate keystores using the JDK keytool utility can be found [here](http://docs.oracle.com/javase/7/docs/technotes/tools/solaris/keytool.html).  There is also an example in the [[Generating X.509 Certificates|CertificateGeneration]] section.
+İmza otoriteleri çoğu zaman nasıl bir Java anahtar deposu (bir Tomcat yapılandırmasına referansla) oluşturulacağını anlatan yönergeler sağlarlar. JDK anahtar aracını kullanarak anahtar depoları üretme üzerine resmi Oracle dokümantasyonu [burada](http://docs.oracle.com/javase/7/docs/technotes/tools/solaris/keytool.html) bulunabilir. Aynı zamanda [[Generating X.509 Certificates|CertificateGeneration]] bölümünde de bir örnek vardır. 
 
-Having created your keystore, the following system properties can be used to configure Play to use it:
+Anahtar deponuzu yarattıysanız, aşağıdaki sistem değişkenleri Play'i deponuzu kullanması için yapılandırmakta kullanılabilir:
 
-* **https.keyStore** - The path to the keystore containing the private key and certificate, if not provided generates a keystore for you
-* **https.keyStoreType** - The key store type, defaults to `JKS`
-* **https.keyStorePassword** - The password, defaults to a blank password
-* **https.keyStoreAlgorithm** - The key store algorithm, defaults to the platforms default algorithm
+* **https.keyStore** - gizli anahtar ve sertifikayı saklayan anahtar deposunun konumu - eğer sağlanmadıysa Play sizin için bir anahtar deposu üretecektir.
+* **https.keyStoreType** - anahtar deposu türü, varsayılan olarak `JKS`
+* **https.keyStorePassword** - parola, varsayılan olarak boş
+* **https.keyStoreAlgorithm** - anahtar deposu algoritması, varsayılan olarak platformun varsayılan algoritması
 
-### SSL Certificates from a custom SSL Engine
+### Özel bir SSL motorundan SSL sertifikaları
 
-Another alternative to configure the SSL certificates is to provide a custom [SSLEngine](http://docs.oracle.com/javase/7/docs/api/javax/net/ssl/SSLEngine.html).  This is also useful in cases where a customized SSLEngine is required, such as in the case of client authentication.
+SSL sertifikalarını yapılandırmanın bir alternatifi de özel bir [SSLEngine](http://docs.oracle.com/javase/7/docs/api/javax/net/ssl/SSLEngine.html) sağlamaktır. Bu aynı zamanda, özel istemci kimlik doğrulaması gibi özelleştirimiş bir SSLEngine'in gerektiği durumlarda işe yarar.
 
-#### in Java, an implementation must be provided for [`play.server.SSLEngineProvider`](api/java/play/server/SSLEngineProvider.html)
+#### Java'da, [`play.server.SSLEngineProvider`](api/java/play/server/SSLEngineProvider.html) için bir uygulama sağlanmak zorundadır
 
 @[javaexample](code/java/CustomSSLEngineProvider.java)
 
-#### in Scala, an implementation must be provided for [`play.server.api.SSLEngineProvider`](api/scala/index.html#play.server.api.SSLEngineProvider)
+#### Scala'da, [`play.server.api.SSLEngineProvider`](api/scala/index.html#play.server.api.SSLEngineProvider) için bir uygulama sağlanmak zorundadır
 
 @[scalaexample](code/scala/CustomSSLEngineProvider.scala)
 
-Having created an implementation for `play.server.SSLEngineProvider` or `play.server.api.SSLEngineProvider`, the following system property configures Play to use it:
+`play.server.SSLEngineProvider` veya `play.server.api.SSLEngineProvider` uygulamasını hazırladıysanız, aşağıdaki sistem değişkenleri Play'i onu kullanacak şekilde yapılandırmayı sağlar:
 
-* **play.http.sslengineprovider** - The path to the class implementing `play.server.SSLEngineProvider` or `play.server.api.SSLEngineProvider`:
+* **play.http.sslengineprovider** - `play.server.SSLEngineProvider` or `play.server.api.SSLEngineProvider` sınıfını uygulayan sınıfın konumu
 
-Example:
+Örnek:
 
     ./start -Dhttps.port=9443 -Dplay.http.sslengineprovider=mypackage.CustomSSLEngineProvider
 
 
-## Turning HTTP off
+## HTTP'yi kapatmak
 
-To disable binding on the HTTP port, set the `http.port` system property to be `disabled`, eg:
+HTTP portunundaki bağlantıyı devre dışı bırakmak için, `http.port` sistem değişkenini `disabled` yapın. Örneğin: 
 
     ./start -Dhttp.port=disabled -Dhttps.port=9443 -Dhttps.keyStore=/path/to/keystore -Dhttps.keyStorePassword=changeme
 
-## Production usage of HTTPS
+## HTTPS'nin üretim ortamında kullanımı
 
-If Play is serving HTTPS in production, it should be running JDK 1.8.  JDK 1.8 provides a number of new features that make JSSE feasible as a [TLS termination layer](http://blog.ivanristic.com/2014/03/ssl-tls-improvements-in-java-8.html).  If not using JDK 1.8, using a [[reverse proxy|HTTPServer]] in front of Play will give better control and security of HTTPS.
+Play HTTPS'yi üretim ortamında kullanıyorsa, JDK 1.8 ile çalışmalıdır. JDK 1.8 JSSE'yi bir [TLS termination layer](http://blog.ivanristic.com/2014/03/ssl-tls-improvements-in-java-8.html) olarak uygulanabilir kılan yeni özellikler sağlar. Eğer JDK 1.8 kullanılmıyorsa, Play'in önünde bir [[ters vekil|HTTPServer]] kullanmak daha iyi bir kontrol ve HTTPS güvenliği sağlayacaktır.
 
-If you intend to use Play for TLS termination layer, please note the following settings:
+Eğer Play'i TLS termination layer için kullanmak isterseniz, lütfen aşağıdaki ayarlara dikkat edin:
 
-* **[`SSLParameters.setUseCipherSuiteorder()`](http://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html#cipher_suite_preference)** - Reorders cipher suite order to the server's preference.
-* **-Djdk.tls.ephemeralDHKeySize=2048** - Increases the key size in a DH key exchange.
-* **-Djdk.tls.rejectClientInitiatedRenegotiation=true** - Rejects client renegotiation.
+* **[`SSLParameters.setUseCipherSuiteorder()`](http://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html#cipher_suite_preference)** - Sunucu tercihine göre şifre takımını yeniden sıralar.
+* **-Djdk.tls.ephemeralDHKeySize=2048** - Bir DH anahtar alışverişinde anahtar boyutunu artırır.
+* **-Djdk.tls.rejectClientInitiatedRenegotiation=true** - Tekrar istemci görüşmesini reddeder.
 
-> **Next:** [[Deploying to a cloud service|DeployingCloud]]
+> **Sonraki:** [[Bir bulut hizmetine dağıtım yapmak|DeployingCloud]]
