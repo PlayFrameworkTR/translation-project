@@ -1,26 +1,26 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Accessing an SQL database
+# Bir SQL veri tabanına erişme
 
-## Configuring JDBC connection pools
+## JDBC bağlantı havuzlarını ayarlamak
 
-Play provides a plug-in for managing JDBC connection pools. You can configure as many databases as you need.
+Play JDBC bağlantı havuzlarını yönetmek için bir eklenti sağlar. İhtiyacınız kadar veritabanını ayarlayabilirsiniz.
 
 
-To enable the database plug-in, add jdbc in your build dependencies :
+Veritabanı eklentisini aktifleştirmek için inşa bağımlılıklarına jdbc ekleyin :
 
 ```scala
 libraryDependencies += jdbc
 ```
 
-Then you must configure a connection pool in the `conf/application.conf` file. By convention, the default JDBC data source must be called `default` and the corresponding configuration properties are `db.default.driver` and `db.default.url`.
+Daha sonra `conf/application.conf` dosyasının içinde bir bağlantı havuzu ayarlamalısınız. Genel kabul, varsayılan JDBC veri kaynağı `default` olarak çağırılır ve uygun olan ayarlar `db.default.driver`, `db.default.url` şeklindedir.
 
-If something isn’t properly configured you will be notified directly in your browser:
+Eğer bir şeyler doğru bir şekilde ayarlanmamış ise doğrudan tarayıcınız üzeriden haberdar edilirsiniz:
 
 [[images/dbError.png]]
 
-> **Note:** You likely need to enclose the JDBC URL configuration value with double quotes, since ':' is a reserved character in the configuration syntax.
+> **Not:** Muhtemelen JDBC URL ayar değeri için çift tırnak kullanmanız gerekecek, çünkü ':' ayarlama söz diziminde rezerve edilmiş bir karakterdir.
 
-### H2 database engine connection properties
+### H2 veri tabanı motoru bağlantı özellikleri
 
 ```properties
 # Default database configuration using H2 database engine in an in-memory mode
@@ -34,9 +34,9 @@ db.default.driver=org.h2.Driver
 db.default.url="jdbc:h2:/path/to/db-file"
 ```
 
-The details of the H2 database URLs are found from [H2 Database Engine Cheat Sheet](http://www.h2database.com/html/cheatSheet.html).
+H2 veritabanı için detaylı bağlantıları [H2 Veri Tabanı Motoru Kopya Kağıtı](http://www.h2database.com/html/cheatSheet.html) içinde bulabilirsiniz.
 
-### SQLite database engine connection properties
+### SQLite veri tabanı motoru bağlantı özellikleri
 
 ```properties
 # Default database configuration using SQLite database engine
@@ -44,7 +44,7 @@ db.default.driver=org.sqlite.JDBC
 db.default.url="jdbc:sqlite:/path/to/db-file"
 ```
 
-### PostgreSQL database engine connection properties
+### PostgreSQL veri tabanı motoru bağlantı özellikleri
 
 ```properties
 # Default database configuration using PostgreSQL database engine
@@ -52,7 +52,7 @@ db.default.driver=org.postgresql.Driver
 db.default.url="jdbc:postgresql://database.example.com/playdb"
 ```
 
-### MySQL database engine connection properties
+### MySQL veri tabanı motoru bağlantı özellikleri
 
 ```properties
 # Default database configuration using MySQL database engine
@@ -63,14 +63,14 @@ db.default.user=playdbuser
 db.default.password="a strong password"
 ```
 
-## How to see SQL Statement in the console?
+## SQL ifadelerini konsolda nasıl görülür?
 
 ```properties
 db.default.logStatements=true
 logger.com.jolbox=DEBUG // for EBean
 ```
 
-## How to configure several data sources
+## Çeşitli veri kaynakları nasıl ayarlanır
 
 ```properties
 # Orders database
@@ -82,21 +82,21 @@ db.customers.driver=org.h2.Driver
 db.customers.url="jdbc:h2:mem:customers"
 ```
 
-## Configuring the JDBC Driver
+## JDBC Sürücüsünü ayarlamak
 
-Play is bundled only with an [H2](http://www.h2database.com) database driver. Consequently, to deploy in production you will need to add your database driver as a dependency.
+Play içerisinde hali hazır olarak sadece bir [H2](http://www.h2database.com) veri tabanı sürücüsü ile gelmektedir. Sonuç olarak, üretime çıkarken veri tabanınızın sürücüsünü bağımlıklık olarak eklemeniz gerekecek.
 
-For example, if you use MySQL5, you need to add a [[dependency | SBTDependencies]] for the connector:
+Örneğin, eğer MySQL5 kullanıyorsanız, bağlantı için bir [[bağımlılık | SBTDependencies]] ekleniz gerekir:
 
 ```scala
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.27"
 ```
 
-Or if the driver can't be found from repositories you can drop the driver into your project's [[unmanaged dependencies|Anatomy]] `lib` directory.
+Yada eğer sürücü depolarda bulunamazsa sürücüyü projenizin içine, `lib` klasörüne [[yönetilmeyen bağımlılıklar | Anatomy]] olarak koyabilirsiniz.
 
-## Accessing the JDBC datasource
+## JDBC veri kaynağına erişmek
 
-The `play.api.db` package provides access to the configured data sources:
+`play.api.db` paketi ayarlanmış veri kanyaklarına erişimi sağlar:
 
 ```scala
 import play.api.db._
@@ -104,15 +104,15 @@ import play.api.db._
 val ds = DB.getDataSource()
 ```
 
-## Obtaining a JDBC connection
+## Bir JDBC bağlantısı edinme
 
-There are several ways to retrieve a JDBC connection. The simplest way is:
+JDBC bağlantısı edinmenin çeşitli yolları vardır. Bunu en basit yolu:
 
 ```scala
 val connection = DB.getConnection()
 ```
 
-Following code show you a JDBC example very simple, working with MySQL 5.*:
+Aşağıdaki kod çok basit bir JDBC örneğidir, MySQL 5.* ile çalışır:
 
 ```scala
 package controllers
@@ -141,7 +141,7 @@ object Application extends Controller {
 ```
 
 
-But of course you need to call `close()` at some point on the opened connection to return it to the connection pool. Another way is to let Play manage closing the connection for you:
+Tabii ki bazı noktalarda açılan bağlantıyı bağlantı havuzuna göndermek için `close()` ile kapatmalıyız. Bunu başka yolu ise Play bağlantı kapatmayı sizin için yönetir:
 
 ```scala
 // access "default" database
@@ -150,7 +150,7 @@ DB.withConnection { conn =>
 }
 ```
 
-For a database other than the default:
+Varsayılan veri tabanından başka bir veri tabanı için:
 
 ```scala
 // access "orders" database instead of "default"
@@ -159,11 +159,11 @@ DB.withConnection("orders") { conn =>
 }
 ```
 
-The connection will be automatically closed at the end of the block.
+Bağlantı bloğun sonunda otomatik olarak kapanır.
 
-> **Tip:** Each `Statement` and `ResultSet` created with this connection will be closed as well.
+> **İpucu:** Her bir `Statement` ve `ResultSet` bağlantının doğru kapatılacağı gerekliliği ile oluşturulmuştur.
 
-A variant is to set the connection's auto-commit to `false` and to manage a transaction for the block:
+Bağlantının `auto-commit` özelliğinin `false` olması ve blok için bir işlem için:
 
 ```scala
 DB.withTransaction { conn =>
@@ -171,4 +171,4 @@ DB.withTransaction { conn =>
 }
 ```
 
-> **Next:** [[Using Anorm to access your database | ScalaAnorm]]
+> **Sonraki:** [[Veritabanına erişmek için Anorm kullanmak | ScalaAnorm]]
