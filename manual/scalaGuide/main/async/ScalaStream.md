@@ -1,11 +1,11 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Streaming HTTP responses
+# HTTP yanıtlarını stream etmek
 
-## Standard responses and Content-Length header
+## Standart yanıtlar ve Content-Length başlığı
 
-Since HTTP 1.1, to keep a single connection open to serve several HTTP requests and responses, the server must send the appropriate `Content-Length` HTTP header along with the response. 
+HTTP 1.1'den itibaren çok sayıda HTTP istek ve yanıtına hizmet verebilecek tek bir bağlantıyı açık tutmak için sunucu uygun `Content-Length` HTTP başlığını yanıtla birlikte göndermek zorundadır.
 
-By default, you are not specifying a `Content-Length` header when you send back a simple result, such as:
+Varsayılan olarak aşağıdaki gibi basit bir yanıt gönderirken `Content-Length` başlığını belirtmiyorsunuz:
 
 ```scala
 def index = Action {
@@ -13,11 +13,11 @@ def index = Action {
 }
 ```
 
-Of course, because the content you are sending is well-known, Play is able to compute the content size for you and to generate the appropriate header.
+Elbette göndermekte olduğunuz içerik tam olarak bilindiğinden Play sizin için içerik boyutunu hesaplayabilir ve uygun başlığı üretebilir.
 
-> **Note** that for text-based content it is not as simple as it looks, since the `Content-Length` header must be computed according the character encoding used to translate characters to bytes.
+> **Not:** Metin tabanlı yanıtlar için durum göründüğü kadar kolay değildir. `Content-Length` başlığı karakterleri baytlara dönüştüren karakter kodlamasına uygun olarak hesaplanmalıdır.
 
-Actually, we previously saw that the response body is specified using a `play.api.libs.iteratee.Enumerator`:
+Aslında daha önce yanıt gövdesinin bir `play.api.libs.iteratee.Enumerator` ile belirtildiğini görmüştük:
 
 ```scala
 def index = Action {
@@ -28,27 +28,27 @@ def index = Action {
 }
 ```
 
-This means that to compute the `Content-Length` header properly, Play must consume the whole enumerator and load its content into memory. 
+Buna göre `Content-Length` başlığını düzgün olarak üretmek için Play tüm enumerator'ı tüketmeli ve içeriğini belleğe almalıdır.
 
-## Sending large amounts of data
+## Yüksek miktarda veri göndermek
 
-If it’s not a problem to load the whole content into memory for simple Enumerators, what about large data sets? Let’s say we want to return a large file to the web client.
+Basit Enumerator'lar için tüm içeriği belleğe almak sorun olmasa da büyük veri kümeleri için ne yapacağız? Diyelim ki istemciye büyük bir dosya göndereceğiz.
 
-Let’s first see how to create an `Enumerator[Array[Byte]]` enumerating the file content:
+Önce nasıl dosya içeriğini veren bir `Enumerator[Array[Byte]]` üretebileceğimizi görelim:
 
 ```scala
 val file = new java.io.File("/tmp/fileToServe.pdf")
 val fileContent: Enumerator[Array[Byte]] = Enumerator.fromFile(file)
 ```
 
-Now it looks simple right? Let’s just use this enumerator to specify the response body:
+Kolay görünüyor, değil mi? Şimdi de bu enumerator'ı yanıt gövdesini belirtmek için kullanalım:
 
 ```scala
 def index = Action {
 
   val file = new java.io.File("/tmp/fileToServe.pdf")
-  val fileContent: Enumerator[Array[Byte]] = Enumerator.fromFile(file)    
-    
+  val fileContent: Enumerator[Array[Byte]] = Enumerator.fromFile(file)
+
   Result(
     header = ResponseHeader(200),
     body = fileContent
@@ -56,16 +56,16 @@ def index = Action {
 }
 ```
 
-Actually we have a problem here. As we don’t specify the `Content-Length` header, Play will have to compute it itself, and the only way to do this is to consume the whole enumerator content and load it into memory, and then compute the response size.
+Aslında burada bir sorunumuz var. `Content-Length` başlığını belirtmediğimiz için Play bunu kendi üretmeye çalışacaktır ve bunun tek yolu tüm içeriği belleğe alıp yanıt boyutunu hesaplamaktır.
 
-That’s a problem for large files that we don’t want to load completely into memory. So to avoid that, we just have to specify the `Content-Length` header ourself.
+Bu durum tamamen belleğe yüklemek istemediğimiz büyük dosyalar için bir sorundur. Bundan sakınmak için `Content-Length` başlığını bizim belirtmemiz yeterlidir.
 
 ```scala
 def index = Action {
 
   val file = new java.io.File("/tmp/fileToServe.pdf")
-  val fileContent: Enumerator[Array[Byte]] = Enumerator.fromFile(file)    
-    
+  val fileContent: Enumerator[Array[Byte]] = Enumerator.fromFile(file)
+
   Result(
     header = ResponseHeader(200, Map(CONTENT_LENGTH -> file.length.toString)),
     body = fileContent
@@ -73,11 +73,11 @@ def index = Action {
 }
 ```
 
-This way Play will consume the body enumerator in a lazy way, copying each chunk of data to the HTTP response as soon as it is available.
+Bu şekilde Play veri parçaları oluştukça bu parçaları HTTP yanıtına yazacaktır.
 
-## Serving files
+## Dosyaları sunmak
 
-Of course, Play provides easy-to-use helpers for common task of serving a local file:
+Play elbette yerel bir dosya sunmak gibi sık yapılan bir iş için kullanımı kolay yardımcılar sağlar:
 
 ```scala
 def index = Action {
@@ -85,9 +85,9 @@ def index = Action {
 }
 ```
 
-This helper will also compute the `Content-Type` header from the file name, and add the `Content-Disposition` header to specify how the web browser should handle this response. The default is to ask the web browser to download this file by adding the header `Content-Disposition: attachment; filename=fileToServe.pdf` to the HTTP response.
+Bu yardımcı, dosyadan `Content-Type` başlığını hesaplayacak ve istemcinin bu yanıtı nasıl ele alacağını belirmek için `Content-Disposition` başlığını da ekleyecektir. Varsayılan davranış HTTP yanıtına `Content-Disposition: attachment; filename=fileToServe.pdf` başlığını ekleyerek istemcinin bu dosyayı indirmesini istemektir.
 
-You can also provide your own file name:
+Ayrıca kendi dosya adınızı belirtebilirsiniz:
 
 ```scala
 def index = Action {
@@ -98,7 +98,7 @@ def index = Action {
 }
 ```
 
-If you want to serve this file `inline`:
+Dosyayı aşağıdaki gibi `inline` sunabilirsiniz:
 
 ```scala
 def index = Action {
@@ -109,41 +109,41 @@ def index = Action {
 }
 ```
 
-Now you don't have to specify a file name since the web browser will not try to download it, but will just display the file content in the web browser window. This is useful for content types supported natively by the web browser, such as text, HTML or images.
+Bu durumda dosya adı belirtmenize gerek yoktur çünkü tarayıcı dosyayı indirmeye çalışmayacak, dosya içeriğini tarayıcı içinde gösterecektir. Bu yöntem metin, html ve resim gibi web tarayıcı tarafından dahili olarak desteklenen içerik türleri için kullanışlıdır.
 
-## Chunked responses
+## Parçalı(Chunked) yanıtlar
 
-For now, it works well with streaming file content since we are able to compute the content length before streaming it. But what about dynamically computed content, with no content size available?
+Şu ana dek içerik boyutunu içeriği stream etmeden önce hesaplayabildiğimiz için işler iyi gitti. Fakat dinamik olarak hesaplanan, boyutu belli olmayan içerik için ne yapacağız?
 
-For this kind of response we have to use **Chunked transfer encoding**. 
+Bu türden yanıtlar için  **Chunked transfer encoding** kullanmak zorundayız.
 
-> **Chunked transfer encoding** is a data transfer mechanism in version 1.1 of the Hypertext Transfer Protocol (HTTP) in which a web server serves content in a series of chunks. It uses the `Transfer-Encoding` HTTP response header instead of the `Content-Length` header, which the protocol would otherwise require. Because the `Content-Length` header is not used, the server does not need to know the length of the content before it starts transmitting a response to the client (usually a web browser). Web servers can begin transmitting responses with dynamically-generated content before knowing the total size of that content.
-> 
-> The size of each chunk is sent right before the chunk itself, so that a client can tell when it has finished receiving data for that chunk. Data transfer is terminated by a final chunk of length zero.
+> **Chunked transfer encoding** HTTP protokolünün 1.1 sürümünde yer alan ve sunucunun içeriği bir chunk(parça) dizisi halinde sunduğu bir veri transfer mekanizmasıdır. `Content-Length` başlığı yerine `Transfer-Encoding` başlığını kullanır. `Content-Length` başlığı kullanılmadığı için sunucu istemciye yanıtı iletmeye başlamadan önce içeriğin boyutunu bilmek zorunda değildir. Web sunucular dinamik olarak üretilen içeriğe sahip yanıtları içeriğin boyutunu bilmeden önce iletmeye başlayabilirler.
+>
+> Her bir chunk'ın boyutu chunk'tan hemen önce gönderildiğinden istemci o chunk için veriyi tam olarak aldığını anlayabilir. Veri transferi, uzunluğu sıfır olan son bir chunk ile sonlandırılır.
 >
 > <http://en.wikipedia.org/wiki/Chunked_transfer_encoding>
 
-The advantage is that we can serve the data **live**, meaning that we send chunks of data as soon as they are available. The drawback is that since the web browser doesn’t know the content size, it is not able to display a proper download progress bar.
+Bunun avantajı veriyi canlı olarak sunabiliriz, başka bir deyişle veri parçalarını hazır olur olmaz gönderebiliriz. Bu yöntemin kötü yanı ise web tarayıcı içerik boyutunu bilmediğinden düzgün bir ilerleme çubuğu gösteremez.
 
-Let’s say that we have a service somewhere that provides a dynamic `InputStream` computing some data. First we have to create an `Enumerator` for this stream:
+Diyelim ki birtakım veriler hesaplayan dinamik bir `InputStream` sağlayan bir servisimiz olsun. Önce bu stream için bir  `Enumerator` yaratmalıyız:
 
 ```scala
 val data = getDataStream
 val dataContent: Enumerator[Array[Byte]] = Enumerator.fromStream(data)
 ```
 
-We can now stream these data using a `Ok.chunked`:
+Artık veriyi `Ok.chunked` kullanarak stream edebiliriz:
 
 ```scala
 def index = Action {
   val data = getDataStream
   val dataContent: Enumerator[Array[Byte]] = Enumerator.fromStream(data)
-  
+
   Ok.chunked(dataContent)
 }
 ```
 
-Of course, we can use any `Enumerator` to specify the chunked data:
+Elbette chunked veriyi belirtmek için herhangi bir `Enumerator` kullanabiliriz:
 
 ```scala
 def index = Action {
@@ -153,7 +153,7 @@ def index = Action {
 }
 ```
 
-We can inspect the HTTP response sent by the server:
+Sunucu tarafından gönderilen HTTP yanıtını incelersek:
 
 ```
 HTTP/1.1 200 OK
@@ -170,6 +170,6 @@ bar
 
 ```
 
-We get three chunks followed by one final empty chunk that closes the response.
+Üç chunk'ı takip eden ve yanıtı kapatan son bir boş chunk görüyoruz.
 
-> **Next:** [[Comet sockets | ScalaComet]]
+> **Sonraki:** [[Comet soketleri | ScalaComet]]
