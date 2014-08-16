@@ -1,13 +1,13 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Creating a standalone version of your application
+# Uygulamanızın bağımsız bir sürümünü yaratmak
 
-## Using the dist task
+## dist görevini kullanmak
 
-The simplest way to deploy a Play application is to retrieve the source (typically via a git workflow) on the server and to use either `activator start` or `activator stage` to start it in place.
+Bir Play uygulamasını dağıtmanın en kolay yolu, kaynağını (genelde bir git iş akışıyla) sunucuda bulundurmak ve `activator start` veya `activator stage` komutlarından birini kullanarak onu yerinde başlatmaktır.
 
-However, you sometimes need to build a binary version of your application and deploy it to the server without any dependency on Play itself. You can do this with the `dist` task.
+Ancak, bazen uygulamanızın ikili bir versiyonunu inşa ederek, Play'e bağımlı kalmadan sunucuya doğrudan dağıtmaya ihtiyaç duyabilirsiniz. Bunu, `dist` göreviyle yapabilirsiniz.
 
-In the Play console, simply type `dist`:
+Play konsolunda `dist` yazın:
 
 ```bash
 [my-first-app] $ dist
@@ -15,94 +15,93 @@ In the Play console, simply type `dist`:
 
 [[images/dist.png]]
 
-This produces a ZIP file containing all JAR files needed to run your application in the `target/universal` folder of your application. Alternatively you can run `activator dist` directly from your OS shell prompt, which does the same thing:
+Bu, uygulamanızın `target/universal` dizininde, uygulamanızı çalıştırmak için gerekecek bütün JAR dosyalarını içeren bir ZIP dosyası oluşturur. Alternatif olarak işletim sisteminizin konsolunda, aynı işi yapan `activator dist` komutunu da yazabilirsiniz:
 
 ```bash
 $ activator dist
 ```
 
-> For Windows users a start script will be produced with a .bat file extension. Use this file when running a Play application on Windows.
+> Windows kullanıcıları için .bat dosya uzantılı bir başlangıç betiği üretilecektir. Bir Play uygulamasını Windows'da çalıştırmak için bunu kullanın.
 >
-> For Unix users, zip files do not retain Unix file permissions so when the file is expanded the start script will be required to be set as an executable:
+> Unix kullanıcıları için, zip dosyaları Unix dosya izinlerini korumaz. Bu sebeple zip dosyası açıldığında başlangıç betiğinin çalıştırıalbilir olarak ayarlanması gerekir:
 >
 > ```bash
 > $ chmod +x /path/to/bin/<project-name>
 > ```
 >
-> Alternatively a tar.gz file can be produced instead. Tar files retain permissions. Invoke the `universal:package-zip-tarball` task instead of the `dist` task:
+> Alternatif olarak, bir tar.gz dosyası da üretilebilir. Tar dosyaları izinleri korur. `dist` görevi yerine `universal:package-zip-tarball` görevini çağırın:
 >
 > ```bash
 > activator universal:package-zip-tarball
 > ```
 
-By default, the dist task will include the API documentation in the generated package. If this is not necessary, it can be avoided by including this line in `build.sbt`:
+Varsayılan olarak, dist görevi oluşturulan pakete API dokümantasyonunu da ekelyecektir. Eğer bu gereli değilse, aşağıdaki satır `build.sbt` dosyasına eklenerek bundan kaçınılabilir:
 
 ```scala
 doc in Compile <<= target.map(_ / "none")
 ```
-For builds with sub-projects, the statement above has to be applied to all sub-project definitions.
+Alt projeli inşalarda, yukarıdaki ifade bütün alt proje tanımlarına uygulanmalıdır.
 
-## The Native Packager
+## Yerli Paketleyici
 
-Play uses the [SBT Native Packager plugin](http://www.scala-sbt.org/sbt-native-packager/). The native packager plugin declares the `dist` task to create a zip file. Invoking the `dist` task is directly equivalent to invoking the following:
+Play, [SBT Native Packager eklentsi](http://www.scala-sbt.org/sbt-native-packager/)'ni kullanır. Yerli paketleyici eklentisi `dist` görevini bir zip dosyası yaratacak şekilde beyan eder. `dist` görevini çağırmak, aşağıdaki komutu çalıştırmakla eşdeğerdir:
 
 ```bash
 $ activator universal:package-bin
 ```
 
-Many other types of archive can be generated including:
+Aşağıdaki türler de dahil, birçok başka türde arşiv elde edilebilir:
 
 * tar.gz
-* OS X disk images
+* OS X disk imajları
 * Microsoft Installer (MSI)
-* RPMs
-* Debian packages
-* System V / init.d and Upstart services in RPM/Debian packages
+* RPM'ler
+* Debian paketleri
+* System V / RPM/Debian paketlerindeki init.d ve Upstart hizmetleri
 
-Please consult the [documentation](http://www.scala-sbt.org/sbt-native-packager) on the native packager for more information.
+Ayrıntılı bilgi için lütfen yerli paketleyicideki [dokümantasyon](http://www.scala-sbt.org/sbt-native-packager)a başvurun.
 
-### Build a server distribution
+### Bir sunucu dağıtımı inşa etmek
 
-The sbt-native-packager plugins provides a `java_server` archetype which enables the following features:
+sbt-native-packager eklentisi aşağıdaki özellikleri etkinleştiren bir `java_server` prototipi (archetype) sağlar:
 
-* System V or Upstart startup scripts
-* [Default folders](http://www.scala-sbt.org/sbt-native-packager/GettingStartedServers/MyFirstProject.html#default-mappings)
+* System V veya Upstart başlangıç betikleri
+* [Varsayılan dizinler](http://www.scala-sbt.org/sbt-native-packager/GettingStartedServers/MyFirstProject.html#default-mappings)
 
-A full documentation can be found in the [documentation](http://www.scala-sbt.org/sbt-native-packager/GettingStartedServers/index.html).
+Tam bir dökümantasyon [bu adreste](http://www.scala-sbt.org/sbt-native-packager/GettingStartedServers/index.html) bulunabilir.
 
-The `java_server` archetype is enabled by default, but depending on which package you want to build you have
-to add a few settings. 
+`java_server` prototipi varsayılan olarak etkindir, ancak hangi paketleri inşa etmek istediğinize göre bazı ayarlar eklemeniz gerekebilir.
 
-#### Minimal Debian settings
+#### Asgari Debian ayarları
 
 ```scala
 import com.typesafe.sbt.SbtNativePackager._
 import NativePackagerKeys._
 
-maintainer in Linux := "First Lastname <first.last@example.com>"
+maintainer in Linux := "Ad Soyad <ad.soyad@example.com>"
 
-packageSummary in Linux := "My custom package summary"
+packageSummary in Linux := "Özel Paket Özeti"
 
-packageDescription := "My longer package description"
+packageDescription := "Uzun paket açıklaması"
 ```
 
-Build your package with
+Paketinizi bu komutla inşa edin:
 
 ```bash
 play debian:packageBin
 ```
 
-#### Minimal RPM settings
+#### Asgari RPM ayarları
 
 ```scala
 import com.typesafe.sbt.SbtNativePackager._
 import NativePackagerKeys._
 
-maintainer in Linux := "First Lastname <first.last@example.com>"
+maintainer in Linux := "Ad Soyad <ad.soyad@example.com>"
 
-packageSummary in Linux := "My custom package summary"
+packageSummary in Linux := "Özel Paket Özeti"
 
-packageDescription := "My longer package description"
+packageDescription := "Uzun paket açıklaması"
 
 rpmRelease := "1"
 
@@ -117,57 +116,56 @@ rpmLicense := Some("Apache v2")
 play rpm:packageBin
 ```
 
-> There will be some error logging. This is rpm logging on stderr instead of stdout !
+> Bazı hata mesajları yazdırılabilir. Bu yalnızca rpm'in stdout yerine stderr'e günlük tutmasıdır.
 
-#### Play PID Configuration 
+#### Play PID Yapılandırması
 
-Play manages its own PID, which is described in the [[Production configuration|ProductionConfiguration]].
-In order to tell the startup script where to place the PID file put a file `etc-default` inside `src/templates/`
-folder and add the following content
+[[Üretim yapılandırması|ProductionConfiguration]] sayfasında tarif edildiği gibi, Play kendi PID'ini idare eder.
+Başlangıç betiğine PID dosyasını nereye koyacağını bildirmek için `src/templates/` dizini içine `etc-default` isimli bir dosya koyun ve aşağıdaki içeriği ekleyin:
 
 ```bash
 -Dpidfile.path=/var/run/${{app_name}}/play.pid
-# Add all other startup settings here, too
+# Buraya diğer bütün başlangıç ayarlarını da ekleyin
 ```
 
-For a full list of replacements take a closer look at the [documentation](http://www.scala-sbt.org/sbt-native-packager/GettingStartedServers/AddingConfiguration.html).
+Yer değiştirmelerin bütün listesine yakından bakmak için [dokümantasyon](http://www.scala-sbt.org/sbt-native-packager/GettingStartedServers/AddingConfiguration.html)'u ziyaret edin.
 
 
-## Publishing to a Maven (or Ivy) repository
+## Bir Maven (veya Ivy) deposuna yayımlamak
 
-You can also publish your application to a Maven repository. This publishes both the JAR file containing your application and the corresponding POM file.
+Aynı zamanda uygulamanızı bir Maven deposuna yayımlayabilirsiniz. Bu, hem uygulamanızı içeren JAR dosyasını hem de karşılık gelen POM dosyasını yayımlar.
 
-You have to configure the repository you want to publish to, in your `build.sbt` file:
+`build.sbt` dosyasında yayımlamak istediğiniz depo için yapılandırmalar yapmalısınız:
 
 ```scala
  publishTo := Some(
-   "My resolver" at "http://mycompany.com/repo"
+   "Çözücüm" at "http://mycompany.com/repo"
  ),
  
  credentials += Credentials(
-   "Repo", "http://mycompany.com/repo", "admin", "admin123"
+   "Depo", "http://mycompany.com/repo", "admin", "admin123"
  )
 ```
 
-Then in the Play console, use the `publish` task:
+Sonrasında Play konsolunda, `publish` görevini kullanın:
 
 ```bash
 [my-first-app] $ publish
 ```
 
-> Check the [sbt documentation](http://www.scala-sbt.org/release/docs/index.html) to get more information about the resolvers and credentials definition.
+> Çözücüler ve kimlik bilgileri tanımlamaları hakkında daha fazla bilgi almak için [sbt dokümantasyonu](http://www.scala-sbt.org/release/docs/index.html)'nu ziyaret edin.
 
-## Using the SBT assembly plugin
+## SBT assembly eklentisini kullanmak
 
-Though not officially supported, the SBT assembly plugin may be used to package and run Play applications.  This will produce one jar as an output artifact, and allow you to execute it directly using the `java` command.
+Resmi olarak desteklenmese de, SBT assembly eklentisi Play uygulamalarını paketlemek ve çalıştırmak için kullanılabilir. Bu, çıktı olarak bir jar oluşturacak ve onu `java` komutuyla doğrudan çalıştırmanıza izin verecektir.
 
-To use this, add a dependency on the plugin to your `project/plugins.sbt` file:
+Bunu kullanmak için, `project/plugins.sbt` dosyanızda bu eklentiye bir bağımlılık ekleyin:
 
 ```scala
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.11.2")
 ```
 
-Now add the following configuration to your `build.sbt`:
+Şimdi, aşağıdaki yapılandırmayı `build.sbt` dosyanıza ekleyin:
 
 ```scala
 import AssemblyKeys._
@@ -179,12 +177,12 @@ mainClass in assembly := Some("play.core.server.NettyServer")
 fullClasspath in assembly += Attributed.blank(PlayKeys.playPackageAssets.value)
 ```
 
-Now you can build the artifact by running `activator assembly`, and run your application by running:
+Artık `activator assembly` komutunu çalıştırarak uygulamanızın bir paketini oluşturabilir ve onu aşağıdaki komutla çalıştırabilirsiniz:
 
 ```
-$ java -jar target/scala-2.XX/<yourprojectname>-assembly-<version>.jar
+$ java -jar target/scala-2.XX/<projenizinadı>-assembly-<version>.jar
 ```
 
 You'll need to substitute in the right project name, version and scala version, of course.
 
-> **Next:** [[Production configuration|ProductionConfiguration]]
+> **Sonraki:** [[Üretim yapılandırması|ProductionConfiguration]]
