@@ -1,11 +1,11 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Integrating with other database libraries2
+# Diğer veritabanı kütüphaneleri ile entegrasyon
 
-You can use any **SQL** database access library you like with Play, and easily retrieve either a `Connection` or a `Datasource` from the `play.api.db.DB` helper.
+Play ile istediğiniz **SQL** veritabanı erişim katmanını kullanabilir ve `play.api.db.DB` yardımcısından kolayca bir `Connection` ya da `Datasource` elde edebilirsiniz.
 
-## Integrating with ScalaQuery
+## ScalaQuery ile entegrasyon
 
-From here you can integrate any JDBC access layer that needs a JDBC data source. For example, to integrate with [ScalaQuery](https://github.com/szeiger/scala-query):
+Buradan hareketle bir JDBC veri kaynağına ihtiyaç duyan herhangi bir JDBC erişim katmanı ile entegre olabilirsiniz. Örnek olarak [ScalaQuery](https://github.com/szeiger/scala-query) ile entegre olmak için:
 
 ```scala
 import play.api.db._
@@ -36,9 +36,9 @@ object Task extends Table[(Long, String, Date, Boolean)]("tasks") {
 }
 ```
 
-## Exposing the datasource through JNDI
+## Veri kaynağını JNDI üzerinden sunmak
 
-Some libraries expect to retrieve the `Datasource` reference from JNDI. You can expose any Play managed datasource via JNDI by adding this configuration in `conf/application.conf`:
+Bazı kütüphaneler `Datasource` referansını JNDI üzerinden almayı beklerler. Play tarafından yönetilen herhangi bir veri kaynağını şu yapılandırmayı `conf/application.conf` içine ekleyerek JNDI üzerinden sunabilirsiniz:
 
 ```
 db.default.driver=org.h2.Driver
@@ -46,4 +46,4 @@ db.default.url="jdbc:h2:mem:play"
 db.default.jndiName=DefaultDS
 ```
 
-> **Next:** [[Using the Cache | ScalaCache]]
+> **Sonraki:** [[Önbelleği kullanmak | ScalaCache]]
