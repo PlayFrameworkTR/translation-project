@@ -1,11 +1,11 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Scala templates common use cases
+# Scala şablonları yaygın kullanım senaryoları
 
-Templates, being simple functions, can be composed in any way you want. Below are examples of some common scenarios.
+Şablonlar, aslında basit birer fonksiyon olduklarından, istediğiniz şekilde birleştirilebilirler. Aşağıda bazı yaygın kullanım senaryosu örnekleri bulunuyor.
 
-## Layout
+## Yerleşim
 
-Let’s declare a `views/main.scala.html` template that will act as a main layout template:
+Ana yerleşim şablonu olarak kullanacağımız bir `views/main.scala.html` şablonu tanımlayalım:
 
 ```html
 @(title: String)(content: Html)
@@ -21,7 +21,7 @@ Let’s declare a `views/main.scala.html` template that will act as a main layou
 
 ```
 
-As you can see, this template takes two parameters: a title and an HTML content block. Now we can use it from another `views/Application/index.scala.html` template:
+Gördüğünüz gibi bu şablon iki parametre alıyor: bir başlık ve HTML içerik bloğu. Artık bu şablonu başka bir `views/Application/index.scala.html` şablonundan kullanabiliriz:
 
 ```html
 @main(title = "Home") {
@@ -31,9 +31,9 @@ As you can see, this template takes two parameters: a title and an HTML content 
 }
 ```
 
-> **Note:** We sometimes use named parameters(like `@main(title = "Home")`, sometimes not like `@main("Home")`. It is as you want, choose whatever is clearer in a specific context.
+> **Not:** Bazen `@main(title = "Home")` gibi isimlendirilmiş parametreler kullandığımız halde bazen `@main("Home")` şeklinde kullanıyoruz. Sizin durumunuza en uygun olanı seçmekte özgürsünüz.
 
-Sometimes you need a second page-specific content block for a sidebar or breadcrumb trail, for example. You can do this with an additional parameter:
+Bazı durumlarda sidebar ya da breadcrumb için diğer bir sayfaya-özel içerik bloğuna ihtiyacınız olabilir. Bunu fazladan bir parametre ile sağlayabilirsiniz:
 
 ```html
 @(title: String)(sidebar: Html)(content: Html)
@@ -49,7 +49,7 @@ Sometimes you need a second page-specific content block for a sidebar or breadcr
 </html>
 ```
 
-Using this from our ‘index’ template, we have:
+Bunu daha önceden yazdığımız ‘index’ şablonundan kullanmak için:
 
 ```html
 @main("Home") {
@@ -61,7 +61,7 @@ Using this from our ‘index’ template, we have:
 }
 ```
 
-Alternatively, we can declare the sidebar block separately:
+Ya da sidebar bloğunu ayrıca tanımlayabiliriz:
 
 ```html
 @sidebar = {
@@ -75,9 +75,9 @@ Alternatively, we can declare the sidebar block separately:
 ```
 
 
-## Tags (they are just functions, right?)
+## Tag'ler (yalnızca birer fonksiyonlar, değil mi?)
 
-Let’s write a simple `views/tags/notice.scala.html` tag that displays an HTML notice:
+Bir HTML uyarısı gösteren basit bir `views/tags/notice.scala.html` tag yazalım:
 
 ```html
 @(level: String = "error")(body: (String) => Html)
@@ -105,7 +105,7 @@ Let’s write a simple `views/tags/notice.scala.html` tag that displays an HTML 
 }
 ```
 
-And now let’s use it from another template:
+Şimdi de bunu başka bir şablondan kullanalım:
 
 ```html
 @import tags._
@@ -115,9 +115,9 @@ And now let’s use it from another template:
 }
 ```
 
-## Includes
+## Şablon dahil etme
 
-Again, there’s nothing special here. You can just call any other template you like (and in fact any other function coming from anywhere at all):
+Yine çok özel bir durum yok. Herhangi bir şablonu istediğiniz gibi çağırabilirsiniz (aslında herhangi bir yerden gelen herhangi bir fonksiyonu):
 
 ```html
 <h1>Home</h1>
@@ -126,9 +126,9 @@ Again, there’s nothing special here. You can just call any other template you 
   @common.sideBar()
 </div>
 ```
-## moreScripts and moreStyles equivalents
+## moreScripts ve moreStyles eşlenikleri
 
-To define old moreScripts or moreStyles variables equivalents (like on Play! 1.x) on a Scala template, you can define a variable in the main template like this :
+Eski moreScripts ve moreStyles eşleniklerini (Play! 1.x'te olduğu gibi) tanımlamak için ana şablonda aşağıdaki gibi bir değişken tanımlayabilirsiniz:
 
 ```html
 @(title: String, scripts: Html = Html(""))(content: Html)
@@ -158,7 +158,7 @@ To define old moreScripts or moreStyles variables equivalents (like on Play! 1.x
 </html>
 ```
 
-And on an extended template that need an extra script :
+Ve fazladan script isteyen bir şablonda aşağıdaki gibi kullanabilirsiniz:
 
 ```html
 @scripts = {
@@ -167,19 +167,19 @@ And on an extended template that need an extra script :
 
 @main("Title",scripts){
 
-   Html content here ...
+   Burada HTML içerik yer alıyor ...
 
 }
 
 ```
 
-And on an extended template that not need an extra script, just like this :
+Fazladan script ihtiyacı olmayan bir şablonda ise kullanım aşağıdaki gibidir:
 
 ```html
 @main("Title"){
 
-   Html content here ...
+   Burada HTML içerik yer alıyor ...
 
 }
 ```
-> **Next:** [[Custom format | ScalaCustomTemplateFormat]]
+> **Sonraki:** [[Özel format ekleme | ScalaCustomTemplateFormat]]
