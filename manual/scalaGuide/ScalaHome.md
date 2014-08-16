@@ -22,7 +22,7 @@ Play uygulama geliştiriciler için Scala API `play.api` paketinde yer almaktad�
     1. [[WebSocket'ler | ScalaWebSockets]]
 1. [[Şablon motoru | ScalaTemplates]]
     1. [[Şablon sözdizimi | ScalaTemplates]]
-    1. [[Genel kullanım senaryoları | ScalaTemplateUseCases]]
+    1. [[Yaygın kullanım senaryoları | ScalaTemplateUseCases]]
     1. [[Özel format ekleme | ScalaCustomTemplateFormat]]
 1. [[HTTP form gönderimi ve doğrulama | ScalaForms]]
     1. [[Form gönderimi | ScalaForms]]
