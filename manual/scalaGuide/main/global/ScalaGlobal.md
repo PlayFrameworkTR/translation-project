@@ -1,35 +1,35 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Application global settings
+# Uygulama global ayarları
 
-## The Global object
+## Global nesnesi
 
-Defining a `Global` object in your project allows you to handle global settings for your application. This object must be defined in the default (empty) package and must extend [`GlobalSettings`](api/scala/index.html#play.api.GlobalSettings).
+Projenizde bir `Global` nesnesi tanımlamak uygulamanız için global ayarları yönetmenizi sağlar. Bu nesne varsayılan (boş) pakette tanımlanmalıdır ve [`GlobalSettings`](api/scala/index.html#play.api.GlobalSettings)'i extend etmelidir.
 
 @[global-define](code/ScalaGlobal.scala)
 
-> **Tip:** You can also specify a custom `GlobalSettings` implementation class name using the `application.global` configuration key.
+> **İpucu:** `application.global` yapılandırma ayarını kullanarak özel bir `GlobalSettings` gerçeklemesi de belirtebilirsiniz.
 
-## Hooking into application start and stop events
+## Uygulama başlangıç ve bitiş olaylarına kanca atmak
 
-You can override the `onStart` and `onStop` methods to be notified of the events in the application life-cycle:
+Uygulama yaşam döngüsündeki olaylardan haberdar olmak için `onStart` ve `onStop` metotlarını override edebilirsiniz:
 
 @[global-hooking](code/ScalaGlobal.scala)
 
-## Providing an application error page
+## Uygulama hata sayfası belirtmek
 
-When an exception occurs in your application, the `onError` operation will be called. The default is to use the internal framework error page:
+Uygulamanızda bir exception oluştuğunda `onError` metodu çağrılır. Varsayılan davranış dahili framework hata sayfasını kullanmaktır:
 
 @[global-hooking-error](code/ScalaGlobal.scala)
 
-## Handling missing actions and binding errors
+## Bulunmayan action'ları ve hataları ele almak
 
-If the framework doesn’t find an `Action` for a request, the `onHandlerNotFound` operation will be called:
+Eğer framework bir istek için bir `Action` bulamazsa `onHandlerNotFound` metodu çağrılır:
 
 @[global-hooking-notfound](code/ScalaGlobal.scala)
 
 
-The `onBadRequest` operation will be called if a route was found, but it was not possible to bind the request parameters:
+Bir yönlendirme bulunduğunda fakat istek parametrelerini bağlamak mümkün olmadığında `onBadRequest` metodu çağrılır:
 
 @[global-hooking-bad-request](code/ScalaGlobal.scala)
 
-> **Next:** [[Intercepting requests | ScalaInterceptors]]
+> **Sonraki:** [[İsteklerde araya girmek | ScalaInterceptors]]
