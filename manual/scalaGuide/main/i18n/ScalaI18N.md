@@ -1,67 +1,66 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Messages and internationalization
+# Mesajlar ve uluslararasılaşma
 
-## Specifying languages supported by your application
+## Uygulamanız tarafından desteklenen dilleri belirtmek
 
-A valid language code is specified by a valid **ISO 639-2 language code**, optionally followed by a valid **ISO 3166-1 alpha-2 country code**, such as `fr` or `en-US`.
+Geçerli bir dil kodu, geçerli bir **ISO 639-2 dil kodu** tarafından belirtilir, onu tercihen geçerli bir **ISO 3166-1 alpha-2 ülke kodu** takip eder. Örneğin, `fr` veya `en-US`.
 
-To start you need to specify the languages supported by your application in the `conf/application.conf` file:
-
+Başlangıç olarak, uygulamanızın desteklediği dilleri `conf/application.conf` dosyasında belirtmelisiniz:
 ```
 application.langs="en,en-US,fr"
 ```
 
-## Externalizing messages
+## Mesajları haricileştirme
 
-You can externalize messages in the `conf/messages.xxx` files.
+Mesajları, `conf/messages.xxx` dosyalarında haricileştirebilirsiniz.
 
-The default `conf/messages` file matches all languages. Additionally you can specify language-specific message files such as `conf/messages.fr` or `conf/messages.en-US`.
+Varsayılan `conf/messages`dosyası tüm dillerle eşleşir. Dilerseniz, örneğin `conf/messages.fr` veya `conf/messages.en-US` şeklinde ilave dil mesaj dosyaları belirtebilirsiniz.
 
-You can then retrieve messages using the `play.api.i18n.Messages` object:
+`play.i18n.Messages` nesnesini kullanarak mevcut dil için mesajları çağırabilirsiniz:
 
 ```scala
 val title = Messages("home.title")
 ```
 
-All internationalization API calls take an implicit `play.api.i18.Lang` argument retrieved from the current scope. You can also specify it explicitly:
+Bütün uluslararasılaştırma API çağrıları mevcut kapsamdan alınan örtük bir `play.api.i18.Lang` argümanı alır. Aynı zamanda dili kendiniz de belirtebilirsiniz:
 
 ```scala
 val title = Messages("home.title")(Lang("fr"))
 ```
 
-> **Note:** If you have an implicit `Request` in the scope, it will provide an implicit `Lang` value corresponding to the preferred language extracted from the `Accept-Language` header and matching one of the application supported languages. You should add a `Lang` implicit parameter to your template like this: `@()(implicit lang: Lang)`.
+> **Not:** Eğer kapsamda bir örtük `Request`iniz varsa o, `Accept-Language` başlığından çıkarılan ve uygulamanın desteklenen dillerinden biriyle eşleşen tercih edilen dil için varsayılan bir `Lang`değeri sağlayacaktır. Aynı zamanda, `Lang` örtük parametresini şablonunuza şu şekilde kapalı bir parametre olarak da eklemelisiniz: `@()(implicit lang: Lang)`.
 
-## Messages format
+## Mesajların biçimi
 
-Messages are formatted using the `java.text.MessageFormat` library. For example, assuming you have message defined like:
+Mesajlar `java.text.MessageFormat` kütüphanesi kullanılarak biçimlendirilir. Örneğin şu şekilde bir mesaj tanımladığınızı varsayalım:
 
 ```
 files.summary=The disk {1} contains {0} file(s).
 ```
 
-You can then specify parameters as:
+Parametreleri şu şekilde belirtebilirsiniz:
 
 ```scala
 Messages("files.summary", d.files.length, d.name)
 ```
 
-## Notes on apostrophes
+## Kesme işareti üzerine notlar
 
-Since Messages uses `java.text.MessageFormat`, please be aware that single quotes are used as a meta-character for escaping parameter substitutions.
+Mesajlar; `java.text.MessageFormat` kullandığından, kesme işaretleri (single quote), parametre değişimlerini belirtmek için meta karakter olarak kullanıldığını lütfen unutmayın.
 
-For example, if you have the following messages defined:
+Örneğin, aşağıdaki mesajları tanımladıysanız:
 
 @[apostrophe-messages](code/scalaguide/i18n/messages)
 @[parameter-escaping](code/scalaguide/i18n/messages)
 
-you should expect the following results:
+aşağıdaki sonucu elde etmeyi beklemelisiniz:
 
 @[apostrophe-messages](code/ScalaI18N.scala)
 @[parameter-escaping](code/ScalaI18N.scala)
 
-## Retrieving supported language from an HTTP request
+## Bir HTTP isteğinden desteklenen dilleri almak
 
-You can retrieve the languages supported by a specific HTTP request:
+Belirli bir HTTP isteğinin desteklenen dillerini şu şekilde alabilirsiniz:
 
 ```scala
 def index = Action { request =>
@@ -69,4 +68,4 @@ def index = Action { request =>
 }
 ```
 
-> **Next:** [[The application Global object | ScalaGlobal]]
+> **Sonraki:** [[Uygulama Global nesnesi | ScalaGlobal]]
