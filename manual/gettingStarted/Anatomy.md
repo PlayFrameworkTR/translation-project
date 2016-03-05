@@ -1,59 +1,59 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Anatomy of a Play application
+# Bir Play uygulamasının anatomisi
 
-## The standard application layout
+## Standart uygulama düzeni
 
-The layout of a Play application is standardized to keep things as simple as possible. After a first successful compile, a standard Play application looks like this:
+Bir Play uygulamasının düzeni bir şeyleri olabildiğince basit tutmak için standartlaştırılmıştır . İlk başarılı derlemenin ardından, standart bir Play uygulaması şu şekilde görünür:
 
 ```
-app                      → Application sources
- └ assets                → Compiled asset sources
-    └ stylesheets        → Typically LESS CSS sources
-    └ javascripts        → Typically CoffeeScript sources
- └ controllers           → Application controllers
- └ models                → Application business layer
- └ views                 → Templates
-build.sbt                → Application build script
-conf                     → Configurations files and other non-compiled resources (on classpath)
- └ application.conf      → Main configuration file
- └ routes                → Routes definition
-public                   → Public assets
- └ stylesheets           → CSS files
- └ javascripts           → Javascript files
- └ images                → Image files
-project                  → sbt configuration files
- └ build.properties      → Marker for sbt project
- └ plugins.sbt           → sbt plugins including the declaration for Play itself
-lib                      → Unmanaged libraries dependencies
-logs                     → Standard logs folder
- └ application.log       → Default log file
-target                   → Generated stuff
+app                      → Uygulama kaynakları
+ └ assets                → Derlenmiş kaynaklar
+    └ stylesheets        → Tipik LESS CSS kaynakları
+    └ javascripts        → Tipik CoffeeScript kaynakları
+ └ controllers           → Uygulama kontrolörleri
+ └ models                → Uygulama iş katmanı
+ └ views                 → Şablonlar
+build.sbt                → Uygulama kurulum betiği
+conf                     → Yapılandırma dosyaları ve diğer derlenmemiş kaynaklar (sınıfyolu üzerind)
+ └ application.conf      → Ana yapılandırma dosyası
+ └ routes                → Rota tanımlama
+public                   → Açık varlıklar
+ └ stylesheets           → CSS dosyaları
+ └ javascripts           → Javascript dosyaları
+ └ images                → Görüntü dosyaları
+project                  → sbt yapılandırma dosyaları
+ └ build.properties      → sbt projesi için belirteç
+ └ plugins.sbt           → Beyanı dahil olmak üzere Play için sbt eklentileri
+lib                      → Yönetilmemiş kütüphane bağımlılıkları
+logs                     → Standart günlük klasörü
+ └ application.log       → Varsayılan günlük dosyası
+target                   → Oluşturulmuş sayfalar
  └ scala-2.10.0            
     └ cache              
-    └ classes            → Compiled class files
-    └ classes_managed    → Managed class files (templates, ...)
-    └ resource_managed   → Managed resources (less, ...)
-    └ src_managed        → Generated sources (templates, ...)
-test                     → source folder for unit or functional tests
+    └ classes            → Derlenmiş sınıf dosyaları
+    └ classes_managed    → Yönetilen sınıf dosyaları (şablonlar, ...)
+    └ resource_managed   → Yönetilen kaynaklar (less, ...)
+    └ src_managed        → Oluşturulmuş kaynaklar (şablonlar, ...)
+test                     → Fonksiyonel veya birim testler için kaynak klasörü
 ```
 
-## The app/ directory
+## app/ Dizini
 
-The `app` directory contains all executable artifacts: Java and Scala source code, templates and compiled assets’ sources.
+`app` dizini tüm çalıştırılabilir artifaktları içerir: Java ve Scala kaynak kodu, şablonlar ve derlenmiş varlık’ kaynakları.
 
-There are three standard packages in the `app` directory, one for each component of the MVC architectural pattern: 
+`app` dizininde üç standart paket bulunur, her bir bileşen MVC yazılım deseninin bir parçasıdır: 
 
 - `app/controllers`
 - `app/models`
 - `app/views`
 
-You can of course add your own packages, for example an `app/utils` package.
+Tabiki kendi paketlerinizi ekleyebilirsiniz, örneğin bir `app/utils` paketi.
 
 > Note that in Play, the controllers, models and views package name conventions are now just that and can be changed if needed (such as prefixing everything with `com.yourcompany`).
 
 There is also an optional directory called `app/assets` for compiled assets such as [LESS sources](http://lesscss.org/) and [CoffeeScript sources](http://coffeescript.org/).
 
-## The public/ directory
+## public/ dizini
 
 Resources stored in the `public` directory are static assets that are served directly by the Web server.
 
@@ -61,33 +61,33 @@ This directory is split into three standard sub-directories for images, CSS styl
 
 > In a newly-created application, the `/public` directory is mapped to the `/assets` URL path, but you can easily change that, or even use several directories for your static assets.
 
-## The conf/ directory
+## conf/ dizini
 
-The `conf` directory contains the application’s configuration files. There are two main configuration files:
+`conf` dizini uygulamanın konfigürasyon dosyalarını barındırır. İki tane konfigürasyon dosyası vardır:
 
-- `application.conf`, the main configuration file for the application, which contains standard configuration parameters
-- `routes`, the routes definition file.
+- `application.conf`, uygulama için ana konfigürasyon dosyası, standart konfigürasyon parametrelerini içerir.
+- `routes`, rota tanım dosyası
 
 If you need to add configuration options that are specific to your application, it’s a good idea to add more options to the `application.conf` file.
 
 If a library needs a specific configuration file, try to file it under the `conf` directory.
 
-## The lib/ directory
+## lib/ dizini
 
 The `lib` directory is optional and contains unmanaged library dependencies, ie. all JAR files you want to manually manage outside the build system. Just drop any JAR files here and they will be added to your application classpath.
 
-## The build.sbt file
+## build.sbt dosyası
 
 Your project's main build declarations are generally found in `build.sbt` at the root of the project. `.scala` files in the `project/` directory can also be used to declare your project's build.
 
-## The project/ directory
+## project/ dizini
 
-The `project` directory contains the sbt build definitions:
+`project` dizini sbt oluşturma tanımlarını içerir:
 
-- `plugins.sbt` defines sbt plugins used by this project
-- `build.properties` contains the sbt version to use to build your app.
+- `plugins.sbt` bu projede kuullanılan sbt eklentilerini tanımlar.
+- `build.properties` uygulamanızı oluşturmak için kullanılan sbt sürümünü içerir.
 
-## The target/ directory
+## target/ dizini
 
 The `target` directory contains everything generated by the build system. It can be useful to know what is generated here.
 
@@ -97,9 +97,9 @@ The `target` directory contains everything generated by the build system. It can
 - `src_managed/` contains generated sources, such as the Scala sources generated by the template system.
 - `web/` contains assets processed by [sbt-web](https://github.com/sbt/sbt-web#sbt-web) such as those from the `app/assets` and `public` folders.
 
-## Typical .gitignore file
+## Tipik .gitignore dosyası
 
-Generated folders should be ignored by your version control system. Here is the typical `.gitignore` file for a Play application:
+Generated folders should be ignored by your version control system.Bir Play uygulaması için tipik `.gitignore` dosyası:
 
 ```txt
 logs
@@ -111,4 +111,4 @@ dist
 .cache
 ```
 
-> **Next:** [[Using the Activator console | PlayConsole ]]
+> **Sonraki:** [[Play konsolunu kullanmak | PlayConsole ]]
