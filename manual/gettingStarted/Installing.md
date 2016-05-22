@@ -3,7 +3,7 @@
 
 ## Ön koşullar
 
-Play framework'ü çalıştırmak için [JDK 6 ya da sonrası](http://www.oracle.com/technetwork/java/javase/downloads/index.html) gereklidir.
+Play framework'ü çalıştırmak için [JDK 1.8 ya da sonrası](http://www.oracle.com/technetwork/java/javase/downloads/index.html) gereklidir.
 
 > Eğer MacOS kullanıyorsanız Java yerleşik olarak gelir. Linux kullanıyorsanız Sun JDK ya da OpenJDK kullandığınızdan (çoğu Linux dağıtımında varsayılan olarak gelen gcj kullanmadığınızdan) emin olun. Windows kullanıyorsanız güncel JDK paketini indirin ve kurun.
 
