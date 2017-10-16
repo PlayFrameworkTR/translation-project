@@ -1,6 +1,6 @@
 <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> -->
-# Play for Java developers
+# Java geliştiricileri için Play
 
-The Java API for the Play application developers is available in the `play` package. 
+Play uygulaması geliştiricileri için Java API `play` paketi içinde mevcuttur 
 
-> The API available in the `play.api` package (such as `play.api.mvc`) is reserved for Scala developers. As a Java developer, look at `play.mvc`.
+> `Play.api` paketinde bulunan API (örneğin` play.api.mvc`) Scala geliştiricileri için ayrılmıştır. Java geliştiricisi olarak `play.mvc`'ye bakınız. 
